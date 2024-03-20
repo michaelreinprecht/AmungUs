@@ -1,35 +1,46 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { StompSessionProvider, useStompClient } from 'react-stomp-hooks';
+import MessageList from './Components/MessageList';
+import MessageForm from './Components/MessageForm';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [connected, setConnected] = useState(true);
+  // const stompClient = useStompClient();
+
+  // Function to handle the connect button click
+  // function handleConnect() {
+  //   if (stompClient && !connected) {
+  //     setConnected(true);
+  //     stompClient.activate();
+  //   }
+  // }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <StompSessionProvider url={'http://localhost:8080/gs-guide-websocket'}>
+      <div id="main-content" className="container">
+        <div className="row">
+          <div className="col-md-6">
+            {/* Connect button */}
+            <button className="btn btn-default" type="button">
+              Connect
+            </button>
+          </div>
+        </div>
+        {/* Render MessageForm and MessageList only if connected */}
+        {connected && (
+          <>
+            <div className="row">
+              <MessageForm />
+            </div>
+            <div className="row">
+              <MessageList />
+            </div>
+          </>
+        )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </StompSessionProvider>
+  );
 }
 
-export default App
+export default App;
