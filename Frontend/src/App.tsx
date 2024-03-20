@@ -1,12 +1,11 @@
-import { useState } from 'react'
-import './App.css'
-import { StompSessionProvider, useStompClient } from 'react-stomp-hooks';
-import MessageList from './Components/MessageList';
+import './App.css';
+import { StompSessionProvider} from 'react-stomp-hooks';
 import MessageForm from './Components/MessageForm';
+import MessageList from './Components/MessageList';
 
 function App() {
-  const [connected, setConnected] = useState(true);
-  // const stompClient = useStompClient();
+  //const [connected, setConnected] = useState(false);
+  //const stompClient = useStompClient();
 
   // Function to handle the connect button click
   // function handleConnect() {
@@ -19,16 +18,8 @@ function App() {
   return (
     <StompSessionProvider url={'http://localhost:8080/gs-guide-websocket'}>
       <div id="main-content" className="container">
-        <div className="row">
-          <div className="col-md-6">
-            {/* Connect button */}
-            <button className="btn btn-default" type="button">
-              Connect
-            </button>
-          </div>
-        </div>
         {/* Render MessageForm and MessageList only if connected */}
-        {connected && (
+        {true && (
           <>
             <div className="row">
               <MessageForm />
