@@ -6,7 +6,7 @@ export default function MovingImage() {
     <div style={{ width: '100vw', height: '80vh' }}>
       <Canvas style={{ width: '100%', height: '100%' }}>
         <ambientLight intensity={0.1} />
-        <directionalLight color="red" position={[0, 0, 5]} />
+        <directionalLight position={[0, 0, 5]} />
         <MovingRectangle />
       </Canvas>
     </div>

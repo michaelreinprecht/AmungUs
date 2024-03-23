@@ -1,7 +1,10 @@
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { useRef, useEffect, useState } from "react";
+import { TextureLoader } from "three";
 
 export default function MovingRectangle() {
+  const colorMap = useLoader(TextureLoader, 'mohr.png')
+
     const meshRef: React.MutableRefObject<any> = useRef(); // Create a ref for the mesh
   const [movement, setMovement] = useState({ forward: false, backward: false, left: false, right: false });
 
@@ -57,8 +60,8 @@ export default function MovingRectangle() {
     if (meshRef.current) {
       const speed = 0.1; // Adjust the speed as needed
       const { forward, backward, left, right } = movement;
-      if (forward) meshRef.current.position.y -= speed;
-      if (backward) meshRef.current.position.y += speed;
+      if (forward) meshRef.current.position.y += speed;
+      if (backward) meshRef.current.position.y -= speed;
       if (left) meshRef.current.position.x -= speed;
       if (right) meshRef.current.position.x += speed;
     }
@@ -67,7 +70,7 @@ export default function MovingRectangle() {
   return (
     <mesh ref={meshRef}>
       <boxGeometry args={[2, 2, 0.01]} />
-      <meshStandardMaterial />
+      <meshStandardMaterial map={colorMap} />
     </mesh>
   );
 }
