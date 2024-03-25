@@ -55,12 +55,12 @@ public class GreetingIntegrationTests {
 				session.subscribe("/topic/greetings", new StompFrameHandler() {
 					@Override
 					public Type getPayloadType(StompHeaders headers) {
-						return Greeting.class;
+						return Message.class;
 					}
 
 					@Override
 					public void handleFrame(StompHeaders headers, Object payload) {
-						Greeting greeting = (Greeting) payload;
+						Message greeting = (Message) payload;
 						try {
 							assertEquals("Hello, Spring!", greeting.getContent());
 						} catch (Throwable t) {
@@ -72,7 +72,7 @@ public class GreetingIntegrationTests {
 					}
 				});
 				try {
-					session.send("/app/hello", new HelloMessage("Spring"));
+					session.send("/app/hello", new ChatMessage("Spring"));
 				} catch (Throwable t) {
 					failure.set(t);
 					latch.countDown();
