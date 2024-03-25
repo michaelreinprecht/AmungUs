@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import { TextureLoader } from "three";
 
 export default function PlayerCharacter() {
-  const colorMap = useLoader(TextureLoader, "mohr.png");
+  const colorMap = useLoader(TextureLoader, "rick.png");
 
   const meshRef: React.MutableRefObject<any> = useRef(); // Create a ref for the mesh
   const [movement, setMovement] = useState({
@@ -75,7 +75,7 @@ export default function PlayerCharacter() {
   return (
     <mesh ref={meshRef}>
       <planeGeometry args={[2, 2]} />
-      <meshStandardMaterial map={colorMap} />
+      <meshStandardMaterial map={colorMap} transparent={true} />
     </mesh>
   );
 }
