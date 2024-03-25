@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useStompClient } from "react-stomp-hooks";
+import ChatFieldInput from "./ChatFieldInput";
+import ChatFieldButton from "./ChatFieldButton";
 
-type ChatInputProps = {
+type ChatFieldProps = {
   setShowChat: (newShowChat: boolean) => void;
 };
 
-export default function ChatInput({ setShowChat }: ChatInputProps) {
+export default function ChatField({ setShowChat }: ChatFieldProps) {
   const stompClient = useStompClient();
   const [message, setMessage] = useState("");
 
@@ -29,23 +31,13 @@ export default function ChatInput({ setShowChat }: ChatInputProps) {
     <div className="fixed bottom-4 right-4 w-96">
       <div className="flex w-full">
         <div className="flex-grow">
-          <input
-            type="text"
-            className="form-control flex-grow w-full p-2 border border-gray-300 rounded-l"
-            placeholder="Your message here..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onMouseEnter={() => setShowChat(true)}
-            onMouseLeave={() => setShowChat(false)}
+          <ChatFieldInput
+            message={message}
+            setMessage={setMessage}
+            setShowChat={setShowChat}
           />
         </div>
-        <button
-          className="btn btn-default bg-gray-700 text-white font-semibold py-2 px-4 rounded-r rounded-none"
-          onClick={sendMessage}
-          type="button"
-        >
-          Send
-        </button>
+        <ChatFieldButton buttonText="Send" sendMessage={sendMessage} />
       </div>
     </div>
   );

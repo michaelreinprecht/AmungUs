@@ -1,7 +1,7 @@
 import "./App.css";
 import { StompSessionProvider } from "react-stomp-hooks";
 import MovingImage from "./Components/MovingImage";
-import ChatWindow from "./Components/ChatWindow";
+import ChatWindow from "./Components/Chat/ChatWindow";
 
 function App() {
   //const [connected, setConnected] = useState(false);

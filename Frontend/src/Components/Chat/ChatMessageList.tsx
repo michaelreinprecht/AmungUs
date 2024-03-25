@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSubscription } from "react-stomp-hooks";
+import ChatMessageListItem from "./ChatMessageListItem";
 
 type ChatMessageListProps = {
   showChat: boolean;
@@ -29,6 +30,7 @@ export default function ChatMessageList({
     }, 5000);
   }, [messages]);
 
+  //Subscribe to messages websocket
   useSubscription("/chat/messages", (message) => {
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -43,10 +45,8 @@ export default function ChatMessageList({
           <div className="mb-4 overflow-y-auto max-h-40 w-full" ref={tableRef}>
             <table id="chatMessageList" className="table table-striped">
               <tbody className="text-left" id="messages">
-                {messages.map((greeting, index) => (
-                  <tr key={index}>
-                    <td className="pl-2">{greeting}</td>
-                  </tr>
+                {messages.map((message, index) => (
+                  <ChatMessageListItem message={message} index={index} />
                 ))}
               </tbody>
             </table>

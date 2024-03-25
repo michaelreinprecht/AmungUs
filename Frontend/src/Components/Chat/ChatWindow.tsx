@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ChatInput from "./ChatInput";
+import ChatField from "./ChatField";
 import ChatMessageList from "./ChatMessageList";
 
 export default function ChatWindow() {
@@ -8,7 +8,7 @@ export default function ChatWindow() {
   return (
     <>
       <ChatMessageList showChat={showChat} setShowChat={setShowChat} />
-      <ChatInput setShowChat={setShowChat} />
+      <ChatField setShowChat={setShowChat} />
     </>
   );
 }
