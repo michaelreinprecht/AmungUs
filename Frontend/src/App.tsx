@@ -1,6 +1,6 @@
 import "./App.css";
 import { StompSessionProvider } from "react-stomp-hooks";
-import MovingImage from "./Components/MovingImage";
+import Game from "./Components/Game";
 import ChatWindow from "./Components/Chat/ChatWindow";
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
 
   return (
     <>
-      <MovingImage />
+      <Game />
       <StompSessionProvider url={"http://localhost:8080/amungUs-websocket"}>
         <div id="main-content" className="container">
           {/* Render MessageForm and MessageList only if connected */}

@@ -2,14 +2,19 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { useRef, useEffect, useState } from "react";
 import { TextureLoader } from "three";
 
-export default function MovingRectangle() {
-  const colorMap = useLoader(TextureLoader, 'mohr.png')
+export default function PlayerCharacter() {
+  const colorMap = useLoader(TextureLoader, "mohr.png");
 
-    const meshRef: React.MutableRefObject<any> = useRef(); // Create a ref for the mesh
-  const [movement, setMovement] = useState({ forward: false, backward: false, left: false, right: false });
+  const meshRef: React.MutableRefObject<any> = useRef(); // Create a ref for the mesh
+  const [movement, setMovement] = useState({
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+  });
 
   useEffect(() => {
-    const handleKeyDown = (event: { key: any; }) => {
+    const handleKeyDown = (event: { key: any }) => {
       switch (event.key) {
         case "w":
           setMovement((prevMovement) => ({ ...prevMovement, forward: true }));
@@ -28,7 +33,7 @@ export default function MovingRectangle() {
       }
     };
 
-    const handleKeyUp = (event: { key: any; }) => {
+    const handleKeyUp = (event: { key: any }) => {
       switch (event.key) {
         case "w":
           setMovement((prevMovement) => ({ ...prevMovement, forward: false }));
@@ -69,7 +74,7 @@ export default function MovingRectangle() {
 
   return (
     <mesh ref={meshRef}>
-      <boxGeometry args={[2, 2, 0.01]} />
+      <planeGeometry args={[2, 2]} />
       <meshStandardMaterial map={colorMap} />
     </mesh>
   );
