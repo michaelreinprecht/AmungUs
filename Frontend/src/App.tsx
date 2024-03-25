@@ -1,8 +1,7 @@
-import './App.css';
-import { StompSessionProvider} from 'react-stomp-hooks';
-import MessageForm from './Components/MessageForm';
-import MessageList from './Components/MessageList';
-import MovingImage from './Components/MovingImage';
+import "./App.css";
+import { StompSessionProvider } from "react-stomp-hooks";
+import MovingImage from "./Components/MovingImage";
+import ChatWindow from "./Components/ChatWindow";
 
 function App() {
   //const [connected, setConnected] = useState(false);
@@ -18,22 +17,19 @@ function App() {
 
   return (
     <>
-    <MovingImage/>
-    <StompSessionProvider url={'http://localhost:8080/gs-guide-websocket'}>
-      <div id="main-content" className="container">
-        {/* Render MessageForm and MessageList only if connected */}
-        {true && (
-          <>
-            <div className="row">
-              <MessageForm />
-            </div>
-            <div className="row">
-              <MessageList />
-            </div>
-          </>
-        )}
-      </div>
-    </StompSessionProvider>
+      <MovingImage />
+      <StompSessionProvider url={"http://localhost:8080/amungUs-websocket"}>
+        <div id="main-content" className="container">
+          {/* Render MessageForm and MessageList only if connected */}
+          {true && (
+            <>
+              <div className="row">
+                <ChatWindow />
+              </div>
+            </>
+          )}
+        </div>
+      </StompSessionProvider>
     </>
   );
 }
