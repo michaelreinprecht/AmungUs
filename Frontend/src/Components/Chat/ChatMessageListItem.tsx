@@ -9,7 +9,7 @@ export default function ChatMessageListItem({
 }: ChatMessageListItemProps) {
   return (
     <tr key={index}>
-      <td className="pl-2">{message}</td>
+      <td className="pl-2 text-black">{message}</td>
     </tr>
   );
 }

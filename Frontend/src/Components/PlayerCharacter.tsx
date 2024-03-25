@@ -1,11 +1,18 @@
-import { useFrame, useLoader } from "@react-three/fiber";
-import { useRef, useEffect, useState } from "react";
-import { TextureLoader } from "three";
+import React, { useRef, useEffect, useState } from 'react';
+import { useFrame, useLoader } from '@react-three/fiber';
+import { TextureLoader } from 'three';
+import * as THREE from 'three';
 
-export default function PlayerCharacter() {
-  const colorMap = useLoader(TextureLoader, "rick.png");
+interface PlayerCharacterProps {
+  scale: number;
+  bounds: { minX: number; maxX: number; minY: number; maxY: number };
+}
 
-  const meshRef: React.MutableRefObject<any> = useRef(); // Create a ref for the mesh
+const PlayerCharacter: React.FC<PlayerCharacterProps> = ({ scale, bounds }) => {
+  const colorMap = useLoader(TextureLoader, 'rick.png');
+
+  const meshRef = useRef<THREE.Mesh>(null);
+
   const [movement, setMovement] = useState({
     forward: false,
     backward: false,
@@ -14,18 +21,18 @@ export default function PlayerCharacter() {
   });
 
   useEffect(() => {
-    const handleKeyDown = (event: { key: any }) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
-        case "w":
+        case 'w':
           setMovement((prevMovement) => ({ ...prevMovement, forward: true }));
           break;
-        case "s":
+        case 's':
           setMovement((prevMovement) => ({ ...prevMovement, backward: true }));
           break;
-        case "a":
+        case 'a':
           setMovement((prevMovement) => ({ ...prevMovement, left: true }));
           break;
-        case "d":
+        case 'd':
           setMovement((prevMovement) => ({ ...prevMovement, right: true }));
           break;
         default:
@@ -33,18 +40,18 @@ export default function PlayerCharacter() {
       }
     };
 
-    const handleKeyUp = (event: { key: any }) => {
+    const handleKeyUp = (event: KeyboardEvent) => {
       switch (event.key) {
-        case "w":
+        case 'w':
           setMovement((prevMovement) => ({ ...prevMovement, forward: false }));
           break;
-        case "s":
+        case 's':
           setMovement((prevMovement) => ({ ...prevMovement, backward: false }));
           break;
-        case "a":
+        case 'a':
           setMovement((prevMovement) => ({ ...prevMovement, left: false }));
           break;
-        case "d":
+        case 'd':
           setMovement((prevMovement) => ({ ...prevMovement, right: false }));
           break;
         default:
@@ -52,30 +59,52 @@ export default function PlayerCharacter() {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
     };
   }, []);
 
   useFrame(() => {
     if (meshRef.current) {
-      const speed = 0.1; // Adjust the speed as needed
+      const speed = 0.5;
       const { forward, backward, left, right } = movement;
-      if (forward) meshRef.current.position.y += speed;
-      if (backward) meshRef.current.position.y -= speed;
-      if (left) meshRef.current.position.x -= speed;
-      if (right) meshRef.current.position.x += speed;
+  
+      // Calculate new position
+      let newPositionX = meshRef.current.position.x;
+      let newPositionY = meshRef.current.position.y;
+  
+      if (forward) newPositionY += speed;
+      if (backward) newPositionY -= speed;
+      if (left) newPositionX -= speed;
+      if (right) newPositionX += speed;
+  
+      // Check against bounds and update position
+      if (
+        newPositionX - scale / 2 >= bounds.minX &&
+        newPositionX + scale / 2 <= bounds.maxX
+      ) {
+        meshRef.current.position.x = newPositionX;
+      }
+      if (
+        newPositionY - scale / 2 >= bounds.minY &&
+        newPositionY + scale / 2 <= bounds.maxY
+      ) {
+        meshRef.current.position.y = newPositionY;
+      }
     }
   });
+  
 
   return (
     <mesh ref={meshRef}>
-      <planeGeometry args={[2, 2]} />
+      <planeGeometry args={[2 * scale, 2 * scale]} />
       <meshStandardMaterial map={colorMap} transparent={true} />
     </mesh>
   );
-}
+};
+
+export default PlayerCharacter;
