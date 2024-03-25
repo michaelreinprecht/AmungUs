@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useStompClient } from "react-stomp-hooks";
 
-export default function ChatInput() {
+type ChatInputProps = {
+  setShowChat: (newShowChat: boolean) => void;
+};
+
+export default function ChatInput({ setShowChat }: ChatInputProps) {
   const stompClient = useStompClient();
   const [message, setMessage] = useState("");
 
@@ -31,6 +35,8 @@ export default function ChatInput() {
             placeholder="Your message here..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onMouseEnter={() => setShowChat(true)}
+            onMouseLeave={() => setShowChat(false)}
           />
         </div>
         <button

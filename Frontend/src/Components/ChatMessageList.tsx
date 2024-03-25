@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useSubscription } from "react-stomp-hooks";
 
-export default function ChatMessageList() {
+type ChatMessageListProps = {
+  showChat: boolean;
+  setShowChat: (newShowChat: boolean) => void;
+};
+
+export default function ChatMessageList({
+  showChat,
+  setShowChat,
+}: ChatMessageListProps) {
   const [messages, setMessages] = useState<Array<string>>([]);
   const tableRef = useRef<HTMLDivElement>(null);
 
@@ -11,6 +19,14 @@ export default function ChatMessageList() {
     if (tableRef.current) {
       tableRef.current.scrollTop = tableRef.current.scrollHeight;
     }
+
+    // Show the chat message list when a new message is added
+    setShowChat(true);
+
+    // Set a timeout to hide the chat message list after 5 seconds
+    setTimeout(() => {
+      setShowChat(false);
+    }, 5000);
   }, [messages]);
 
   useSubscription("/chat/messages", (message) => {
@@ -21,16 +37,22 @@ export default function ChatMessageList() {
   });
 
   return (
-    <div className="mb-4 overflow-y-auto max-h-40 w-full" ref={tableRef}>
-      <table id="chatMessageList" className="table table-striped">
-        <tbody className="text-left" id="messages">
-          {messages.map((greeting, index) => (
-            <tr key={index}>
-              <td className="pl-2">{greeting}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      {showChat && messages.length > 0 && (
+        <div className="fixed bottom-16 right-4 bg-gray-100 border border-gray-300 mb-1 pb-4 w-96 opacity-85">
+          <div className="mb-4 overflow-y-auto max-h-40 w-full" ref={tableRef}>
+            <table id="chatMessageList" className="table table-striped">
+              <tbody className="text-left" id="messages">
+                {messages.map((greeting, index) => (
+                  <tr key={index}>
+                    <td className="pl-2">{greeting}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
