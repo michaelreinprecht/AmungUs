@@ -12,5 +12,4 @@ public class ChatController {
 	public Message message(ChatMessage message) throws Exception {
 		return new Message(HtmlUtils.htmlEscape(message.getMessageSenderName() + ": " + message.getMessageText()));
 	}
-
 }

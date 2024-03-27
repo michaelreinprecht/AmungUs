@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/amungUs-websocket").setAllowedOrigins("http://localhost:5173").withSockJS();
+		registry.addEndpoint("/amungUs-websocket").setAllowedOriginPatterns("*").withSockJS();
 	}
 
 }
