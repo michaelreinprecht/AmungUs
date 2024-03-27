@@ -1,14 +1,12 @@
 type ChatMessageListItemProps = {
-  index: number;
   message: string;
 };
 
 export default function ChatMessageListItem({
-  index,
   message,
 }: ChatMessageListItemProps) {
   return (
-    <tr key={index}>
+    <tr>
       <td className="pl-2 text-black">{message}</td>
     </tr>
   );

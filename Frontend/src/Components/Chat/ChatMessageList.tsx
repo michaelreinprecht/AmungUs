@@ -46,7 +46,7 @@ export default function ChatMessageList({
             <table id="chatMessageList" className="table table-striped">
               <tbody className="text-left" id="messages">
                 {messages.map((message, index) => (
-                  <ChatMessageListItem message={message} index={index} />
+                  <ChatMessageListItem message={message} key={index} />
                 ))}
               </tbody>
             </table>

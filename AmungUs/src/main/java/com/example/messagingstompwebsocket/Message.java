@@ -1,5 +1,8 @@
 package com.example.messagingstompwebsocket;
 
+import lombok.Getter;
+
+@Getter
 public class Message {
 
 	private String content;
@@ -9,10 +12,6 @@ public class Message {
 
 	public Message(String content) {
 		this.content = content;
-	}
-
-	public String getContent() {
-		return content;
 	}
 
 }
