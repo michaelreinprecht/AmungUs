@@ -1,7 +1,7 @@
-import { useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
-import Background from './Background';
-import PlayerCharacter from './PlayerCharacter';
+import { useRef } from "react";
+import { Canvas } from "@react-three/fiber";
+import Background from "./Background";
+import PlayerCharacter from "./PlayerCharacter";
 
 export default function Game() {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -10,8 +10,8 @@ export default function Game() {
   const bounds = {
     minX: -50, // Minimum x-coordinate
     maxX: 50, // Maximum x-coordinate
-    minY: -45, // Minimum y-coordinate
-    maxY: 45, // Maximum y-coordinate
+    minY: -35, // Minimum y-coordinate
+    maxY: 35, // Maximum y-coordinate
   };
 
   return (
@@ -22,7 +22,9 @@ export default function Game() {
           zoom: 10,
           near: 0.1,
           far: 64,
-          aspect: canvasRef.current ? canvasRef.current.clientWidth / canvasRef.current.clientHeight : undefined,
+          aspect: canvasRef.current
+            ? canvasRef.current.clientWidth / canvasRef.current.clientHeight
+            : undefined,
         }}
         orthographic
         gl={{ antialias: false }}
@@ -36,7 +38,7 @@ export default function Game() {
         <Background textureUrl="background.jpg" />
 
         {/* Render player character */}
-        <PlayerCharacter scale={5} bounds={bounds}/>
+        <PlayerCharacter scale={5} bounds={bounds} />
       </Canvas>
     </div>
   );

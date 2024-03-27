@@ -1,6 +1,6 @@
-import { useLoader } from '@react-three/fiber';
-import { TextureLoader } from 'three';
-import * as THREE from 'three';
+import { useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three";
+import * as THREE from "three";
 
 const Background = ({ textureUrl }: { textureUrl: string }) => {
   // Load the background texture
@@ -9,7 +9,7 @@ const Background = ({ textureUrl }: { textureUrl: string }) => {
   return (
     <mesh position={[0, 0, -1]}>
       <planeGeometry args={[100, 100, 1, 1]} />
-      <meshBasicMaterial map={texture} side={THREE.DoubleSide} />
+      <meshBasicMaterial map={texture} side={THREE.FrontSide} />
     </mesh>
   );
 };
