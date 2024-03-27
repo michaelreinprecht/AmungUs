@@ -3,11 +3,7 @@ import { useStompClient } from "react-stomp-hooks";
 import ChatFieldButton from "./ChatFieldButton";
 import ChatFieldInput from "./ChatFieldInput";
 
-type ChatFieldProps = {
-  setShowChat: (newShowChat: boolean) => void;
-};
-
-export default function ChatField({ setShowChat }: ChatFieldProps) {
+export default function ChatField() {
   const stompClient = useStompClient();
   const [message, setMessage] = useState("");
 
@@ -35,11 +31,7 @@ export default function ChatField({ setShowChat }: ChatFieldProps) {
       <form onSubmit={sendMessage}>
         <div className="flex w-full">
           <div className="flex-grow">
-            <ChatFieldInput
-              message={message}
-              setMessage={setMessage}
-              setShowChat={setShowChat}
-            />
+            <ChatFieldInput message={message} setMessage={setMessage} />
           </div>
           <ChatFieldButton buttonText="Send" />
         </div>

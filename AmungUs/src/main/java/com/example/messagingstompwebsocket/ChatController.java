@@ -9,7 +9,7 @@ import org.springframework.web.util.HtmlUtils;
 public class ChatController {
 	@MessageMapping("/chatReceiver")
 	@SendTo("/chat/messages")
-	public Message message(ChatMessage message) throws Exception {
-		return new Message(HtmlUtils.htmlEscape(message.getMessageSenderName() + ": " + message.getMessageText()));
+	public ChatMessages message(ChatMessage message) throws Exception {
+		return new ChatMessages(HtmlUtils.htmlEscape(message.getMessageSenderName() + ": " + message.getMessageText()));
 	}
 }

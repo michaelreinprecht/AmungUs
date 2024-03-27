@@ -55,12 +55,12 @@ public class GreetingIntegrationTests {
 				session.subscribe("/topic/greetings", new StompFrameHandler() {
 					@Override
 					public Type getPayloadType(StompHeaders headers) {
-						return Message.class;
+						return ChatMessages.class;
 					}
 
 					@Override
 					public void handleFrame(StompHeaders headers, Object payload) {
-						Message greeting = (Message) payload;
+						ChatMessages greeting = (ChatMessages) payload;
 						try {
 							assertEquals("Hello, Spring!", greeting.getContent());
 						} catch (Throwable t) {

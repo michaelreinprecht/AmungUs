@@ -1,13 +1,11 @@
 type ChatFieldInputProps = {
   message: string;
   setMessage: (newMessage: string) => void;
-  setShowChat: (newShowChat: boolean) => void;
 };
 
 export default function ChatFieldInput({
   message,
   setMessage,
-  setShowChat,
 }: ChatFieldInputProps) {
   return (
     <>
@@ -17,8 +15,6 @@ export default function ChatFieldInput({
         placeholder="Your message here..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        onMouseEnter={() => setShowChat(true)}
-        onMouseLeave={() => setShowChat(false)}
       />
     </>
   );

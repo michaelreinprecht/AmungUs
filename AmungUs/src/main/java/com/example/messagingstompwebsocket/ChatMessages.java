@@ -3,14 +3,14 @@ package com.example.messagingstompwebsocket;
 import lombok.Getter;
 
 @Getter
-public class Message {
+public class ChatMessages {
 
 	private String content;
 
-	public Message() {
+	public ChatMessages() {
 	}
 
-	public Message(String content) {
+	public ChatMessages(String content) {
 		this.content = content;
 	}
 
