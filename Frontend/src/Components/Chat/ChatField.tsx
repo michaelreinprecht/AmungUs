@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useStompClient } from "react-stomp-hooks";
-import ChatFieldInput from "./ChatFieldInput";
 import ChatFieldButton from "./ChatFieldButton";
+import ChatFieldInput from "./ChatFieldInput";
 
 type ChatFieldProps = {
   setShowChat: (newShowChat: boolean) => void;
@@ -12,7 +12,8 @@ export default function ChatField({ setShowChat }: ChatFieldProps) {
   const [message, setMessage] = useState("");
 
   //Uses websockets to send a new message (consisting of playerName and messageText)
-  function sendMessage() {
+  function sendMessage(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); // Prevent default form submission behavior
     if (message && stompClient) {
       //Build json message object
       const chatMessage = {
@@ -24,21 +25,25 @@ export default function ChatField({ setShowChat }: ChatFieldProps) {
         destination: "/app/chatReceiver",
         body: JSON.stringify(chatMessage),
       });
+      // Clear the input field after sending the message
+      setMessage("");
     }
   }
 
   return (
     <div className="fixed bottom-4 right-4 w-96">
-      <div className="flex w-full">
-        <div className="flex-grow">
-          <ChatFieldInput
-            message={message}
-            setMessage={setMessage}
-            setShowChat={setShowChat}
-          />
+      <form onSubmit={sendMessage}>
+        <div className="flex w-full">
+          <div className="flex-grow">
+            <ChatFieldInput
+              message={message}
+              setMessage={setMessage}
+              setShowChat={setShowChat}
+            />
+          </div>
+          <ChatFieldButton buttonText="Send" />
         </div>
-        <ChatFieldButton buttonText="Send" sendMessage={sendMessage} />
-      </div>
+      </form>
     </div>
   );
 }
