@@ -14,13 +14,15 @@ public class PlayerInfoController {
     private List<PlayerPosition> playerPositions = new ArrayList<>();
 
     @MessageMapping("/playerPositionReceiver")
-    @SendTo("/playerInfo/positions")
+    @SendTo("/chat/positions")
     public PlayerPositions playerPositions(PlayerPosition playerPosition) throws Exception {
         // Update the player position in the list or add it if it's a new player
+        System.out.println(playerPosition.getPlayerName() + " " + playerPosition.getPlayerPositionX() + " "+ playerPosition.getPlayerPositionX() + " ");
         boolean playerExists = false;
         for (PlayerPosition existingPlayer : playerPositions) {
             if (existingPlayer.getPlayerName().equals(playerPosition.getPlayerName())) {
-                existingPlayer.setPlayerPosition(playerPosition.getPlayerPosition());
+                existingPlayer.setPlayerPositionX(playerPosition.getPlayerPositionX());
+                existingPlayer.setPlayerPositionY(playerPosition.getPlayerPositionY());
                 playerExists = true;
                 break;
             }

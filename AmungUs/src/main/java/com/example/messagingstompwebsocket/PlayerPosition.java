@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class PlayerPosition {
     private String playerName;
-    private Position playerPosition;
+    private float playerPositionX;
+    private float playerPositionY;
 }
