@@ -3,16 +3,32 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
+import { Text } from "@react-three/drei";
 
 interface PlayerCharacterProps {
+  activePlayerName: string;
   scale: number;
   bounds: { minX: number; maxX: number; minY: number; maxY: number };
 }
 
-const PlayerCharacter: React.FC<PlayerCharacterProps> = ({ scale, bounds }) => {
+interface PlayerPosition {
+  playerName: string;
+  playerPositionX: number;
+  playerPositionY: number;
+}
+
+const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
+  activePlayerName,
+  scale,
+  bounds,
+}) => {
   const stompClient = useStompClient();
-  const [playerPositions, setPlayerPositions] = useState([
-    { playerName: "Playername", playerPositionX: 0, playerPositionY: 0 },
+  const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([
+    {
+      playerName: activePlayerName,
+      playerPositionX: 0,
+      playerPositionY: 0,
+    },
   ]);
 
   const colorMap = useLoader(TextureLoader, "rick.png");
@@ -78,43 +94,47 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({ scale, bounds }) => {
       const speed = 0.5;
       const { forward, backward, left, right } = movement;
 
-      let newPositionX = playerPositions[0].playerPositionX; // Assuming there's only one player
-      let newPositionY = playerPositions[0].playerPositionY; // Assuming there's only one player
+      const playerPosition = playerPositions.find(
+        (pos) => pos.playerName === activePlayerName
+      );
 
-      if (forward) newPositionY += speed;
-      if (backward) newPositionY -= speed;
-      if (left) newPositionX -= speed;
-      if (right) {
-        newPositionX += speed;
-      }
+      if (playerPosition) {
+        let newPositionX = playerPosition.playerPositionX; // Assuming there's only one player
+        let newPositionY = playerPosition.playerPositionY; // Assuming there's only one player
 
-      // Update position based on bounds
-      if (
-        newPositionX - scale / 2 >= bounds.minX &&
-        newPositionX + scale / 2 <= bounds.maxX &&
-        newPositionY - scale / 2 >= bounds.minY &&
-        newPositionY + scale / 2 <= bounds.maxY
-      ) {
-        const updatedPlayerPosition = {
-          playerName: "Playername",
-          playerPositionX: newPositionX,
-          playerPositionY: newPositionY,
-        };
+        if (forward) newPositionY += speed;
+        if (backward) newPositionY -= speed;
+        if (left) newPositionX -= speed;
+        if (right) {
+          newPositionX += speed;
+        }
 
-        //TODO: Update in front end and get ok from backend
-        //setPlayerPositions([updatedPlayerPosition]);
-        updatePlayerPosition(updatedPlayerPosition);
+        // Update position based on bounds
+        if (
+          newPositionX - scale / 2 >= bounds.minX &&
+          newPositionX + scale / 2 <= bounds.maxX &&
+          newPositionY - scale / 2 >= bounds.minY &&
+          newPositionY + scale / 2 <= bounds.maxY
+        ) {
+          const updatedPlayerPosition = {
+            playerName: activePlayerName,
+            playerPositionX: newPositionX,
+            playerPositionY: newPositionY,
+          };
+
+          //TODO: Update in front end and get ok from backend
+          //setPlayerPositions([updatedPlayerPosition]);
+          updatePlayerPosition(updatedPlayerPosition);
+        }
+      } else {
+        console.log("Unable to find player position for given name");
       }
     }
   });
 
   useSubscription("/chat/positions", (message) => {
     const parsedMessage = JSON.parse(message.body).playerPositions;
-    if (Array.isArray(parsedMessage)) {
-      setPlayerPositions(parsedMessage);
-    } else {
-      setPlayerPositions([parsedMessage]);
-    }
+    setPlayerPositions(parsedMessage);
   });
 
   function updatePlayerPosition(playerPos: any) {
@@ -129,14 +149,26 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({ scale, bounds }) => {
   return (
     <>
       {playerPositions.map((pos) => (
-        <mesh
-          ref={meshRef}
+        <group
           key={pos.playerName}
           position={[pos.playerPositionX, pos.playerPositionY, 0]}
         >
-          <planeGeometry args={[2 * scale, 2 * scale]} />
-          <meshStandardMaterial map={colorMap} transparent={true} />
-        </mesh>
+          <mesh ref={activePlayerName === pos.playerName ? meshRef : null}>
+            <planeGeometry args={[2 * scale, 2 * scale]} />
+            <meshStandardMaterial map={colorMap} transparent={true} />
+          </mesh>
+          <Text
+            position={[0, scale, 0]}
+            fontSize={0.6 * scale}
+            color="orange"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.01 * scale}
+            outlineColor="#000000"
+          >
+            {pos.playerName}
+          </Text>
+        </group>
       ))}
     </>
   );

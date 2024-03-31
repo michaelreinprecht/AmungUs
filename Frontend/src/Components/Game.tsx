@@ -3,7 +3,11 @@ import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "./PlayerCharacter";
 
-export default function Game() {
+type GameProps = {
+  activePlayerName: string;
+};
+
+export default function Game({ activePlayerName }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
 
   // Bounds that match the background
@@ -38,7 +42,11 @@ export default function Game() {
         <Background textureUrl="background.jpg" />
 
         {/* Render player character */}
-        <PlayerCharacter scale={5} bounds={bounds} />
+        <PlayerCharacter
+          activePlayerName={activePlayerName}
+          scale={5}
+          bounds={bounds}
+        />
       </Canvas>
     </div>
   );
