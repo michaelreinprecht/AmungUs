@@ -89,9 +89,9 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     };
   }, []);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (meshRef.current) {
-      const speed = 0.5;
+      const speed = 30 * delta;
       const { forward, backward, left, right } = movement;
 
       const playerPosition = playerPositions.find(
