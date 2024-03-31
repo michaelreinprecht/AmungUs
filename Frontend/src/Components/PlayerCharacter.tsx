@@ -11,11 +11,11 @@ interface PlayerCharacterProps {
   bounds: { minX: number; maxX: number; minY: number; maxY: number };
 }
 
-interface PlayerPosition {
+export type PlayerPosition = {
   playerName: string;
   playerPositionX: number;
   playerPositionY: number;
-}
+};
 
 const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   activePlayerName,
