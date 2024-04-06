@@ -1,5 +1,7 @@
 package com.example.messagingstompwebsocket;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -11,11 +13,15 @@ import java.util.List;
 @Controller
 public class PlayerInfoController {
 
+    @Autowired
+    private LobbyService lobbyService;
+
     private List<PlayerPosition> playerPositions = new ArrayList<>();
 
-    @MessageMapping("/playerPositionReceiver")
-    @SendTo("/chat/positions")
-    public PlayerPositions playerPositions(PlayerPosition playerPosition) throws Exception {
+    @MessageMapping("/{lobbyCode}/playerPositionReceiver")
+    @SendTo("/chat/{lobbyCode}/positions")
+    public PlayerPositions playerPositions(@DestinationVariable String lobbyCode, PlayerPosition playerPosition) throws Exception {
+        /*
         // Update the player position in the list or add it if it's a new player
         System.out.println(playerPosition.getPlayerName() + " " + playerPosition.getPlayerPositionX() + " "+ playerPosition.getPlayerPositionX() + " ");
         boolean playerExists = false;
@@ -33,5 +39,20 @@ public class PlayerInfoController {
 
         // Send the updated player positions to all players
         return new PlayerPositions(playerPositions);
+         */
+
+
+        System.out.println("PlayerInfo received for lobby code: " + lobbyCode);
+        // Get the lobby from the lobby service
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        if (lobby != null) {
+            // Update the player position in the lobby or add it if it's a new player
+            lobby.updatePlayerPosition(playerPosition);
+            playerPositions = lobby.getPlayerPositions().getPlayerPositions();
+            return new PlayerPositions(playerPositions);
+        } else {
+            // Handle case where lobby with provided code doesn't exist
+            return null;
+        }
     }
 }

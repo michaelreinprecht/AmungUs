@@ -19,6 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint("/amungUs-websocket").setAllowedOriginPatterns("*").withSockJS();
+		registry.addEndpoint("/amungUs-websocket/{lobbyCode}").setAllowedOriginPatterns("*").withSockJS();
 	}
 
 }
