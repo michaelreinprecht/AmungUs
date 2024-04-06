@@ -7,10 +7,36 @@ import PickNameScene from "./Components/PickNameScene";
 
 function App() {
   const [activePlayerName, setActivePlayerName] = useState("");
+  let [connectionError, setConnectionError] = useState(false);
+
+  /*
+onConnect={() => {
+          setConnectionError(true);
+        }}
+        onDisconnect={() => {
+          setTimeout(() => {
+            setConnectionError(false);
+          }, 5000);
+        }}
+        onWebSocketClose={() => {
+          setTimeout(() => {
+            setConnectionError(false);
+          }, 5000);
+        }}
+        onStompError={() => {
+          setTimeout(() => {
+            setConnectionError(false);
+          }, 5000);
+        }}
+*/
 
   return (
     <>
-      <StompSessionProvider url={"http://localhost:8080/amungUs-websocket"}>
+      <StompSessionProvider
+        url={"http://localhost:8080/amungUs-websocket"}
+        reconnectDelay={5}
+      >
+        {connectionError && <h1>Connection Error</h1>}
         {activePlayerName === "" && (
           <PickNameScene setActivePlayerName={setActivePlayerName} />
         )}
