@@ -99,8 +99,8 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
       );
 
       if (playerPosition) {
-        let newPositionX = playerPosition.playerPositionX; // Assuming there's only one player
-        let newPositionY = playerPosition.playerPositionY; // Assuming there's only one player
+        let newPositionX = playerPosition.playerPositionX;
+        let newPositionY = playerPosition.playerPositionY;
 
         if (forward || backward || left || right) {
           if (forward) newPositionY += speed;
