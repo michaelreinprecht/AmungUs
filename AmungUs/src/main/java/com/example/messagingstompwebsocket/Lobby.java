@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class Lobby {
     private String lobbyCode;
-    private PlayerPositions playerPositions;
-    private ChatMessages chatMessages;
+    private PlayerPositions playerPositions = new PlayerPositions();
+    private ChatMessages chatMessages = new ChatMessages();
 
     public void updatePlayerPosition(PlayerPosition playerPosition) {
         // Check if the player already exists in the lobby
