@@ -99,42 +99,39 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
       );
 
       if (playerPosition) {
-        let newPositionX = playerPosition.playerPositionX; // Assuming there's only one player
-        let newPositionY = playerPosition.playerPositionY; // Assuming there's only one player
+        let newPositionX = playerPosition.playerPositionX;
+        let newPositionY = playerPosition.playerPositionY;
 
-        if (forward) newPositionY += speed;
-        if (backward) newPositionY -= speed;
-        if (left) newPositionX -= speed;
-        if (right) {
-          newPositionX += speed;
-        }
+        if (forward || backward || left || right) {
+          if (forward) newPositionY += speed;
+          if (backward) newPositionY -= speed;
+          if (left) newPositionX -= speed;
+          if (right) {
+            newPositionX += speed;
+          }
 
-        // Update position based on bounds
-        if (
-          newPositionX - scale / 2 >= bounds.minX &&
-          newPositionX + scale / 2 <= bounds.maxX &&
-          newPositionY - scale / 2 >= bounds.minY &&
-          newPositionY + scale / 2 <= bounds.maxY
-        ) {
-          const updatedPlayerPosition = {
-            playerName: activePlayerName,
-            playerPositionX: newPositionX,
-            playerPositionY: newPositionY,
-          };
+          // Update position based on bounds
+          if (
+            newPositionX - scale / 2 >= bounds.minX &&
+            newPositionX + scale / 2 <= bounds.maxX &&
+            newPositionY - scale / 2 >= bounds.minY &&
+            newPositionY + scale / 2 <= bounds.maxY
+          ) {
+            const updatedPlayerPosition = {
+              playerName: activePlayerName,
+              playerPositionX: newPositionX,
+              playerPositionY: newPositionY,
+            };
 
-          //TODO: Update in front end and get ok from backend
-          //setPlayerPositions([updatedPlayerPosition]);
-          updatePlayerPosition(updatedPlayerPosition);
+            //TODO: Update in front end and get ok from backend
+            //setPlayerPositions([updatedPlayerPosition]);
+            updatePlayerPosition(updatedPlayerPosition);
+          }
         }
       } else {
         console.log("Unable to find player position for given name");
       }
     }
-  });
-
-  useSubscription("/chat/positions", (message) => {
-    const parsedMessage = JSON.parse(message.body).playerPositions;
-    setPlayerPositions(parsedMessage);
   });
 
   function updatePlayerPosition(playerPos: any) {
@@ -145,6 +142,11 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
       });
     }
   }
+
+  useSubscription("/chat/positions", (message) => {
+    const parsedMessage = JSON.parse(message.body).playerPositions;
+    setPlayerPositions(parsedMessage);
+  });
 
   return (
     <>
