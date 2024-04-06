@@ -12,12 +12,15 @@ public class ChatController {
 	@Autowired
 	private LobbyService lobbyService;
 
-	//@MessageMapping("/chatReceiver")
-	//@SendTo("/chat/messages")
 	@MessageMapping("/{lobbyCode}/chatReceiver")
 	@SendTo("/chat/{lobbyCode}/messages")
 	public ChatMessages message(@DestinationVariable String lobbyCode, ChatMessage message) {
-		System.out.println("Message received for lobby code: " + lobbyCode);
+		//Just print some debug logs.
+		System.out.println();
+		System.out.println("Message received from: " + message.getMessageSenderName());
+		System.out.println("Message content: " + message.getMessageText());
+		System.out.println();
+
 		//return new ChatMessages(HtmlUtils.htmlEscape(message.getMessageSenderName() + ": " + message.getMessageText()));
 		Lobby lobby = lobbyService.getLobby(lobbyCode);
 

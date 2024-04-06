@@ -3,14 +3,19 @@ package com.example.messagingstompwebsocket;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+
 @Getter
 @Setter
 public class Lobby {
     private String lobbyCode;
-    private PlayerPositions playerPositions = new PlayerPositions();
-    private ChatMessages chatMessages = new ChatMessages();
+    private PlayerPositions playerPositions;
 
     public void updatePlayerPosition(PlayerPosition playerPosition) {
+        if (playerPositions.getPlayerPositions() == null) {
+            playerPositions.setPlayerPositions(new ArrayList<>());
+        }
+
         // Check if the player already exists in the lobby
         boolean playerExists = false;
         for (PlayerPosition existingPlayer : playerPositions.getPlayerPositions()) {

@@ -15,7 +15,6 @@ public class LobbyService {
             Lobby lobby = new Lobby();
             lobby.setLobbyCode(lobbyCode);
             lobby.setPlayerPositions(new PlayerPositions());
-            lobby.setChatMessages(new ChatMessages());
             // Initialize other properties of the lobby as needed
             lobbies.put(lobbyCode, lobby);
         }
