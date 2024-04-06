@@ -4,7 +4,11 @@ import PickNameScene from "./PickNameScene";
 import Game from "./Game";
 import ChatWindow from "./Chat/ChatWindow";
 
-function Lobby() {
+type LobbyProps = {
+  lobbyCode: string;
+};
+
+function Lobby({ lobbyCode }: LobbyProps) {
   const [activePlayerName, setActivePlayerName] = useState("");
   let [connectionError, setConnectionError] = useState(false);
 
@@ -37,18 +41,27 @@ function Lobby() {
       >
         {connectionError && <h1>Connection Error</h1>}
         {activePlayerName === "" && (
-          <PickNameScene setActivePlayerName={setActivePlayerName} />
+          <>
+            <h1>Lobby Code: {lobbyCode}</h1>
+            <PickNameScene
+              setActivePlayerName={setActivePlayerName}
+              lobbyCode={lobbyCode}
+            />
+          </>
         )}
 
         {activePlayerName !== "" && (
           <>
-            <Game activePlayerName={activePlayerName} />
+            <Game activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
             <div id="main-content" className="container">
               {/* Render MessageForm and MessageList only if connected */}
               {true && (
                 <>
                   <div className="row">
-                    <ChatWindow />
+                    <ChatWindow
+                      activePlayerName={activePlayerName}
+                      lobbyCode={lobbyCode}
+                    />
                   </div>
                 </>
               )}

@@ -9,6 +9,7 @@ interface PlayerCharacterProps {
   activePlayerName: string;
   scale: number;
   bounds: { minX: number; maxX: number; minY: number; maxY: number };
+  lobbyCode: string;
 }
 
 export type PlayerPosition = {
@@ -21,6 +22,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   activePlayerName,
   scale,
   bounds,
+  lobbyCode,
 }) => {
   const stompClient = useStompClient();
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([
@@ -31,7 +33,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     },
   ]);
 
-  const colorMap = useLoader(TextureLoader, "rick.png");
+  const colorMap = useLoader(TextureLoader, "/rick.png");
   const meshRef = useRef<THREE.Mesh>(null);
 
   const [movement, setMovement] = useState({
@@ -137,13 +139,13 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   function updatePlayerPosition(playerPos: any) {
     if (stompClient) {
       stompClient.publish({
-        destination: "/app/playerPositionReceiver",
+        destination: `/app/${lobbyCode}/playerPositionReceiver`,
         body: JSON.stringify(playerPos),
       });
     }
   }
 
-  useSubscription("/chat/positions", (message) => {
+  useSubscription(`/chat/${lobbyCode}/positions`, (message) => {
     const parsedMessage = JSON.parse(message.body).playerPositions;
     setPlayerPositions(parsedMessage);
   });

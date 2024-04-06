@@ -2,7 +2,15 @@ import { MouseEventHandler, useState } from "react";
 import ChatField from "./ChatField";
 import ChatMessageList from "./ChatMessageList";
 
-export default function ChatWindow() {
+type ChatWindowProps = {
+  activePlayerName: string;
+  lobbyCode: string;
+};
+
+export default function ChatWindow({
+  activePlayerName,
+  lobbyCode,
+}: ChatWindowProps) {
   const [showChat, setShowChat] = useState(true);
 
   function show(): MouseEventHandler<HTMLDivElement> {
@@ -24,8 +32,12 @@ export default function ChatWindow() {
         onMouseEnter={show()}
         onMouseLeave={hide()}
       >
-        <ChatMessageList showChat={showChat} setShowChat={setShowChat} />
-        <ChatField />
+        <ChatMessageList
+          showChat={showChat}
+          setShowChat={setShowChat}
+          lobbyCode={lobbyCode}
+        />
+        <ChatField activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
       </div>
     </>
   );
