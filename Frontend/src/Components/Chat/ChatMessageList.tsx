@@ -33,7 +33,7 @@ export default function ChatMessageList({
   }, [messages]);
 
   //Subscribe to messages websocket
-  useSubscription(`/chat/${lobbyCode}/messages`, (message) => {
+  useSubscription(`/lobby/${lobbyCode}/messages`, (message) => {
     setMessages((prevMessages) => [
       ...prevMessages,
       message.body,

@@ -21,21 +21,21 @@ public class PlayerInfoController {
     @Autowired
     private LobbyService lobbyService;
 
-    @MessageMapping("/{lobbyCode}/playerPositionReceiver")
-    @SendTo("/chat/{lobbyCode}/positions")
-    public List<PlayerPosition> playerPositions(@DestinationVariable String lobbyCode, PlayerPosition playerPosition) throws Exception {
-        System.out.println("PlayerPosition received for lobby code: " + lobbyCode);
-        System.out.println("PlayerPosition: " + playerPosition.toString());
+    @MessageMapping("/{lobbyCode}/playerInfoReceiver")
+    @SendTo("/lobby/{lobbyCode}/playerInfo")
+    public List<PlayerInfo> playerPositions(@DestinationVariable String lobbyCode, PlayerInfo playerInfo) throws Exception {
+        System.out.println("PlayerInfo received for lobby code: " + lobbyCode);
+        System.out.println("PlayerInfo: " + playerInfo.toString());
         System.out.println();
 
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
             // Update the player position in the lobby or add it if it's a new player
-            lobby.updatePlayerPosition(playerPosition);
+            lobby.updatePlayerPosition(playerInfo);
 
             // Send the updated player positions to all players
-            return lobby.getPlayerPositions();
+            return lobby.getPlayerInfos();
         } else {
             // Should only be called if backend cannot find the lobbyCode and fails to create a new lobby
             return null;
@@ -48,9 +48,9 @@ public class PlayerInfoController {
         // Handle HTTP GET request for fetching player names
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
-            List<PlayerPosition> playerPositions = lobby.getPlayerPositions();
+            List<PlayerInfo> playerInfos = lobby.getPlayerInfos();
             List<String> playerNames = new ArrayList<>();
-            for (PlayerPosition position : playerPositions) {
+            for (PlayerInfo position : playerInfos) {
                 playerNames.add(position.getPlayerName());
             }
             return playerNames;

@@ -139,13 +139,13 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   function updatePlayerPosition(playerPos: any) {
     if (stompClient) {
       stompClient.publish({
-        destination: `/app/${lobbyCode}/playerPositionReceiver`,
+        destination: `/app/${lobbyCode}/playerInfoReceiver`,
         body: JSON.stringify(playerPos),
       });
     }
   }
 
-  useSubscription(`/chat/${lobbyCode}/positions`, (message) => {
+  useSubscription(`/lobby/${lobbyCode}/playerInfo`, (message) => {
     const parsedMessage = JSON.parse(message.body);
     setPlayerPositions(parsedMessage);
   });

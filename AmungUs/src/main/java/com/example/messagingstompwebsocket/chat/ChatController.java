@@ -15,7 +15,7 @@ public class ChatController {
 	private LobbyService lobbyService;
 
 	@MessageMapping("/{lobbyCode}/chatReceiver")
-	@SendTo("/chat/{lobbyCode}/messages")
+	@SendTo("/lobby/{lobbyCode}/messages")
 	public String message(@DestinationVariable String lobbyCode, ChatMessage message) {
 		//Just print some debug logs.
 		System.out.println();

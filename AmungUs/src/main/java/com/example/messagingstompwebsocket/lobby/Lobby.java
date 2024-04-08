@@ -1,6 +1,6 @@
 package com.example.messagingstompwebsocket.lobby;
 
-import com.example.messagingstompwebsocket.player.PlayerPosition;
+import com.example.messagingstompwebsocket.player.PlayerInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,27 +11,27 @@ import java.util.List;
 @Setter
 public class Lobby {
     private String lobbyCode;
-    private List<PlayerPosition> playerPositions;
+    private List<PlayerInfo> playerInfos;
 
     public Lobby() {
-        this.playerPositions = new ArrayList<>();
+        this.playerInfos = new ArrayList<>();
     }
 
-    public void updatePlayerPosition(PlayerPosition playerPosition) {
+    public void updatePlayerPosition(PlayerInfo playerInfo) {
         // Check if the player already exists in the lobby
         boolean playerExists = false;
-        for (PlayerPosition existingPlayer : playerPositions) {
-            if (existingPlayer.getPlayerName().equals(playerPosition.getPlayerName())) {
+        for (PlayerInfo existingPlayer : playerInfos) {
+            if (existingPlayer.getPlayerName().equals(playerInfo.getPlayerName())) {
                 // Update the player's position
-                existingPlayer.setPlayerPositionX(playerPosition.getPlayerPositionX());
-                existingPlayer.setPlayerPositionY(playerPosition.getPlayerPositionY());
+                existingPlayer.setPlayerPositionX(playerInfo.getPlayerPositionX());
+                existingPlayer.setPlayerPositionY(playerInfo.getPlayerPositionY());
                 playerExists = true;
                 break;
             }
         }
         // If the player doesn't exist in the lobby, add them
         if (!playerExists) {
-            playerPositions.add(playerPosition);
+            playerInfos.add(playerInfo);
         }
     }
 }
