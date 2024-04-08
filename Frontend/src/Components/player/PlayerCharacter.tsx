@@ -1,5 +1,5 @@
 import React from "react";
-import { usePlayerCharacter } from "./usePlayerCharacter";
+import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { Text } from "@react-three/drei";
 
 

@@ -1,5 +1,5 @@
 import { FormEvent } from "react";
-import { usePickNameScene } from "./usePickNameScene";
+import { usePickNameScene } from "./hooks/usePickNameScene";
 
 interface PickNameSceneProps {
   setActivePlayerName: (newActivePlayerName: string) => void;
