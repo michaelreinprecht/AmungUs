@@ -9,4 +9,13 @@ public class PlayerPosition {
     private String playerName;
     private float playerPositionX;
     private float playerPositionY;
+
+    @Override
+    public String toString() {
+        return "PlayerPosition{" +
+                "playerName='" + playerName + '\'' +
+                ", playerPositionX=" + playerPositionX +
+                ", playerPositionY=" + playerPositionY +
+                '}';
+    }
 }

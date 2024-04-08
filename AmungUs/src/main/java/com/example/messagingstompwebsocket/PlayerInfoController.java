@@ -21,8 +21,11 @@ public class PlayerInfoController {
 
     @MessageMapping("/{lobbyCode}/playerPositionReceiver")
     @SendTo("/chat/{lobbyCode}/positions")
-    public PlayerPositions playerPositions(@DestinationVariable String lobbyCode, PlayerPosition playerPosition) throws Exception {
-        System.out.println("PlayerInfo received for lobby code: " + lobbyCode);
+    public List<PlayerPosition> playerPositions(@DestinationVariable String lobbyCode, PlayerPosition playerPosition) throws Exception {
+        System.out.println("PlayerPosition received for lobby code: " + lobbyCode);
+        System.out.println("PlayerPosition: " + playerPosition.toString());
+        System.out.println();
+
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
@@ -30,7 +33,7 @@ public class PlayerInfoController {
             lobby.updatePlayerPosition(playerPosition);
 
             // Send the updated player positions to all players
-            return new PlayerPositions(lobby.getPlayerPositions().getPlayerPositions());
+            return lobby.getPlayerPositions();
         } else {
             // Should only be called if backend cannot find the lobbyCode and fails to create a new lobby
             return null;
@@ -43,7 +46,7 @@ public class PlayerInfoController {
         // Handle HTTP GET request for fetching player names
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
-            List<PlayerPosition> playerPositions = lobby.getPlayerPositions().getPlayerPositions();
+            List<PlayerPosition> playerPositions = lobby.getPlayerPositions();
             List<String> playerNames = new ArrayList<>();
             for (PlayerPosition position : playerPositions) {
                 playerNames.add(position.getPlayerName());

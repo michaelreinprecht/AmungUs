@@ -14,7 +14,6 @@ public class LobbyService {
         if (!lobbies.containsKey(lobbyCode)) {
             Lobby lobby = new Lobby();
             lobby.setLobbyCode(lobbyCode);
-            lobby.setPlayerPositions(new PlayerPositions());
             // Initialize other properties of the lobby as needed
             lobbies.put(lobbyCode, lobby);
         }
