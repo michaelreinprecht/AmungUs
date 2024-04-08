@@ -10,36 +10,23 @@ type LobbyProps = {
 
 function Lobby({ lobbyCode }: LobbyProps) {
   const [activePlayerName, setActivePlayerName] = useState("");
-  let [connectionError, setConnectionError] = useState(false);
-
-  /*
-  onConnect={() => {
-            setConnectionError(true);
-          }}
-          onDisconnect={() => {
-            setTimeout(() => {
-              setConnectionError(false);
-            }, 5000);
-          }}
-          onWebSocketClose={() => {
-            setTimeout(() => {
-              setConnectionError(false);
-            }, 5000);
-          }}
-          onStompError={() => {
-            setTimeout(() => {
-              setConnectionError(false);
-            }, 5000);
-          }}
-  */
 
   return (
     <>
       <StompSessionProvider
         url={"http://localhost:8080/amungUs-websocket"}
         reconnectDelay={5}
+        onWebSocketClose={() => {
+          setTimeout(() => {
+            //Fires once when connecting ..., onDisconnect also fires aaaalot
+          }, 5000);
+        }}
+        onStompError={() => {
+          setTimeout(() => {
+            alert("Connection lost");
+          }, 5000);
+        }}
       >
-        {connectionError && <h1>Connection Error</h1>}
         {activePlayerName === "" && (
           <>
             <h1>Lobby Code: {lobbyCode}</h1>
