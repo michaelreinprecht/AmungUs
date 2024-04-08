@@ -1,4 +1,4 @@
-import { useChatMessageList } from "./useChatMessageList";
+import { useChatMessageList } from "./hooks/useChatMessageList";
 import ChatMessageListItem from "./ChatMessageListItem";
 
 type ChatMessageListProps = {

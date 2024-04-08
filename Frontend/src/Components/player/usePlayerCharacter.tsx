@@ -3,27 +3,14 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
-import { Text } from "@react-three/drei";
-
-interface PlayerCharacterProps {
-  activePlayerName: string;
-  scale: number;
-  bounds: { minX: number; maxX: number; minY: number; maxY: number };
-  lobbyCode: string;
-}
 
 export type PlayerPosition = {
-  playerName: string;
-  playerPositionX: number;
-  playerPositionY: number;
-};
+    playerName: string;
+    playerPositionX: number;
+    playerPositionY: number;
+  };
 
-const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
-  activePlayerName,
-  scale,
-  bounds,
-  lobbyCode,
-}) => {
+export function usePlayerCharacter(activePlayerName: string, scale: number, bounds: { minX: number; maxX: number; minY: number; maxY: number }, lobbyCode: string) {
   const stompClient = useStompClient();
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([
     {
@@ -125,8 +112,6 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
               playerPositionY: newPositionY,
             };
 
-            //TODO: Update in front end and get ok from backend
-            //setPlayerPositions([updatedPlayerPosition]);
             updatePlayerPosition(updatedPlayerPosition);
           }
         }
@@ -150,32 +135,5 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     setPlayerPositions(parsedMessage);
   });
 
-  return (
-    <>
-      {playerPositions.map((pos) => (
-        <group
-          key={pos.playerName}
-          position={[pos.playerPositionX, pos.playerPositionY, 0]}
-        >
-          <mesh ref={activePlayerName === pos.playerName ? meshRef : null}>
-            <planeGeometry args={[2 * scale, 2 * scale]} />
-            <meshStandardMaterial map={colorMap} transparent={true} />
-          </mesh>
-          <Text
-            position={[0, scale, 0]}
-            fontSize={0.6 * scale}
-            color="orange"
-            anchorX="center"
-            anchorY="middle"
-            outlineWidth={0.01 * scale}
-            outlineColor="#000000"
-          >
-            {pos.playerName}
-          </Text>
-        </group>
-      ))}
-    </>
-  );
-};
-
-export default PlayerCharacter;
+  return { playerPositions, meshRef, colorMap };
+}

@@ -1,4 +1,4 @@
-import { useChatWindow } from "./useChatWindow";
+import { useChatWindow } from "./hooks/useChatWindow";
 import ChatField from "./ChatField";
 import ChatMessageList from "./ChatMessageList";
 

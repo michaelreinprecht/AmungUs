@@ -1,6 +1,6 @@
-import { useChatField } from "./useChatField";
-import ChatFieldButton from "./ChatFieldButton";
+import { useChatField } from "./hooks/useChatField";
 import ChatFieldInput from "./ChatFieldInput";
+import ChatFieldButton from "./ChatFieldButton";
 
 type ChatFieldProps = {
   activePlayerName: string;

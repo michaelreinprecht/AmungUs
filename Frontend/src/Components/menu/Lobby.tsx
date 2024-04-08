@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { StompSessionProvider } from "react-stomp-hooks";
 import PickNameScene from "./PickNameScene";
-import Game from "./Game";
-import ChatWindow from "./Chat/ChatWindow";
+import Game from "../Game";
+import ChatWindow from "../chat/ChatWindow";
 
 type LobbyProps = {
   lobbyCode: string;
