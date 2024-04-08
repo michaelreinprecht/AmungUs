@@ -146,7 +146,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   }
 
   useSubscription(`/chat/${lobbyCode}/positions`, (message) => {
-    const parsedMessage = JSON.parse(message.body).playerPositions;
+    const parsedMessage = JSON.parse(message.body);
     setPlayerPositions(parsedMessage);
   });
 

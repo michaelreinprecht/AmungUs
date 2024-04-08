@@ -36,7 +36,7 @@ export default function ChatMessageList({
   useSubscription(`/chat/${lobbyCode}/messages`, (message) => {
     setMessages((prevMessages) => [
       ...prevMessages,
-      JSON.parse(message.body).content,
+      message.body,
     ]);
   });
 
