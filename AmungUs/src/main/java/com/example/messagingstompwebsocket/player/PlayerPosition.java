@@ -1,4 +1,4 @@
-package com.example.messagingstompwebsocket;
+package com.example.messagingstompwebsocket.player;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,5 @@
-package com.example.messagingstompwebsocket;
+package com.example.messagingstompwebsocket.lobby;
 
-import com.example.messagingstompwebsocket.Lobby;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -29,8 +28,4 @@ public class LobbyService {
         }
         return lobbies.get(lobbyCode);
     }
-
-
-    // Other methods for managing lobbies such as adding players, sending messages, etc.
-
 }

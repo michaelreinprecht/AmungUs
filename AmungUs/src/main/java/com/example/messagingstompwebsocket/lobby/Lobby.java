@@ -1,5 +1,6 @@
-package com.example.messagingstompwebsocket;
+package com.example.messagingstompwebsocket.lobby;
 
+import com.example.messagingstompwebsocket.player.PlayerPosition;
 import lombok.Getter;
 import lombok.Setter;
 
