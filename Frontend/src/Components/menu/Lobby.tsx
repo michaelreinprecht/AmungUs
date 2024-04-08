@@ -3,6 +3,7 @@ import { StompSessionProvider } from "react-stomp-hooks";
 import PickNameScene from "./PickNameScene";
 import Game from "../Game";
 import ChatWindow from "../chat/ChatWindow";
+import { Theme, Container, Flex } from "@radix-ui/themes";
 
 type LobbyProps = {
   lobbyCode: string;
