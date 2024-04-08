@@ -5,11 +5,13 @@ import ChatMessageListItem from "./ChatMessageListItem";
 type ChatMessageListProps = {
   showChat: boolean;
   setShowChat: (newShowChat: boolean) => void;
+  lobbyCode: string;
 };
 
 export default function ChatMessageList({
   showChat,
   setShowChat,
+  lobbyCode,
 }: ChatMessageListProps) {
   const [messages, setMessages] = useState<Array<string>>([]);
   const tableRef = useRef<HTMLDivElement>(null);
@@ -31,7 +33,7 @@ export default function ChatMessageList({
   }, [messages]);
 
   //Subscribe to messages websocket
-  useSubscription("/chat/messages", (message) => {
+  useSubscription(`/chat/${lobbyCode}/messages`, (message) => {
     setMessages((prevMessages) => [
       ...prevMessages,
       JSON.parse(message.body).content,

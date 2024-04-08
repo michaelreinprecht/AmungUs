@@ -1,5 +1,10 @@
 package com.example.messagingstompwebsocket;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ChatMessage {
 
 	private String messageSenderName;
@@ -12,19 +17,4 @@ public class ChatMessage {
 		this.messageText = name;
 	}
 
-	public String getMessageSenderName() {
-		return messageSenderName;
-	}
-
-	public String getMessageText() {
-		return messageText;
-	}
-	public void setMessageSenderName(String messageSenderName) {
-		this.messageSenderName = messageSenderName;
-	}
-
-
-	public void setMessageText(String messageText) {
-		this.messageText = messageText;
-	}
 }

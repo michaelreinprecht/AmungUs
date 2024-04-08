@@ -5,9 +5,10 @@ import PlayerCharacter from "./PlayerCharacter";
 
 type GameProps = {
   activePlayerName: string;
+  lobbyCode: string;
 };
 
-export default function Game({ activePlayerName }: GameProps) {
+export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
 
   // Bounds that match the background
@@ -39,13 +40,14 @@ export default function Game({ activePlayerName }: GameProps) {
         <directionalLight position={[0, 0, 5]} />
 
         {/* Background component */}
-        <Background textureUrl="background.jpg" />
+        <Background textureUrl="/background.jpg" />
 
         {/* Render player character */}
         <PlayerCharacter
           activePlayerName={activePlayerName}
           scale={5}
           bounds={bounds}
+          lobbyCode={lobbyCode}
         />
       </Canvas>
     </div>

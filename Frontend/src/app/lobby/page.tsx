@@ -3,5 +3,5 @@
 import Lobby from "@/Components/Lobby";
 
 export default function LobbyPage() {
-  return <Lobby />;
+  return <Lobby lobbyCode="1" />;
 }

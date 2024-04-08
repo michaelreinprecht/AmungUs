@@ -3,7 +3,15 @@ import { useStompClient } from "react-stomp-hooks";
 import ChatFieldButton from "./ChatFieldButton";
 import ChatFieldInput from "./ChatFieldInput";
 
-export default function ChatField() {
+type ChatFieldProps = {
+  activePlayerName: string;
+  lobbyCode: string;
+};
+
+export default function ChatField({
+  activePlayerName,
+  lobbyCode,
+}: ChatFieldProps) {
   const stompClient = useStompClient();
   const [message, setMessage] = useState("");
 
@@ -13,12 +21,12 @@ export default function ChatField() {
     if (message && stompClient) {
       //Build json message object
       const chatMessage = {
-        messageSenderName: "Playername", // TODO set dynamically for each player!
+        messageSenderName: activePlayerName,
         messageText: message,
       };
       //Send message to websocket
       stompClient.publish({
-        destination: "/app/chatReceiver",
+        destination: `/app/${lobbyCode}/chatReceiver`,
         body: JSON.stringify(chatMessage),
       });
       // Clear the input field after sending the message
