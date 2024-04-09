@@ -5,18 +5,23 @@ import * as THREE from "three";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 
 export type PlayerPosition = {
-    playerName: string;
-    playerPositionX: number;
-    playerPositionY: number;
-  };
+  playerName: string;
+  playerPositionX: number;
+  playerPositionY: number;
+};
 
-export function usePlayerCharacter(activePlayerName: string, scale: number, bounds: { minX: number; maxX: number; minY: number; maxY: number }, lobbyCode: string) {
+export function usePlayerCharacter(
+  activePlayerName: string,
+  scale: number,
+  bounds: { minX: number; maxX: number; minY: number; maxY: number },
+  lobbyCode: string
+) {
   const stompClient = useStompClient();
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([
     {
       playerName: activePlayerName,
-      playerPositionX: 0,
-      playerPositionY: 0,
+      playerPositionX: (Math.random() - 0.5) * 20,
+      playerPositionY: (Math.random() - 0.5) * 20,
     },
   ]);
 
@@ -31,6 +36,9 @@ export function usePlayerCharacter(activePlayerName: string, scale: number, boun
   });
 
   useEffect(() => {
+    //Initial position update of the player
+    updatePlayerPosition(playerPositions[0]);
+
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
         case "w":
