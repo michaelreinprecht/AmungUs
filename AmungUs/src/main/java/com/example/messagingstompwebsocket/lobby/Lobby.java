@@ -15,10 +15,12 @@ public class Lobby {
     private boolean isGameRunning;
     private int playerCount;
     private int maxPlayerCount;
+    private boolean isPrivate;
 
     public Lobby() {
         this.playerInfos = new ArrayList<>();
-        this.isGameRunning = false; //TODO set this once the game starts, and allow no more players to join
+        this.isGameRunning = false; //TODO set this once the lobby is created, and allow no more players to join
+        this.isPrivate = false; //TODO set this once the lobby is created, depending on if lobby is private
         this.playerCount = 0;
     }
 

@@ -20,7 +20,7 @@ export default function LobbyList() {
 
     const fetchLobbies = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/lobby/getLobbies');
+            const response = await fetch('http://localhost:8080/api/lobby/getPublicLobbies');
             if (!response.ok) {
                 throw new Error('Failed to fetch lobbies');
             }

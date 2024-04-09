@@ -15,12 +15,13 @@ public class LobbyController {
     @Autowired
     private LobbyService lobbyService;
 
-    @GetMapping("/api/lobby/getLobbies")
+    //Returns all public lobbies that are not currently full
+    @GetMapping("/api/lobby/getPublicLobbies")
     @ResponseBody
     public List<Lobby> getLobbies() {
         List<Lobby> nonFullLobbies = new ArrayList<>();
         for (Lobby lobby : lobbyService.getLobbies()) {
-            if (lobby.getPlayerCount() < lobby.getMaxPlayerCount()) {
+            if (lobby.getPlayerCount() < lobby.getMaxPlayerCount() && !lobby.isPrivate()) {
                 nonFullLobbies.add(lobby);
             }
         }
