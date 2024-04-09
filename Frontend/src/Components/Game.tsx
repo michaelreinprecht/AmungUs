@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
-import PlayerCharacter from "./PlayerCharacter";
+import PlayerCharacter from "./player/PlayerCharacter";
 
 type GameProps = {
   activePlayerName: string;

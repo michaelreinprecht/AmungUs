@@ -1,6 +1,6 @@
 "use client";
 
-import Lobby from "@/Components/Lobby";
+import Lobby from "@/Components/menu/Lobby";
 
 type LobbyPageProps = {
   params: {
