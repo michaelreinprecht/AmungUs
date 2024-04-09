@@ -32,12 +32,11 @@ public class PlayerInfoController {
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
             // Update the player position in the lobby or add it if it's a new player
-            lobby.updatePlayerPosition(playerInfo);
+            lobby.updatePlayerInfo(playerInfo);
 
             // Send the updated player positions to all players
             return lobby.getPlayerInfos();
         } else {
-            // Should only be called if backend cannot find the lobbyCode and fails to create a new lobby
             return null;
         }
     }
@@ -55,7 +54,6 @@ public class PlayerInfoController {
             }
             return playerNames;
         } else {
-            // Should only be called if backend cannot find the lobbyCode and fails to create a new lobby
             return null;
         }
     }
