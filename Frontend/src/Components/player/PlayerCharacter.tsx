@@ -2,7 +2,6 @@ import React from "react";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { Text } from "@react-three/drei";
 
-
 interface PlayerCharacterProps {
   activePlayerName: string;
   scale: number;
@@ -16,7 +15,12 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   bounds,
   lobbyCode,
 }) => {
-  const { playerPositions, meshRef, colorMap } = usePlayerCharacter(activePlayerName, scale, bounds, lobbyCode);
+  const { playerPositions, meshRef, colorMap } = usePlayerCharacter(
+    activePlayerName,
+    scale,
+    bounds,
+    lobbyCode
+  );
 
   return (
     <>
