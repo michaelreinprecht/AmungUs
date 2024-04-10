@@ -2,12 +2,11 @@ package com.example.messagingstompwebsocket.lobby;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 @Controller
@@ -33,5 +32,15 @@ public class LobbyController {
     @ResponseBody
     public Lobby getLobby(@PathVariable String lobbyCode) {
         return lobbyService.getLobby(lobbyCode);
+    }
+
+    @PostMapping("/api/lobby/createLobby")
+    @ResponseBody
+    public void createLobby(@RequestBody Map<String, Object> requestBody) {
+        String lobbyCode = (String) requestBody.get("lobbyCode");
+        Integer maxPlayerCount = (Integer) requestBody.get("maxPlayerCount");
+        boolean isPrivate = (boolean) requestBody.get("isPrivate");
+
+        lobbyService.createLobby(lobbyCode, maxPlayerCount, isPrivate);
     }
 }
