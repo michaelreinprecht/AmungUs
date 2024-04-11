@@ -28,7 +28,7 @@ export default function PickNameScene({
 
   return (
     <>
-      <Theme appearance="light">
+      <Theme appearance="dark">
         <Container size="1">
           <div className="flex flex-col items-center pb-4">
             <img src="/amongus-logo.png" alt="Bildbeschreibung" />
