@@ -1,11 +1,14 @@
 "use client";
 
+import { redirect } from "next/navigation";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CreateLobbyPage() {
-  const [lobbyCode, setLobbyCode] = useState("1");
-  const [maxPlayerCount, setMaxPlayerCount] = useState(1);
+  const [lobbyCode, setLobbyCode] = useState("");
+  const [maxPlayerCount, setMaxPlayerCount] = useState(4);
   const [isPrivate, setIsPrivate] = useState(false);
+  const router = useRouter();
 
   async function createLobby(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); // Prevent the default form submission behavior
@@ -18,28 +21,19 @@ export default function CreateLobbyPage() {
       isPrivate: isPrivate,
     };
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to create lobby");
-      }
-
-      // Lobby created successfully
-      console.log("Lobby created successfully");
-
-      // You may want to do something with the response data if any
-      // For example, you can access response.json() to get JSON data from the response
-    } catch (error) {
-      console.error("Error creating lobby:", error);
-      // Handle errors here
+    if (!response.ok) {
+      throw new Error("Failed to create lobby");
     }
+    // Lobby created successfully
+    router.push(`/lobby/${lobbyCode}`);
   }
 
   return (
@@ -74,6 +68,8 @@ export default function CreateLobbyPage() {
               type="number"
               id="maxPlayerCount"
               name="maxPlayerCount"
+              min={4}
+              max={10}
               value={maxPlayerCount}
               onChange={(e) => setMaxPlayerCount(parseInt(e.target.value))}
               className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
