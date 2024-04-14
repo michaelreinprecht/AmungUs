@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "./player/PlayerCharacter";
+import KillUI from "./KillUI";
 
 type GameProps = {
   activePlayerName: string;
@@ -17,6 +18,11 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     maxX: 50, // Maximum x-coordinate
     minY: -35, // Minimum y-coordinate
     maxY: 35, // Maximum y-coordinate
+  };
+
+  const handleKill = () => {
+    // Handle click logic here
+    console.log("Kill button clicked");
   };
 
   return (
@@ -50,6 +56,9 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           lobbyCode={lobbyCode}
         />
       </Canvas>
+
+      {/* Kill UI */}
+      <KillUI onClick={handleKill} />
     </div>
   );
 }
