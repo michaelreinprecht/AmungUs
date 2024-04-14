@@ -4,6 +4,8 @@ import Background from "./Background";
 import PlayerCharacter from "./player/PlayerCharacter";
 import KillUI from "./KillUI";
 import { usePlayerCharacter } from "./player/hooks/usePlayerCharacter";
+import { PlayerPosition } from "./player/types";
+import { useStompClient } from "react-stomp-hooks";
 
 type GameProps = {
   activePlayerName: string;
@@ -13,6 +15,14 @@ type GameProps = {
 export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
+  const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([ 
+    {
+    playerName: activePlayerName,
+    playerPositionX: (Math.random() - 0.5) * 20,
+    playerPositionY: (Math.random() - 0.5) * 20,
+    alive: true,}]);
+
+  const stompClient = useStompClient();
 
   // Bounds that match the background
   const bounds = {
@@ -25,9 +35,29 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const handleKill = () => {
     console.log("Kill button clicked");
     console.log(nearestPlayer);
-    //killPlayer(nearestPlayer); // Call the killPlayer function
+    const newPlayerPositions = playerPositions.map((player) =>
+      player.playerName === nearestPlayer
+        ? { ...player, alive: false }
+        : player
+    );
+
+    console.log(newPlayerPositions);
+    setPlayerPositions(newPlayerPositions);
+    const nearestPlayerPos = newPlayerPositions.filter(player => player.playerName === nearestPlayer)[0];
+    nearestPlayerPos.alive = false;
+    updatePlayerPosition(nearestPlayerPos);
+    
+
   }
 
+  function updatePlayerPosition(playerPos: PlayerPosition) {
+    if (stompClient) {
+      stompClient.publish({
+        destination: `/app/${lobbyCode}/playerInfoReceiver`,
+        body: JSON.stringify(playerPos),
+      });
+    }
+  }
   
 
   return (
@@ -62,6 +92,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           onNearestPlayerChange={(playerName: string) =>
             setNearestPlayer(playerName)
           }
+          playerPositions={playerPositions}
+          setPlayerPositions={setPlayerPositions}
         />
          
       </Canvas>

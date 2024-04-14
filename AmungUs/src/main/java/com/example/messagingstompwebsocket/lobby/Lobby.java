@@ -43,8 +43,10 @@ public class Lobby {
         for (PlayerInfo existingPlayer : playerInfos) {
             if (existingPlayer.getPlayerName().equals(playerInfo.getPlayerName())) {
                 // Update the player's position
+
                 existingPlayer.setPlayerPositionX(playerInfo.getPlayerPositionX());
                 existingPlayer.setPlayerPositionY(playerInfo.getPlayerPositionY());
+                existingPlayer.setAlive(playerInfo.isAlive());
                 existingPlayer.setLastHeartbeat(playerInfo.getLastHeartbeat()); //Update the heartbeat once player info is updated
                 playerExists = true;
                 break;

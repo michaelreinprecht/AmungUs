@@ -4,35 +4,25 @@ import { TextureLoader } from "three";
 import * as THREE from "three";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { unsubscribe } from "diagnostics_channel";
+import { PlayerPosition } from "../types";
 
-export type PlayerPosition = {
-  playerName: string;
-  playerPositionX: number;
-  playerPositionY: number;
-  alive: boolean;
+type usePlayerCharacterProps = {
+  activePlayerName: string;
+  scale: number;
+  bounds: { minX: number; maxX: number; minY: number; maxY: number };
+  lobbyCode: string;
+  onNearestPlayerChange: (playerName: string) => void;
+  playerPositions: PlayerPosition[],
+  setPlayerPositions: (playerPositions: PlayerPosition[]) => void
 };
 
+export function usePlayerCharacter( {activePlayerName, scale, bounds, lobbyCode, onNearestPlayerChange, playerPositions, setPlayerPositions}: usePlayerCharacterProps
 
-
-export function usePlayerCharacter(
-  activePlayerName: string,
-  scale: number,
-  bounds: { minX: number; maxX: number; minY: number; maxY: number },
-  lobbyCode: string,
-  onNearestPlayerChange: (playerName: string) => void // New property
 ) {
+
+
+
   const stompClient = useStompClient();
-
-  const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([
-    {
-      playerName: activePlayerName,
-      playerPositionX: (Math.random() - 0.5) * 20,
-      playerPositionY: (Math.random() - 0.5) * 20,
-      alive: true,
-    },
-  ]);
-
-  
 
   const colorMap = useLoader(TextureLoader, "/rick.png");
   const meshRef = useRef<THREE.Mesh>(null);
@@ -55,6 +45,15 @@ export function usePlayerCharacter(
   
 
   useEffect(() => {
+
+    setPlayerPositions([
+      {
+        playerName: activePlayerName,
+        playerPositionX: (Math.random() - 0.5) * 20,
+        playerPositionY: (Math.random() - 0.5) * 20,
+        alive: true,
+      },]);
+
     //Initial position update of the player
     updatePlayerPosition(getPositionOfCurrentPlayer());
     //Heartbeat to keep the connection alive
@@ -155,6 +154,7 @@ export function usePlayerCharacter(
               playerPositionX: newPositionX,
               playerPositionY: newPositionY,
               alive: playerPosition.alive,
+              
             };
 
             updatePlayerPosition(updatedPlayerPosition);
@@ -209,13 +209,6 @@ const calculateNearestPlayer = (playerPositions: PlayerPosition[]) => {
   return nearestPlayer;
 };
 
-function killPlayer(playerName: string) {
-  setPlayerPositions((prevPositions) =>
-    prevPositions.map((pos) =>
-      pos.playerName === playerName ? { ...pos, alive: false } : pos
-    )
-  );
-}
 
   
 
@@ -233,5 +226,5 @@ function killPlayer(playerName: string) {
     setPlayerPositions(parsedMessage);
   });
 
-  return { playerPositions, meshRef, colorMap, killPlayer };
+  return { playerPositions, meshRef, colorMap};
 }
