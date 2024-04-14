@@ -1,8 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "./player/PlayerCharacter";
 import KillUI from "./KillUI";
+import { usePlayerCharacter } from "./player/hooks/usePlayerCharacter";
 
 type GameProps = {
   activePlayerName: string;
@@ -11,6 +12,7 @@ type GameProps = {
 
 export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
+  const [nearestPlayer, setNearestPlayer] = useState<string>("");
 
   // Bounds that match the background
   const bounds = {
@@ -21,9 +23,12 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   };
 
   const handleKill = () => {
-    // Handle click logic here
     console.log("Kill button clicked");
-  };
+    console.log(nearestPlayer);
+    //killPlayer(nearestPlayer); // Call the killPlayer function
+  }
+
+  
 
   return (
     <div ref={canvasRef} className="w-screen h-screen">
@@ -54,11 +59,19 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           scale={5}
           bounds={bounds}
           lobbyCode={lobbyCode}
+          onNearestPlayerChange={(playerName: string) =>
+            setNearestPlayer(playerName)
+          }
         />
+         
       </Canvas>
-
+      
+       
       {/* Kill UI */}
       <KillUI onClick={handleKill} />
+      
+
+     
     </div>
   );
 }

@@ -7,6 +7,7 @@ interface PlayerCharacterProps {
   scale: number;
   bounds: { minX: number; maxX: number; minY: number; maxY: number };
   lobbyCode: string;
+  onNearestPlayerChange: (playerName: string) => void;
 }
 
 const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
@@ -14,12 +15,14 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   scale,
   bounds,
   lobbyCode,
+  onNearestPlayerChange,
 }) => {
   const { playerPositions, meshRef, colorMap } = usePlayerCharacter(
     activePlayerName,
     scale,
     bounds,
-    lobbyCode
+    lobbyCode,
+    onNearestPlayerChange
   );
 
   return (
