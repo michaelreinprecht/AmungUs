@@ -3,6 +3,7 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
+import { unsubscribe } from "diagnostics_channel";
 
 export type PlayerPosition = {
   playerName: string;
@@ -21,6 +22,7 @@ export function usePlayerCharacter(
   onNearestPlayerChange: (playerName: string) => void // New property
 ) {
   const stompClient = useStompClient();
+
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([
     {
       playerName: activePlayerName,
@@ -54,7 +56,15 @@ export function usePlayerCharacter(
 
   useEffect(() => {
     //Initial position update of the player
-    updatePlayerPosition(playerPositions[0]);
+    updatePlayerPosition(getPositionOfCurrentPlayer());
+    //Heartbeat to keep the connection alive
+    const heartbeatIntervall = setInterval(() => {
+      /*
+      sendHeartbeat(lobbyCode);
+      */
+      //updatePlayerPosition(getPositionOfCurrentPlayer());
+      sendHeartbeat(activePlayerName);
+    }, 3000);
 
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
@@ -100,8 +110,17 @@ export function usePlayerCharacter(
     window.addEventListener("keyup", handleKeyUp);
 
     return () => {
+      // Remove event listeners on component unmount
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+
+      // Unsubscribe from websocket on component unmount
+      if (stompClient) {
+        stompClient.unsubscribe(`/lobby/${lobbyCode}/playerInfo`);
+      }
+
+      // Clear the heartbeat intervall
+      clearInterval(heartbeatIntervall);
     };
   }, []);
 
@@ -110,9 +129,7 @@ export function usePlayerCharacter(
       const speed = 30 * delta;
       const { forward, backward, left, right } = movement;
 
-      const playerPosition = playerPositions.find(
-        (pos) => pos.playerName === activePlayerName
-      );
+      const playerPosition = getPositionOfCurrentPlayer();
 
       if (playerPosition) {
         let newPositionX = playerPosition.playerPositionX;
@@ -148,6 +165,13 @@ export function usePlayerCharacter(
       }
     }
   });
+
+  function getPositionOfCurrentPlayer() {
+    const playerPosition = playerPositions.find(
+      (pos) => pos.playerName === activePlayerName
+    );
+    return playerPosition;
+  }
 
   function updatePlayerPosition(playerPos: any) {
     if (stompClient) {
@@ -194,6 +218,15 @@ function killPlayer(playerName: string) {
 }
 
   
+
+  function sendHeartbeat(playerName: string) {
+    if (stompClient) {
+      stompClient.publish({
+        destination: `/app/${lobbyCode}/heartbeatReceiver`,
+        body: playerName,
+      });
+    }
+  }
 
   useSubscription(`/lobby/${lobbyCode}/playerInfo`, (message) => {
     const parsedMessage = JSON.parse(message.body);
