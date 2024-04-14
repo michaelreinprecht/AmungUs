@@ -58,21 +58,6 @@ public class Lobby {
         }
     }
 
-    private void removePlayerInfo(PlayerInfo playerInfo) {
-        Iterator<PlayerInfo> iterator = playerInfos.iterator();
-        while (iterator.hasNext()) {
-            PlayerInfo currentPlayerInfo = iterator.next();
-            if (currentPlayerInfo.equals(playerInfo)) {
-                iterator.remove(); // Safely remove the current playerInfo
-                playerCount--;
-                return; // Exit the method after successful removal
-            }
-        }
-        // If the playerInfo is not found in the list
-        System.err.println("Warning: PlayerInfo not found in the list.");
-    }
-
-
     public void startHeartbeatChecking() {
         if (executor.isShutdown()) {
             executor = Executors.newSingleThreadScheduledExecutor(); // Reinitialize the executor if it's shutdown
@@ -98,6 +83,7 @@ public class Lobby {
                 System.out.println("Now: " + now.toString());
                 if (lastHeartbeat != null && Duration.between(lastHeartbeat, now).getSeconds() > 10) {
                     System.out.println("Player " + playerInfo.getPlayerName() + " has lost heartbeat");
+                    playerCount--;
                     iterator.remove(); // Safely remove the playerInfo from the list
                     if (playerInfos.isEmpty()) {
                         notifyEmptyListener();
