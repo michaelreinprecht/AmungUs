@@ -3,14 +3,15 @@ package com.example.messagingstompwebsocket.player;
 import com.example.messagingstompwebsocket.lobby.Lobby;
 import com.example.messagingstompwebsocket.lobby.LobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -24,9 +25,14 @@ public class PlayerInfoController {
     @MessageMapping("/{lobbyCode}/playerInfoReceiver")
     @SendTo("/lobby/{lobbyCode}/playerInfo")
     public List<PlayerInfo> playerPositions(@DestinationVariable String lobbyCode, PlayerInfo playerInfo) throws Exception {
+        //Updating players heartbeat every time he sends a signal,
+        //TODO: send this signal not only if player moves but at least every 5 ish seconds!
+        playerInfo.setLastHeartbeat(Instant.now());
+
         System.out.println("PlayerInfo received for lobby code: " + lobbyCode);
-        System.out.println("PlayerInfo: " + playerInfo.toString());
+        System.out.println("PlayerInfo: " + playerInfo);
         System.out.println();
+
 
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
@@ -56,5 +62,19 @@ public class PlayerInfoController {
         } else {
             return null;
         }
+    }
+
+    // POST mapping to receive player heartbeats
+    @PostMapping("/api/lobby/{lobbyCode}/heartbeat")
+    public ResponseEntity<String> receiveHeartbeat(@PathVariable String lobbyCode, @RequestBody String playerName) {
+        // Update the last received heartbeat time for the player
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        List<PlayerInfo> playerInfos = lobby.getPlayerInfos();
+        for (PlayerInfo info : playerInfos) {
+            if (info.getPlayerName().equals(playerName)) {
+                info.setLastHeartbeat(Instant.now());
+            }
+        }
+        return ResponseEntity.ok().build();
     }
 }
