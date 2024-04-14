@@ -25,18 +25,15 @@ public class PlayerInfoController {
     @MessageMapping("/{lobbyCode}/playerInfoReceiver")
     @SendTo("/lobby/{lobbyCode}/playerInfo")
     public List<PlayerInfo> playerPositions(@DestinationVariable String lobbyCode, PlayerInfo playerInfo) throws Exception {
-        //Updating players heartbeat every time he sends a signal,
-        //TODO: send this signal not only if player moves but at least every 5 ish seconds!
-        playerInfo.setLastHeartbeat(Instant.now());
-
-        System.out.println("PlayerInfo received for lobby code: " + lobbyCode);
-        System.out.println("PlayerInfo: " + playerInfo);
-        System.out.println();
-
-
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
+            //Updating players heartbeat every time he sends a signal,
+            //TODO: send this signal not only if player moves but at least every 5 ish seconds!
+            System.out.println("PlayerInfo received for lobby code: " + lobbyCode);
+            System.out.println("PlayerInfo: " + playerInfo);
+            System.out.println();
+
             // Update the player position in the lobby or add it if it's a new player
             lobby.updatePlayerInfo(playerInfo);
 

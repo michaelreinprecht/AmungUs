@@ -12,8 +12,7 @@ public class LobbyService implements Lobby.LobbyEmptyListener {
     private Map<String, Lobby> lobbies = new HashMap<>();
 
     public void createLobby(String lobbyCode, int maxPlayerCount, boolean isPrivate) {
-        System.out.println("Creating lobby: " + lobbyCode);
-        if (!lobbies.containsKey(lobbyCode)) {
+        if (!isLobbyCodeUsed(lobbyCode)) {
             Lobby lobby = new Lobby();
             lobby.setLobbyCode(lobbyCode);
             lobby.setMaxPlayerCount(maxPlayerCount);
@@ -34,8 +33,7 @@ public class LobbyService implements Lobby.LobbyEmptyListener {
 
     public Lobby getLobby(String lobbyCode) {
         if (lobbies.get(lobbyCode) == null) {
-            createLobby(lobbyCode, 10, false); //TODO: only call when creating lobby in create lobby page
-            return lobbies.get(lobbyCode);
+            return null;
         }
         return lobbies.get(lobbyCode);
     }
@@ -48,5 +46,9 @@ public class LobbyService implements Lobby.LobbyEmptyListener {
     public void onLobbyEmpty(String lobbyCode) {
         System.out.println("Removing lobby: " + lobbyCode);
         lobbies.remove(lobbyCode);
+    }
+
+    public boolean isLobbyCodeUsed(String lobbyCode) {
+        return lobbies.containsKey(lobbyCode);
     }
 }

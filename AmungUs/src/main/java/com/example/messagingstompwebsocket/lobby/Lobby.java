@@ -23,6 +23,7 @@ public class Lobby {
     private int playerCount;
     private int maxPlayerCount;
     private boolean isPrivate;
+
     @JsonIgnore
     private transient ScheduledExecutorService executor; // Scheduled executor service for heartbeat checking task
     @JsonIgnore
@@ -44,7 +45,7 @@ public class Lobby {
                 // Update the player's position
                 existingPlayer.setPlayerPositionX(playerInfo.getPlayerPositionX());
                 existingPlayer.setPlayerPositionY(playerInfo.getPlayerPositionY());
-                existingPlayer.setLastHeartbeat(playerInfo.getLastHeartbeat());
+                existingPlayer.setLastHeartbeat(Instant.now()); //Update the heartbeat once player info is updated
                 playerExists = true;
                 break;
             }
@@ -99,7 +100,6 @@ public class Lobby {
                     System.out.println("Player " + playerInfo.getPlayerName() + " has lost heartbeat");
                     iterator.remove(); // Safely remove the playerInfo from the list
                     if (playerInfos.isEmpty()) {
-                        System.out.println("Player " + playerInfo.getPlayerName() + " has lost heartbeat");
                         notifyEmptyListener();
                     }
                 }
@@ -113,6 +113,7 @@ public class Lobby {
     private void notifyEmptyListener() {
         if (emptyListener != null) {
             System.out.println("Notifying empty listener");
+            stopHeartbeatChecking();
             emptyListener.onLobbyEmpty(lobbyCode);
         }
     }
