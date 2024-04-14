@@ -1,66 +1,21 @@
-"use client";
-
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
+import useCreateLobbyScene from "./hooks/useCreateLobbyScene";
 
 export default function CreateLobbyScene() {
-  const [lobbyCode, setLobbyCode] = useState("");
-  const [maxPlayerCount, setMaxPlayerCount] = useState(4);
-  const [isPrivate, setIsPrivate] = useState(false);
-  const router = useRouter();
-
-  async function createLobby(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault(); // Prevent the default form submission behavior
-
-    console.log("Creating lobby");
-    const url = "http://localhost:8080/api/lobby/createLobby";
-    const requestBody = {
-      maxPlayerCount: maxPlayerCount,
-      isPrivate: isPrivate,
-    };
-    try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to create lobby");
-    }
-
-    const data = await response.json();
-    setLobbyCode(data.lobbyCode);
-    // Lobby created successfully
-    router.push(`/lobby/${data.lobbyCode}`);
-} catch (error) {
-    console.error("Error creating lobby:", error);
-}
-  }
+  const {
+    lobbyCode,
+    maxPlayerCount,
+    isPrivate,
+    setMaxPlayerCount,
+    setIsPrivate,
+    createLobby,
+  } = useCreateLobbyScene();
 
   return (
     <div className="w-screen h-screen bg-gray-800 flex items-center justify-center">
       <div className="mx-auto bg-gray-900 p-6 rounded-lg shadow-lg w-1/4">
         <h1 className="text-3xl font-bold text-white mb-4">Create Lobby</h1>
         <form onSubmit={createLobby}>
-          <div className="mb-4">
-            <label
-              htmlFor="lobbyName"
-              className="block text-sm font-medium text-white"
-            >
-              Lobby Name:
-            </label>
-            <input
-              type="text"
-              id="lobbyName"
-              name="lobbyName"
-              value={lobbyCode}
-              onChange={(e) => setLobbyCode(e.target.value)}
-              className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
           <div className="mb-4">
             <label
               htmlFor="maxPlayerCount"
