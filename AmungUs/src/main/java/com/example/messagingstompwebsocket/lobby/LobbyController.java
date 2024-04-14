@@ -1,12 +1,11 @@
 package com.example.messagingstompwebsocket.lobby;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -36,11 +35,36 @@ public class LobbyController {
 
     @PostMapping("/api/lobby/createLobby")
     @ResponseBody
-    public void createLobby(@RequestBody Map<String, Object> requestBody) {
-        String lobbyCode = (String) requestBody.get("lobbyCode");
+    public ResponseEntity<Map<String, String>> createLobby(@RequestBody Map<String, Object> requestBody) {
         Integer maxPlayerCount = (Integer) requestBody.get("maxPlayerCount");
         boolean isPrivate = (boolean) requestBody.get("isPrivate");
 
+        // Generate a random lobby code
+        String lobbyCode = generateRandomCode();
+        // Make sure the code is unique
+        while (lobbyService.isLobbyCodeUsed(lobbyCode)) {
+            lobbyCode = generateRandomCode();
+        }
+
         lobbyService.createLobby(lobbyCode, maxPlayerCount, isPrivate);
+
+        // Return the generated lobby code as a JSON object
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("lobbyCode", lobbyCode);
+        return ResponseEntity.ok(responseBody);
+    }
+
+
+
+    private String generateRandomCode() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        int codeLength = 8;
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(codeLength);
+        for (int i = 0; i < codeLength; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            sb.append(characters.charAt(randomIndex));
+        }
+        return sb.toString();
     }
 }
