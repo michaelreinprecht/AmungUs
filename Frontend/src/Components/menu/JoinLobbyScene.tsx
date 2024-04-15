@@ -1,16 +1,37 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { use } from "react";
+import { useState } from "react"; // Changed from 'use' to 'useState'
 
 export default function JoinLobbyScene() {
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState(""); // State to hold error message
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const lobbyCode = formData.get("lobbyCode") as string;
-    router.push(`/lobby/${lobbyCode}`);
+    if (await checkIfLobbyExists(lobbyCode)) {
+      router.push(`/lobby/${lobbyCode}`);
+    }
+  }
+
+  async function checkIfLobbyExists(lobbyCode: string) {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/lobby/${lobbyCode}`
+      );
+      if (!response.ok) {
+        throw Error("Failed to fetch lobby data");
+      }
+      const lobbyData = await response.json();
+      if (lobbyData.lobbyCode === lobbyCode) {
+        return true;
+      }
+    } catch (error) {
+      setErrorMessage("Lobby could not be found."); // Set error message
+      return false;
+    }
   }
 
   return (
@@ -32,6 +53,8 @@ export default function JoinLobbyScene() {
               className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               required
             />
+            <div className="text-red-500 text-sm mt-1">{errorMessage}</div>{" "}
+            {/* Display error message */}
           </div>
           <button
             type="submit"
