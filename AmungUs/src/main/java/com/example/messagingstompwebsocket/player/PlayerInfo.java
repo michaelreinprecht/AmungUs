@@ -15,6 +15,7 @@ public class PlayerInfo {
     private float playerPositionX;
     private float playerPositionY;
     private boolean alive;
+    private String playerRole;
 
     @JsonIgnore
     private Instant lastHeartbeat;

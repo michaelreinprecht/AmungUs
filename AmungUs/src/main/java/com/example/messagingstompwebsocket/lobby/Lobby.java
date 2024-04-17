@@ -47,7 +47,9 @@ public class Lobby {
                 existingPlayer.setPlayerPositionX(playerInfo.getPlayerPositionX());
                 existingPlayer.setPlayerPositionY(playerInfo.getPlayerPositionY());
                 existingPlayer.setAlive(playerInfo.isAlive());
+                //existingPlayer.setPlayerRole(playerInfo.getPlayerRole()); //Ändert sich eigentle au ned während dam game
                 existingPlayer.setLastHeartbeat(playerInfo.getLastHeartbeat()); //Update the heartbeat once player info is updated
+                System.out.println("ExistingPlayer" + existingPlayer);
                 playerExists = true;
                 break;
             }

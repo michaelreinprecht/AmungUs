@@ -3,7 +3,6 @@ import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "./player/PlayerCharacter";
 import KillUI from "./KillUI";
-import { usePlayerCharacter } from "./player/hooks/usePlayerCharacter";
 import { PlayerPosition } from "./player/types";
 import { useStompClient } from "react-stomp-hooks";
 
@@ -20,7 +19,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     playerName: activePlayerName,
     playerPositionX: (Math.random() - 0.5) * 20,
     playerPositionY: (Math.random() - 0.5) * 20,
-    alive: true,}]);
+    alive: true,
+    playerRole: Math.random() < 0.5 ? "killer" : "crewmate",}]);
 
   const stompClient = useStompClient();
 
@@ -100,10 +100,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       
        
       {/* Kill UI */}
-      <KillUI onClick={handleKill} />
+      {playerPositions.find(player => player.playerName === activePlayerName && player.playerRole === "killer") && <KillUI onClick={handleKill} />}
       
-
-     
     </div>
   );
 }

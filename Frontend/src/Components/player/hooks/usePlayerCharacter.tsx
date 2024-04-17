@@ -52,10 +52,13 @@ export function usePlayerCharacter( {activePlayerName, scale, bounds, lobbyCode,
         playerPositionX: (Math.random() - 0.5) * 20,
         playerPositionY: (Math.random() - 0.5) * 20,
         alive: true,
+        playerRole: Math.random() < 0.5 ? "killer" : "crewmate",
       },]);
+    
 
     //Initial position update of the player
     updatePlayerPosition(getPositionOfCurrentPlayer());
+    
     //Heartbeat to keep the connection alive
     const heartbeatIntervall = setInterval(() => {
       /*
@@ -130,6 +133,7 @@ export function usePlayerCharacter( {activePlayerName, scale, bounds, lobbyCode,
 
       const playerPosition = getPositionOfCurrentPlayer();
 
+
       if (playerPosition) {
         let newPositionX = playerPosition.playerPositionX;
         let newPositionY = playerPosition.playerPositionY;
@@ -154,10 +158,11 @@ export function usePlayerCharacter( {activePlayerName, scale, bounds, lobbyCode,
               playerPositionX: newPositionX,
               playerPositionY: newPositionY,
               alive: playerPosition.alive,
-              
+              playerRole: playerPosition.playerRole,
             };
-
+            
             updatePlayerPosition(updatedPlayerPosition);
+            
           }
         }
       } else {
