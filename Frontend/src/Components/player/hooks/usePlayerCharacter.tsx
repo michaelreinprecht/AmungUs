@@ -12,16 +12,19 @@ type usePlayerCharacterProps = {
   bounds: { minX: number; maxX: number; minY: number; maxY: number };
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
-  playerPositions: PlayerPosition[],
-  setPlayerPositions: (playerPositions: PlayerPosition[]) => void
+  playerPositions: PlayerPosition[];
+  setPlayerPositions: (playerPositions: PlayerPosition[]) => void;
 };
 
-export function usePlayerCharacter( {activePlayerName, scale, bounds, lobbyCode, onNearestPlayerChange, playerPositions, setPlayerPositions}: usePlayerCharacterProps
-
-) {
-
-
-
+export function usePlayerCharacter({
+  activePlayerName,
+  scale,
+  bounds,
+  lobbyCode,
+  onNearestPlayerChange,
+  playerPositions,
+  setPlayerPositions,
+}: usePlayerCharacterProps) {
   const stompClient = useStompClient();
 
   const colorMap = useLoader(TextureLoader, "/rick.png");
@@ -42,17 +45,15 @@ export function usePlayerCharacter( {activePlayerName, scale, bounds, lobbyCode,
     }
   }, [playerPositions]);
 
-  
-
   useEffect(() => {
-
     setPlayerPositions([
       {
         playerName: activePlayerName,
         playerPositionX: (Math.random() - 0.5) * 20,
         playerPositionY: (Math.random() - 0.5) * 20,
         alive: true,
-      },]);
+      },
+    ]);
 
     //Initial position update of the player
     updatePlayerPosition(getPositionOfCurrentPlayer());
@@ -83,8 +84,6 @@ export function usePlayerCharacter( {activePlayerName, scale, bounds, lobbyCode,
           break;
       }
     };
-
-  
 
     const handleKeyUp = (event: KeyboardEvent) => {
       switch (event.key) {
@@ -154,7 +153,6 @@ export function usePlayerCharacter( {activePlayerName, scale, bounds, lobbyCode,
               playerPositionX: newPositionX,
               playerPositionY: newPositionY,
               alive: playerPosition.alive,
-              
             };
 
             updatePlayerPosition(updatedPlayerPosition);
@@ -175,49 +173,60 @@ export function usePlayerCharacter( {activePlayerName, scale, bounds, lobbyCode,
 
   function updatePlayerPosition(playerPos: any) {
     if (stompClient) {
-      stompClient.publish({
-        destination: `/app/${lobbyCode}/playerInfoReceiver`,
-        body: JSON.stringify(playerPos),
-      });
-    }
-  }
-
-  // Helper function to calculate the nearest player
-const calculateNearestPlayer = (playerPositions: PlayerPosition[]) => {
-  const currentPlayerPosition = playerPositions.find(
-    (pos) => pos.playerName === activePlayerName
-  );
-
-  if (!currentPlayerPosition) return null;
-
-  let nearestPlayer: string | null = null;
-  let nearestDistanceSquared = Infinity;
-
-  for (const pos of playerPositions) {
-    if (pos.playerName !== activePlayerName) {
-      const distanceSquared =
-        Math.pow(pos.playerPositionX - currentPlayerPosition.playerPositionX, 2) +
-        Math.pow(pos.playerPositionY - currentPlayerPosition.playerPositionY, 2);
-
-      if (distanceSquared < nearestDistanceSquared) {
-        nearestDistanceSquared = distanceSquared;
-        nearestPlayer = pos.playerName;
+      try {
+        stompClient.publish({
+          destination: `/app/${lobbyCode}/playerInfoReceiver`,
+          body: JSON.stringify(playerPos),
+        });
+      } catch (error) {
+        alert("Lost connection to server!");
       }
     }
   }
 
-  return nearestPlayer;
-};
+  // Helper function to calculate the nearest player
+  const calculateNearestPlayer = (playerPositions: PlayerPosition[]) => {
+    const currentPlayerPosition = playerPositions.find(
+      (pos) => pos.playerName === activePlayerName
+    );
 
+    if (!currentPlayerPosition) return null;
 
-  
+    let nearestPlayer: string | null = null;
+    let nearestDistanceSquared = Infinity;
+
+    for (const pos of playerPositions) {
+      if (pos.playerName !== activePlayerName) {
+        const distanceSquared =
+          Math.pow(
+            pos.playerPositionX - currentPlayerPosition.playerPositionX,
+            2
+          ) +
+          Math.pow(
+            pos.playerPositionY - currentPlayerPosition.playerPositionY,
+            2
+          );
+
+        if (distanceSquared < nearestDistanceSquared) {
+          nearestDistanceSquared = distanceSquared;
+          nearestPlayer = pos.playerName;
+        }
+      }
+    }
+
+    return nearestPlayer;
+  };
 
   function sendHeartbeat(playerName: string) {
-    if (stompClient) {
-      stompClient.publish({
-        destination: `/app/${lobbyCode}/heartbeatReceiver`,
-        body: playerName,
-      });
+    try {
+      if (stompClient) {
+        stompClient.publish({
+          destination: `/app/${lobbyCode}/heartbeatReceiver`,
+          body: playerName,
+        });
+      }
+    } catch (error) {
+      alert("Lost connection to server!");
     }
   }
 
@@ -226,5 +235,5 @@ const calculateNearestPlayer = (playerPositions: PlayerPosition[]) => {
     setPlayerPositions(parsedMessage);
   });
 
-  return { playerPositions, meshRef, colorMap};
+  return { playerPositions, meshRef, colorMap };
 }
