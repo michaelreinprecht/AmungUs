@@ -52,11 +52,13 @@ export function usePlayerCharacter({
         playerPositionX: (Math.random() - 0.5) * 20,
         playerPositionY: (Math.random() - 0.5) * 20,
         alive: true,
+        playerRole: Math.random() < 0.5 ? "killer" : "crewmate",
       },
     ]);
 
     //Initial position update of the player
     updatePlayerPosition(getPositionOfCurrentPlayer());
+
     //Heartbeat to keep the connection alive
     const heartbeatIntervall = setInterval(() => {
       /*
@@ -153,6 +155,7 @@ export function usePlayerCharacter({
               playerPositionX: newPositionX,
               playerPositionY: newPositionY,
               alive: playerPosition.alive,
+              playerRole: playerPosition.playerRole,
             };
 
             updatePlayerPosition(updatedPlayerPosition);
