@@ -1,7 +1,5 @@
-import CreateJoinMenu from "@/Components/menu/CreateJoinMenu";
+import MainMenuScene from "@/Components/menu/MainMenuScene";
 
 export default function LobbySelectPage() {
-    return (
-      <CreateJoinMenu/>
-    );
-  }
+  return <MainMenuScene />;
+}
