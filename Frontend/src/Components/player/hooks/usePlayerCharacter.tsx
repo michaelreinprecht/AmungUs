@@ -7,6 +7,7 @@ import { unsubscribe } from "diagnostics_channel";
 import { PlayerPosition } from "../types";
 import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
 import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition } from "../utilityFunctions/playerPositionHandler";
+import { calculateNearestPlayer } from "../utilityFunctions/calculateNearestPlayer";
 
 type usePlayerCharacterProps = {
   activePlayerName: string;
@@ -41,7 +42,7 @@ export function usePlayerCharacter({
 
   useEffect(() => {
     // Calculate nearest player and call onNearestPlayerChange when it changes
-    const nearestPlayer = calculateNearestPlayer(playerPositions);
+    const nearestPlayer = calculateNearestPlayer(playerPositions, activePlayerName);
     if (nearestPlayer !== null) {
       onNearestPlayerChange(nearestPlayer);
     }
@@ -63,10 +64,6 @@ export function usePlayerCharacter({
 
     //Heartbeat to keep the connection alive
     const heartbeatIntervall = setInterval(() => {
-      /*
-      sendHeartbeat(lobbyCode);
-      */
-      //updatePlayerPosition(getPositionOfCurrentPlayer());
       sendHeartbeat(activePlayerName);
     }, 3000);
 
@@ -96,56 +93,8 @@ export function usePlayerCharacter({
       if (movement.forward || movement.backward || movement.left || movement.right) {
       updatePlayerPosition(getUpdatedPlayerPosition(delta, activePlayerName, movement, bounds, scale, playerPositions));
       }
-      /*Start of logik I'm trying to repalce
-      const speed = 30 * delta;
-      const { forward, backward, left, right } = movement;
-
-      const playerPosition = getPositionOfCurrentPlayer(playerPositions, activePlayerName);
-
-      if (playerPosition) {
-        let newPositionX = playerPosition.playerPositionX;
-        let newPositionY = playerPosition.playerPositionY;
-
-        if (forward || backward || left || right) {
-          if (forward) newPositionY += speed;
-          if (backward) newPositionY -= speed;
-          if (left) newPositionX -= speed;
-          if (right) {
-            newPositionX += speed;
-          }
-
-          // Update position based on bounds
-          if (
-            newPositionX - scale / 2 >= bounds.minX &&
-            newPositionX + scale / 2 <= bounds.maxX &&
-            newPositionY - scale / 2 >= bounds.minY &&
-            newPositionY + scale / 2 <= bounds.maxY
-          ) {
-            const updatedPlayerPosition = {
-              playerName: activePlayerName,
-              playerPositionX: newPositionX,
-              playerPositionY: newPositionY,
-              alive: playerPosition.alive,
-              playerRole: playerPosition.playerRole,
-            };
-
-            updatePlayerPosition(updatedPlayerPosition);
-          }
-        }
-      } else {
-        console.log("Unable to find player position for given name");
-      }
-      //end of logic I'm trying to replace*/
     }
   });
-
-  /*
-  function getPositionOfCurrentPlayer() {
-    const playerPosition = playerPositions.find(
-      (pos) => pos.playerName === activePlayerName
-    );
-    return playerPosition;
-  }*/
 
   function updatePlayerPosition(playerPos: any) {
     if (stompClient) {
@@ -159,39 +108,6 @@ export function usePlayerCharacter({
       }
     }
   }
-
-  // Helper function to calculate the nearest player
-  const calculateNearestPlayer = (playerPositions: PlayerPosition[]) => {
-    const currentPlayerPosition = playerPositions.find(
-      (pos) => pos.playerName === activePlayerName
-    );
-
-    if (!currentPlayerPosition) return null;
-
-    let nearestPlayer: string | null = null;
-    let nearestDistanceSquared = Infinity;
-
-    for (const pos of playerPositions) {
-      if (pos.playerName !== activePlayerName) {
-        const distanceSquared =
-          Math.pow(
-            pos.playerPositionX - currentPlayerPosition.playerPositionX,
-            2
-          ) +
-          Math.pow(
-            pos.playerPositionY - currentPlayerPosition.playerPositionY,
-            2
-          );
-
-        if (distanceSquared < nearestDistanceSquared) {
-          nearestDistanceSquared = distanceSquared;
-          nearestPlayer = pos.playerName;
-        }
-      }
-    }
-
-    return nearestPlayer;
-  };
 
   function sendHeartbeat(playerName: string) {
     try {
