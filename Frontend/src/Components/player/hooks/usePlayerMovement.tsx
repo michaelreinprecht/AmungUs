@@ -2,7 +2,7 @@ import { Movement, PlayerPosition } from "@/app/types";
 import { useEffect, useState } from "react";
 import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
 import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition, setPlayerSpawnPosition } from "../utilityFunctions/playerPositionHandler";
-import { Client, useSubscription } from "react-stomp-hooks";
+import { Client, useStompClient, useSubscription } from "react-stomp-hooks";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -11,11 +11,12 @@ export function usePlayerMovement(
     scale: number,
     bounds: { minX: number; maxX: number; minY: number; maxY: number },
     playerPositions: PlayerPosition[],
-    stompClient: Client | undefined,
     lobbyCode: string,
     meshRef: React.RefObject<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>,
     setPlayerPositions: (playerPositions: PlayerPosition[]) => void
   ) {
+    const stompClient = useStompClient();
+
     const [movement, setMovement] = useState<Movement>({
       forward: false,
       backward: false,
