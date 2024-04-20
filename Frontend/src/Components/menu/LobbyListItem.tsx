@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lobby } from './LobbyList';
+import { Lobby } from './scenes/SelectLobbyScene';
 
 type LobbyListItemProps = {
     lobby: Lobby;

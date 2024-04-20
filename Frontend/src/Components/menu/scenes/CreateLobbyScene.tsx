@@ -1,5 +1,5 @@
 import React from "react";
-import useCreateLobbyScene from "./hooks/useCreateLobbyScene";
+import useCreateLobbyScene from "../hooks/useCreateLobbyScene";
 
 export default function CreateLobbyScene() {
   const {

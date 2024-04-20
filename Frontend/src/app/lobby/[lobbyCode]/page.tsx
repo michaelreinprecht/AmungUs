@@ -1,6 +1,6 @@
 "use client";
 
-import Lobby from "@/Components/menu/Lobby";
+import LobbyScene from "@/Components/lobby/scenes/LobbyScene";
 
 type LobbyPageProps = {
   params: {
@@ -9,5 +9,5 @@ type LobbyPageProps = {
 };
 
 export default function LobbyPage({ params }: LobbyPageProps) {
-  return <Lobby lobbyCode={params.lobbyCode} />;
+  return <LobbyScene lobbyCode={params.lobbyCode} />;
 }

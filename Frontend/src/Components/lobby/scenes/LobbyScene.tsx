@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { StompSessionProvider } from "react-stomp-hooks";
 import PickNameScene from "./PickNameScene";
-import Game from "../Game";
-import ChatWindow from "../Chat/ChatWindow";
+import Game from "../game/Game";
+import ChatWindow from "../chat/ChatWindow";
 
 type LobbyProps = {
   lobbyCode: string;
 };
 
-function Lobby({ lobbyCode }: LobbyProps) {
+function LobbyScene({ lobbyCode }: LobbyProps) {
   const [activePlayerName, setActivePlayerName] = useState("");
 
   return (
@@ -60,4 +60,4 @@ function Lobby({ lobbyCode }: LobbyProps) {
   );
 }
 
-export default Lobby;
+export default LobbyScene;

@@ -1,6 +1,5 @@
 import { FormEvent } from "react";
-import { usePickNameScene } from "./hooks/usePickNameScene";
-import "../../app/globals.css";
+import { usePickNameScene } from "../hooks/usePickNameScene";
 import { Theme, Container, Flex } from "@radix-ui/themes";
 import * as Avatar from "@radix-ui/react-avatar";
 

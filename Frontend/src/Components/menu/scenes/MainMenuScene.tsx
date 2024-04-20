@@ -1,4 +1,4 @@
-import MainMenuNavButton from "./MainMenuNavButton";
+import MainMenuNavButton from "../MainMenuNavButton";
 
 export default function MainMenuScene() {
   return (
@@ -7,21 +7,21 @@ export default function MainMenuScene() {
       <MainMenuNavButton
         text="Host Game"
         image="/character-logo.png"
-        link="/createLobby"
+        link="/menu/createLobby"
       />
 
       {/* Public Game Button */}
       <MainMenuNavButton
         text="Public Game"
         image="/character-logo.png"
-        link="/lobbySelect"
+        link="/menu/selectLobby"
       />
 
       {/* Private Game Button */}
       <MainMenuNavButton
         text="Join Game"
         image="/character-logo.png"
-        link="/joinLobby"
+        link="/menu/joinLobby"
       />
     </div>
   );

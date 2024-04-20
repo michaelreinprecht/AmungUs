@@ -1,4 +1,4 @@
-import MainMenuScene from "@/Components/menu/MainMenuScene";
+import MainMenuScene from "@/Components/menu/scenes/MainMenuScene";
 
 export default function LobbySelectPage() {
   return <MainMenuScene />;

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import LobbyListItem from "./LobbyListItem";
+import LobbyListItem from "../LobbyListItem";
 
 export type Lobby = {
   lobbyCode: string;
@@ -11,7 +11,7 @@ export type Lobby = {
   maxPlayerCount: number;
 };
 
-export default function LobbyList() {
+export default function SelectLobbyScene() {
   const [lobbies, setLobbies] = useState([]);
 
   useEffect(() => {
