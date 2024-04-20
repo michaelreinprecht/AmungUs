@@ -7,6 +7,7 @@ import { PlayerPosition } from "../../../app/types";
 import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
 import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition, setPlayerSpawnPosition } from "../utilityFunctions/playerPositionHandler";
 import { calculateNearestPlayer } from "../utilityFunctions/calculateNearestPlayer";
+import { usePlayerMovement } from "./usePlayerMovement";
 
 type usePlayerCharacterProps = {
   activePlayerName: string;
@@ -32,12 +33,25 @@ export function usePlayerCharacter({
   const colorMap = useLoader(TextureLoader, "/rick.png");
   const meshRef = useRef<THREE.Mesh>(null);
 
+  const {} = usePlayerMovement(
+    activePlayerName,
+    scale,
+    bounds,
+    playerPositions,
+    stompClient,
+    lobbyCode,
+    meshRef,
+    setPlayerPositions
+  );
+
+  /*
   const [movement, setMovement] = useState({
     forward: false,
     backward: false,
     left: false,
     right: false,
   });
+  */
 
   useEffect(() => {
     // Calculate nearest player and call onNearestPlayerChange once playerPositions change
@@ -48,23 +62,28 @@ export function usePlayerCharacter({
   }, [playerPositions]);
 
   useEffect(() => {
+    /*
     setPlayerSpawnPosition(setPlayerPositions, activePlayerName);
 
     //Initial position update of the player
     updatePlayerPosition(getPositionOfCurrentPlayer(playerPositions, activePlayerName));
+*/
 
     //Heartbeat to keep the connection alive
     const heartbeatIntervall = setInterval(() => {
       sendHeartbeat(activePlayerName);
     }, 3000);
 
+    /*
     const handleKeyDown = createKeyDownHandler(setMovement);
     const handleKeyUp = createKeyUpHandler(setMovement);
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+    */
 
     return () => {
+      /*
       // Remove event listeners on component unmount
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
@@ -73,12 +92,14 @@ export function usePlayerCharacter({
       if (stompClient) {
         stompClient.unsubscribe(`/lobby/${lobbyCode}/playerInfo`);
       }
+*/
 
       // Clear the heartbeat intervall
       clearInterval(heartbeatIntervall);
     };
   }, []);
 
+  /*
   useFrame((_, delta) => {
     if (meshRef.current) {
       if (movement.forward || movement.backward || movement.left || movement.right) {
@@ -86,7 +107,9 @@ export function usePlayerCharacter({
       }
     }
   });
+  */
 
+  /*
   function updatePlayerPosition(playerPos: any) {
     if (stompClient) {
       try {
@@ -99,6 +122,7 @@ export function usePlayerCharacter({
       }
     }
   }
+  */
 
   function sendHeartbeat(playerName: string) {
     try {
@@ -113,10 +137,12 @@ export function usePlayerCharacter({
     }
   }
 
+  /*
   useSubscription(`/lobby/${lobbyCode}/playerInfo`, (message) => {
     const parsedMessage = JSON.parse(message.body);
     setPlayerPositions(parsedMessage);
   });
+  */
 
   return { playerPositions, meshRef, colorMap };
 }
