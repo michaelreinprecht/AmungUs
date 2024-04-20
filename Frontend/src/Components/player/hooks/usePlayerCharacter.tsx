@@ -10,7 +10,6 @@ import { usePlayerHeartbeat } from "./usePlayerHeartbeat";
 type usePlayerCharacterProps = {
   activePlayerName: string;
   scale: number;
-  bounds: { minX: number; maxX: number; minY: number; maxY: number };
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
   playerPositions: PlayerPosition[];
@@ -20,7 +19,6 @@ type usePlayerCharacterProps = {
 export function usePlayerCharacter({
   activePlayerName,
   scale,
-  bounds,
   lobbyCode,
   onNearestPlayerChange,
   playerPositions,
@@ -32,7 +30,6 @@ export function usePlayerCharacter({
   usePlayerMovement(
     activePlayerName,
     scale,
-    bounds,
     playerPositions,
     lobbyCode,
     meshRef,

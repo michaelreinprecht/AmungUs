@@ -10,7 +10,6 @@ import { updatePlayerPosition } from "@/Components/utilityFunctions/webSocketHan
 export function usePlayerMovement(
     activePlayerName: string,
     scale: number,
-    bounds: { minX: number; maxX: number; minY: number; maxY: number },
     playerPositions: PlayerPosition[],
     lobbyCode: string,
     meshRef: React.RefObject<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>,
@@ -24,6 +23,14 @@ export function usePlayerMovement(
       left: false,
       right: false,
     });
+
+    // Bounds that match the background
+  const bounds = {
+    minX: -50, // Minimum x-coordinate
+    maxX: 50, // Maximum x-coordinate
+    minY: -35, // Minimum y-coordinate
+    maxY: 35, // Maximum y-coordinate
+  };
   
     useEffect(() => {
       setPlayerSpawnPosition(setPlayerPositions, activePlayerName);
