@@ -4,7 +4,7 @@ import { TextureLoader } from "three";
 import * as THREE from "three";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { unsubscribe } from "diagnostics_channel";
-import { PlayerPosition } from "../types";
+import { PlayerPosition } from "../../../app/types";
 import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
 import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition } from "../utilityFunctions/playerPositionHandler";
 import { calculateNearestPlayer } from "../utilityFunctions/calculateNearestPlayer";

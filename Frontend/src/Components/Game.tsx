@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "./player/PlayerCharacter";
 import KillUI from "./KillUI";
-import { PlayerPosition } from "./player/types";
+import { PlayerPosition } from "../app/types";
 import { useStompClient } from "react-stomp-hooks";
 
 type GameProps = {

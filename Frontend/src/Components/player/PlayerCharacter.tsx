@@ -1,7 +1,7 @@
 import React from "react";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { Text } from "@react-three/drei";
-import { PlayerPosition } from "./types";
+import { PlayerPosition } from "../../app/types";
 
 interface PlayerCharacterProps {
   activePlayerName: string;

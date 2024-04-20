@@ -1,5 +1,5 @@
 import { it, expect } from "vitest";
-import { PlayerPosition } from "../types";
+import { PlayerPosition } from "../../../app/types";
 import { calculateNearestPlayer } from "./calculateNearestPlayer";
 
 it("Can calculate nearest player", () => {

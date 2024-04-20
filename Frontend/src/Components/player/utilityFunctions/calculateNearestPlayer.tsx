@@ -1,4 +1,4 @@
-import { PlayerPosition } from "../types";
+import { PlayerPosition } from "../../../app/types";
 
 export function calculateNearestPlayer(
   playerPositions: PlayerPosition[],
