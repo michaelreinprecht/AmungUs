@@ -6,7 +6,7 @@ import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { unsubscribe } from "diagnostics_channel";
 import { PlayerPosition } from "../../../app/types";
 import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
-import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition } from "../utilityFunctions/playerPositionHandler";
+import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition, setDefaultPlayerPosition } from "../utilityFunctions/playerPositionHandler";
 import { calculateNearestPlayer } from "../utilityFunctions/calculateNearestPlayer";
 
 type usePlayerCharacterProps = {
@@ -49,15 +49,7 @@ export function usePlayerCharacter({
   }, [playerPositions]);
 
   useEffect(() => {
-    setPlayerPositions([
-      {
-        playerName: activePlayerName,
-        playerPositionX: (Math.random() - 0.5) * 20,
-        playerPositionY: (Math.random() - 0.5) * 20,
-        alive: true,
-        playerRole: Math.random() < 0.5 ? "killer" : "crewmate",
-      },
-    ]);
+    setDefaultPlayerPosition(setPlayerPositions, activePlayerName);
 
     //Initial position update of the player
     updatePlayerPosition(getPositionOfCurrentPlayer(playerPositions, activePlayerName));

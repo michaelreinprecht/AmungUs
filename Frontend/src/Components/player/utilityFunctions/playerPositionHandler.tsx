@@ -57,3 +57,15 @@ export function getPositionOfCurrentPlayer(
   );
   return playerPosition;
 }
+
+export   function setDefaultPlayerPosition(setPlayerPositions: (playerPositions: PlayerPosition[]) => void, activePlayerName: string) {
+    setPlayerPositions([
+      {
+        playerName: activePlayerName,
+        playerPositionX: (Math.random() - 0.5) * 20,
+        playerPositionY: (Math.random() - 0.5) * 20,
+        alive: true,
+        playerRole: Math.random() < 0.5 ? "killer" : "crewmate",
+      },
+    ]);
+  }
