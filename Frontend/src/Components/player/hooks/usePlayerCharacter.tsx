@@ -4,8 +4,6 @@ import { TextureLoader } from "three";
 import * as THREE from "three";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { PlayerPosition } from "../../../app/types";
-import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
-import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition, setPlayerSpawnPosition } from "../utilityFunctions/playerPositionHandler";
 import { calculateNearestPlayer } from "../utilityFunctions/calculateNearestPlayer";
 import { usePlayerMovement } from "./usePlayerMovement";
 
@@ -44,15 +42,6 @@ export function usePlayerCharacter({
     setPlayerPositions
   );
 
-  /*
-  const [movement, setMovement] = useState({
-    forward: false,
-    backward: false,
-    left: false,
-    right: false,
-  });
-  */
-
   useEffect(() => {
     // Calculate nearest player and call onNearestPlayerChange once playerPositions change
     const nearestPlayer = calculateNearestPlayer(playerPositions, activePlayerName);
@@ -62,67 +51,16 @@ export function usePlayerCharacter({
   }, [playerPositions]);
 
   useEffect(() => {
-    /*
-    setPlayerSpawnPosition(setPlayerPositions, activePlayerName);
-
-    //Initial position update of the player
-    updatePlayerPosition(getPositionOfCurrentPlayer(playerPositions, activePlayerName));
-*/
-
     //Heartbeat to keep the connection alive
     const heartbeatIntervall = setInterval(() => {
       sendHeartbeat(activePlayerName);
     }, 3000);
 
-    /*
-    const handleKeyDown = createKeyDownHandler(setMovement);
-    const handleKeyUp = createKeyUpHandler(setMovement);
-
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    */
-
     return () => {
-      /*
-      // Remove event listeners on component unmount
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-
-      // Unsubscribe from websocket on component unmount
-      if (stompClient) {
-        stompClient.unsubscribe(`/lobby/${lobbyCode}/playerInfo`);
-      }
-*/
-
       // Clear the heartbeat intervall
       clearInterval(heartbeatIntervall);
     };
   }, []);
-
-  /*
-  useFrame((_, delta) => {
-    if (meshRef.current) {
-      if (movement.forward || movement.backward || movement.left || movement.right) {
-      updatePlayerPosition(getUpdatedPlayerPosition(delta, activePlayerName, movement, bounds, scale, playerPositions));
-      }
-    }
-  });
-  */
-
-  /*
-  function updatePlayerPosition(playerPos: any) {
-    if (stompClient) {
-      try {
-        stompClient.publish({
-          destination: `/app/${lobbyCode}/playerInfoReceiver`,
-          body: JSON.stringify(playerPos),
-        });
-      } catch (error) {
-        alert("Lost connection to server!");
-      }
-    }
-  }
-  */
 
   function sendHeartbeat(playerName: string) {
     try {
@@ -136,13 +74,6 @@ export function usePlayerCharacter({
       alert("Lost connection to server!");
     }
   }
-
-  /*
-  useSubscription(`/lobby/${lobbyCode}/playerInfo`, (message) => {
-    const parsedMessage = JSON.parse(message.body);
-    setPlayerPositions(parsedMessage);
-  });
-  */
 
   return { playerPositions, meshRef, colorMap };
 }
