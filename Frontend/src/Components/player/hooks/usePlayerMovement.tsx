@@ -2,9 +2,10 @@ import { Movement, PlayerPosition } from "@/app/types";
 import { useEffect, useState } from "react";
 import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
 import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition, setPlayerSpawnPosition } from "../utilityFunctions/playerPositionHandler";
-import { Client, useStompClient, useSubscription } from "react-stomp-hooks";
+import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { updatePlayerPosition } from "@/Components/utilityFunctions/webSocketHandler";
 
 export function usePlayerMovement(
     activePlayerName: string,
@@ -27,7 +28,7 @@ export function usePlayerMovement(
     useEffect(() => {
       setPlayerSpawnPosition(setPlayerPositions, activePlayerName);
       //Initial position update of the player
-      updatePlayerPosition(getPositionOfCurrentPlayer(playerPositions, activePlayerName));
+      updatePlayerPosition(getPositionOfCurrentPlayer(playerPositions, activePlayerName), stompClient, lobbyCode);
 
       const handleKeyDown = createKeyDownHandler(setMovement);
       const handleKeyUp = createKeyUpHandler(setMovement);
@@ -50,7 +51,7 @@ export function usePlayerMovement(
     useFrame((_, delta) => {
         if (meshRef.current) {
           if (movement.forward || movement.backward || movement.left || movement.right) {
-          updatePlayerPosition(getUpdatedPlayerPosition(delta, activePlayerName, movement, bounds, scale, playerPositions));
+          updatePlayerPosition(getUpdatedPlayerPosition(delta, activePlayerName, movement, bounds, scale, playerPositions), stompClient, lobbyCode);
           }
         }
       });
@@ -58,19 +59,6 @@ export function usePlayerMovement(
     useEffect(() => {
       setPlayerSpawnPosition(setPlayerPositions, activePlayerName);
     }, [activePlayerName, setPlayerPositions]);
-  
-    function updatePlayerPosition(playerPos: any) {
-        if (stompClient) {
-          try {
-            stompClient.publish({
-              destination: `/app/${lobbyCode}/playerInfoReceiver`,
-              body: JSON.stringify(playerPos),
-            });
-          } catch (error) {
-            alert("Lost connection to server!");
-          }
-        }
-      }
 
       useSubscription(`/lobby/${lobbyCode}/playerInfo`, (message) => {
         const parsedMessage = JSON.parse(message.body);

@@ -5,6 +5,7 @@ import PlayerCharacter from "../../player/PlayerCharacter";
 import KillUI from "./KillUI";
 import { PlayerPosition } from "../../../app/types";
 import { useStompClient } from "react-stomp-hooks";
+import { updatePlayerPosition } from "@/Components/utilityFunctions/webSocketHandler";
 
 type GameProps = {
   activePlayerName: string;
@@ -45,18 +46,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     setPlayerPositions(newPlayerPositions);
     const nearestPlayerPos = newPlayerPositions.filter(player => player.playerName === nearestPlayer)[0];
     nearestPlayerPos.alive = false;
-    updatePlayerPosition(nearestPlayerPos);
+    updatePlayerPosition(nearestPlayerPos, stompClient, lobbyCode);
   }
-
-  function updatePlayerPosition(playerPos: PlayerPosition) {
-    if (stompClient) {
-      stompClient.publish({
-        destination: `/app/${lobbyCode}/playerInfoReceiver`,
-        body: JSON.stringify(playerPos),
-      });
-    }
-  }
-  
 
   return (
     <div ref={canvasRef} className="w-screen h-screen">

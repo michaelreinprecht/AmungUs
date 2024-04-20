@@ -1,8 +1,7 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
-import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { PlayerPosition } from "../../../app/types";
 import { calculateNearestPlayer } from "../utilityFunctions/calculateNearestPlayer";
 import { usePlayerMovement } from "./usePlayerMovement";

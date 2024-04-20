@@ -1,5 +1,6 @@
+import { sendHeartbeat } from "@/Components/utilityFunctions/webSocketHandler";
 import { useEffect } from "react";
-import { Client, useStompClient } from "react-stomp-hooks";
+import { useStompClient } from "react-stomp-hooks";
 
 export function usePlayerHeartbeat(
     lobbyCode: string,
@@ -16,19 +17,6 @@ export function usePlayerHeartbeat(
         clearInterval(heartbeatInterval);
       };
     }, []);
-  }
-  
-  function sendHeartbeat(playerName: string, stompClient: Client | undefined, lobbyCode: string) {
-    try {
-      if (stompClient) {
-        stompClient.publish({
-          destination: `/app/${lobbyCode}/heartbeatReceiver`,
-          body: playerName,
-        });
-      }
-    } catch (error) {
-      alert("Lost connection to server!");
-    }
   }
   
   
