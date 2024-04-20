@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { unsubscribe } from "diagnostics_channel";
 import { PlayerPosition } from "../types";
+import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
 
 type usePlayerCharacterProps = {
   activePlayerName: string;
@@ -68,43 +69,8 @@ export function usePlayerCharacter({
       sendHeartbeat(activePlayerName);
     }, 3000);
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case "w":
-          setMovement((prevMovement) => ({ ...prevMovement, forward: true }));
-          break;
-        case "s":
-          setMovement((prevMovement) => ({ ...prevMovement, backward: true }));
-          break;
-        case "a":
-          setMovement((prevMovement) => ({ ...prevMovement, left: true }));
-          break;
-        case "d":
-          setMovement((prevMovement) => ({ ...prevMovement, right: true }));
-          break;
-        default:
-          break;
-      }
-    };
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case "w":
-          setMovement((prevMovement) => ({ ...prevMovement, forward: false }));
-          break;
-        case "s":
-          setMovement((prevMovement) => ({ ...prevMovement, backward: false }));
-          break;
-        case "a":
-          setMovement((prevMovement) => ({ ...prevMovement, left: false }));
-          break;
-        case "d":
-          setMovement((prevMovement) => ({ ...prevMovement, right: false }));
-          break;
-        default:
-          break;
-      }
-    };
+    const handleKeyDown = createKeyDownHandler(setMovement);
+    const handleKeyUp = createKeyUpHandler(setMovement);
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
