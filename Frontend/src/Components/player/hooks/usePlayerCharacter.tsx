@@ -6,6 +6,7 @@ import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { unsubscribe } from "diagnostics_channel";
 import { PlayerPosition } from "../types";
 import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
+import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition } from "../utilityFunctions/playerPositionHandler";
 
 type usePlayerCharacterProps = {
   activePlayerName: string;
@@ -58,7 +59,7 @@ export function usePlayerCharacter({
     ]);
 
     //Initial position update of the player
-    updatePlayerPosition(getPositionOfCurrentPlayer());
+    updatePlayerPosition(getPositionOfCurrentPlayer(playerPositions, activePlayerName));
 
     //Heartbeat to keep the connection alive
     const heartbeatIntervall = setInterval(() => {
@@ -92,10 +93,14 @@ export function usePlayerCharacter({
 
   useFrame((_, delta) => {
     if (meshRef.current) {
+      if (movement.forward || movement.backward || movement.left || movement.right) {
+      updatePlayerPosition(getUpdatedPlayerPosition(delta, activePlayerName, movement, bounds, scale, playerPositions));
+      }
+      /*Start of logik I'm trying to repalce
       const speed = 30 * delta;
       const { forward, backward, left, right } = movement;
 
-      const playerPosition = getPositionOfCurrentPlayer();
+      const playerPosition = getPositionOfCurrentPlayer(playerPositions, activePlayerName);
 
       if (playerPosition) {
         let newPositionX = playerPosition.playerPositionX;
@@ -130,15 +135,17 @@ export function usePlayerCharacter({
       } else {
         console.log("Unable to find player position for given name");
       }
+      //end of logic I'm trying to replace*/
     }
   });
 
+  /*
   function getPositionOfCurrentPlayer() {
     const playerPosition = playerPositions.find(
       (pos) => pos.playerName === activePlayerName
     );
     return playerPosition;
-  }
+  }*/
 
   function updatePlayerPosition(playerPos: any) {
     if (stompClient) {
