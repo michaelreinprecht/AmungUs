@@ -12,18 +12,10 @@ export default function PickNameScene({
   setActivePlayerName,
   lobbyCode,
 }: PickNameSceneProps) {
-  const { errorMessage, checkIfNameIsTaken } = usePickNameScene(
+  const { errorMessage, onSubmit } = usePickNameScene(
     lobbyCode,
     setActivePlayerName
   );
-
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    const newPlayerName = data.get("playerName") as string;
-    await checkIfNameIsTaken(newPlayerName);
-  }
 
   return (
     <>

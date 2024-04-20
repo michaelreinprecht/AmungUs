@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
 export function usePickNameScene(lobbyCode: string, setActivePlayerName: (newActivePlayerName: string) => void) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -49,8 +49,16 @@ export function usePickNameScene(lobbyCode: string, setActivePlayerName: (newAct
 
   }
 
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const newPlayerName = data.get("playerName") as string;
+    await checkIfNameIsTaken(newPlayerName);
+  }
+
   return {
     errorMessage,
-    checkIfNameIsTaken
+    onSubmit
   };
 }
