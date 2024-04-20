@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
-import PlayerCharacter from "./player/PlayerCharacter";
+import PlayerCharacter from "../../player/PlayerCharacter";
 import KillUI from "./KillUI";
-import { PlayerPosition } from "./player/types";
+import { PlayerPosition } from "../../../app/types";
 import { useStompClient } from "react-stomp-hooks";
 
 type GameProps = {
@@ -23,42 +23,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     playerRole: Math.random() < 0.5 ? "killer" : "crewmate",}]);
 
   const stompClient = useStompClient();
-
-  // Bounds that match the background
-  const bounds = {
-    minX: -50, // Minimum x-coordinate
-    maxX: 50, // Maximum x-coordinate
-    minY: -35, // Minimum y-coordinate
-    maxY: 35, // Maximum y-coordinate
-  };
-
-  const handleKill = () => {
-    console.log("Kill button clicked");
-    console.log(nearestPlayer);
-    const newPlayerPositions = playerPositions.map((player) =>
-      player.playerName === nearestPlayer
-        ? { ...player, alive: false }
-        : player
-    );
-
-    console.log(newPlayerPositions);
-    setPlayerPositions(newPlayerPositions);
-    const nearestPlayerPos = newPlayerPositions.filter(player => player.playerName === nearestPlayer)[0];
-    nearestPlayerPos.alive = false;
-    updatePlayerPosition(nearestPlayerPos);
-    
-
-  }
-
-  function updatePlayerPosition(playerPos: PlayerPosition) {
-    if (stompClient) {
-      stompClient.publish({
-        destination: `/app/${lobbyCode}/playerInfoReceiver`,
-        body: JSON.stringify(playerPos),
-      });
-    }
-  }
-  
 
   return (
     <div ref={canvasRef} className="w-screen h-screen">
@@ -87,7 +51,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         <PlayerCharacter
           activePlayerName={activePlayerName}
           scale={5}
-          bounds={bounds}
           lobbyCode={lobbyCode}
           onNearestPlayerChange={(playerName: string) =>
             setNearestPlayer(playerName)
@@ -98,9 +61,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
          
       </Canvas>
       
-       
       {/* Kill UI */}
-      {playerPositions.find(player => player.playerName === activePlayerName && player.playerRole === "killer") && <KillUI onClick={handleKill} />}
+      {playerPositions.find(player => player.playerName === activePlayerName && player.playerRole === "killer") && <KillUI nearestPlayer={nearestPlayer} playerPositions={playerPositions} setPlayerPositions={setPlayerPositions} stompClient={stompClient} lobbyCode={lobbyCode} />}
       
     </div>
   );

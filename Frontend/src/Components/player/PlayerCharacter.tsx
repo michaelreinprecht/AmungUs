@@ -1,12 +1,11 @@
 import React from "react";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { Text } from "@react-three/drei";
-import { PlayerPosition } from "./types";
+import { PlayerPosition } from "../../app/types";
 
 interface PlayerCharacterProps {
   activePlayerName: string;
   scale: number;
-  bounds: { minX: number; maxX: number; minY: number; maxY: number };
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
   playerPositions: PlayerPosition[];
@@ -17,14 +16,13 @@ interface PlayerCharacterProps {
 const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   activePlayerName,
   scale,
-  bounds,
   lobbyCode,
   onNearestPlayerChange,
   playerPositions,
   setPlayerPositions
 }) => {
   const {  meshRef, colorMap } = usePlayerCharacter(
-    {activePlayerName, scale, bounds, lobbyCode, onNearestPlayerChange, playerPositions, setPlayerPositions}
+    {activePlayerName, scale, lobbyCode, onNearestPlayerChange, playerPositions, setPlayerPositions}
   );
 
   return (

@@ -5,3 +5,10 @@ export type PlayerPosition = {
     alive: boolean;
     playerRole: "killer" | "crewmate";
   };
+
+export type Movement = {
+    forward: boolean;
+    backward: boolean;
+    left: boolean;
+    right: boolean;
+  };

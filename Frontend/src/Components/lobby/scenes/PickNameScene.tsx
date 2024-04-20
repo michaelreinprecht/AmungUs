@@ -1,6 +1,5 @@
 import { FormEvent } from "react";
-import { usePickNameScene } from "./hooks/usePickNameScene";
-import "../../app/globals.css";
+import { usePickNameScene } from "../hooks/usePickNameScene";
 import { Theme, Container, Flex } from "@radix-ui/themes";
 import * as Avatar from "@radix-ui/react-avatar";
 
@@ -13,18 +12,10 @@ export default function PickNameScene({
   setActivePlayerName,
   lobbyCode,
 }: PickNameSceneProps) {
-  const { errorMessage, checkIfNameIsTaken } = usePickNameScene(
+  const { errorMessage, onSubmit } = usePickNameScene(
     lobbyCode,
     setActivePlayerName
   );
-
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    const newPlayerName = data.get("playerName") as string;
-    await checkIfNameIsTaken(newPlayerName);
-  }
 
   return (
     <>

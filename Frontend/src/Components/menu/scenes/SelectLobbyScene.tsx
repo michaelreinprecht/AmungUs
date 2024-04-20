@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import LobbyListItem from "./LobbyListItem";
+import LobbyListItem from "../LobbyListItem";
+import useSelectLobbyScene from "../hooks/useSelectLobbyScene";
 
 export type Lobby = {
   lobbyCode: string;
@@ -11,27 +12,8 @@ export type Lobby = {
   maxPlayerCount: number;
 };
 
-export default function LobbyList() {
-  const [lobbies, setLobbies] = useState([]);
-
-  useEffect(() => {
-    fetchLobbies();
-  }, []);
-
-  const fetchLobbies = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:8080/api/lobby/getPublicLobbies"
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch lobbies");
-      }
-      const lobbiesData = await response.json();
-      setLobbies(lobbiesData);
-    } catch (error) {
-      console.error("Error fetching lobbies:", error);
-    }
-  };
+export default function SelectLobbyScene() {
+  const {lobbies, fetchLobbies} = useSelectLobbyScene();
 
   return (
     <div className="bg-gray-800 p-14 border border-gray-700 h-screen">

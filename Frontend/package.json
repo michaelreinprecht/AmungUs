@@ -17,7 +17,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-stomp-hooks": "^2.2.1",
-    "three": "^0.163.0"
+    "three": "^0.163.0",
+    "vitest": "^1.5.0"
   },
   "devDependencies": {
     "@types/node": "^20",

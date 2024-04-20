@@ -1,7 +1,7 @@
 "use client";
 
-import Lobby from "@/Components/menu/Lobby";
+import LobbyScene from "@/Components/lobby/scenes/LobbyScene";
 
 export default function LobbyPage() {
-  return <Lobby lobbyCode="1" />;
+  return <LobbyScene lobbyCode="1" />;
 }
