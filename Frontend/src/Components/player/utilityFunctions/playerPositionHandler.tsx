@@ -58,7 +58,7 @@ export function getPositionOfCurrentPlayer(
   return playerPosition;
 }
 
-export   function setDefaultPlayerPosition(setPlayerPositions: (playerPositions: PlayerPosition[]) => void, activePlayerName: string) {
+export   function setPlayerSpawnPosition(setPlayerPositions: (playerPositions: PlayerPosition[]) => void, activePlayerName: string) {
     setPlayerPositions([
       {
         playerName: activePlayerName,

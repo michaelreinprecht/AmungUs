@@ -3,10 +3,9 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
-import { unsubscribe } from "diagnostics_channel";
 import { PlayerPosition } from "../../../app/types";
 import { createKeyDownHandler, createKeyUpHandler } from "../utilityFunctions/keyEventHandler";
-import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition, setDefaultPlayerPosition } from "../utilityFunctions/playerPositionHandler";
+import { getPositionOfCurrentPlayer, getUpdatedPlayerPosition, setPlayerSpawnPosition } from "../utilityFunctions/playerPositionHandler";
 import { calculateNearestPlayer } from "../utilityFunctions/calculateNearestPlayer";
 
 type usePlayerCharacterProps = {
@@ -41,7 +40,7 @@ export function usePlayerCharacter({
   });
 
   useEffect(() => {
-    // Calculate nearest player and call onNearestPlayerChange when it changes
+    // Calculate nearest player and call onNearestPlayerChange once playerPositions change
     const nearestPlayer = calculateNearestPlayer(playerPositions, activePlayerName);
     if (nearestPlayer !== null) {
       onNearestPlayerChange(nearestPlayer);
@@ -49,7 +48,7 @@ export function usePlayerCharacter({
   }, [playerPositions]);
 
   useEffect(() => {
-    setDefaultPlayerPosition(setPlayerPositions, activePlayerName);
+    setPlayerSpawnPosition(setPlayerPositions, activePlayerName);
 
     //Initial position update of the player
     updatePlayerPosition(getPositionOfCurrentPlayer(playerPositions, activePlayerName));
