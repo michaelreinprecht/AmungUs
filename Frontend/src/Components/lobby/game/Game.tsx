@@ -61,7 +61,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
          
       </Canvas>
       
-       
       {/* Kill UI */}
       {playerPositions.find(player => player.playerName === activePlayerName && player.playerRole === "killer") && <KillUI nearestPlayer={nearestPlayer} playerPositions={playerPositions} setPlayerPositions={setPlayerPositions} stompClient={stompClient} lobbyCode={lobbyCode} />}
       
