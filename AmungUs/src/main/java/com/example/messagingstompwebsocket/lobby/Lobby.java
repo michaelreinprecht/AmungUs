@@ -1,9 +1,13 @@
 package com.example.messagingstompwebsocket.lobby;
 
+import com.example.messagingstompwebsocket.player.KillRequest;
 import com.example.messagingstompwebsocket.player.PlayerInfo;
+import com.example.messagingstompwebsocket.player.PlayerInfoController;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -17,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 @Getter
 @Setter
 public class Lobby {
+
+    private static final Logger logger = LogManager.getLogger(Lobby.class);
+
     private String lobbyCode;
     private List<PlayerInfo> playerInfos;
     private boolean isGameRunning;
@@ -111,5 +118,23 @@ public class Lobby {
     // Interface for lobby empty notification
     public interface LobbyEmptyListener {
         void onLobbyEmpty(String lobbyCode);
+    }
+
+    public PlayerInfo getPlayerInfoForName(String playerName) {
+        for (PlayerInfo playerInfo : playerInfos) {
+            if (playerInfo.getPlayerName().equals(playerName)) {
+                return playerInfo;
+            }
+        }
+        return null;
+    }
+
+    public void killPlayer(PlayerInfo victim) {
+        for (PlayerInfo playerInfo : playerInfos) {
+            if (playerInfo.getPlayerName().equals(victim.getPlayerName())) {
+                playerInfo.setAlive(false);
+                logger.info("Player {} was killed", victim.getPlayerName());
+            }
+        }
     }
 }

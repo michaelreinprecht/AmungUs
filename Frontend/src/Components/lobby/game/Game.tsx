@@ -14,13 +14,15 @@ type GameProps = {
 export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
-  const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([ 
+  const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([
     {
-    playerName: activePlayerName,
-    playerPositionX: (Math.random() - 0.5) * 20,
-    playerPositionY: (Math.random() - 0.5) * 20,
-    alive: true,
-    playerRole: Math.random() < 0.5 ? "killer" : "crewmate",}]);
+      playerName: activePlayerName,
+      playerPositionX: (Math.random() - 0.5) * 20,
+      playerPositionY: (Math.random() - 0.5) * 20,
+      alive: true,
+      playerRole: Math.random() < 0.5 ? "killer" : "crewmate",
+    },
+  ]);
 
   const stompClient = useStompClient();
 
@@ -58,12 +60,23 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           playerPositions={playerPositions}
           setPlayerPositions={setPlayerPositions}
         />
-         
       </Canvas>
-      
+
       {/* Kill UI */}
-      {playerPositions.find(player => player.playerName === activePlayerName && player.playerRole === "killer") && <KillUI nearestPlayer={nearestPlayer} playerPositions={playerPositions} setPlayerPositions={setPlayerPositions} stompClient={stompClient} lobbyCode={lobbyCode} />}
-      
+      {playerPositions.find(
+        (player) =>
+          player.playerName === activePlayerName &&
+          player.playerRole === "killer"
+      ) && (
+        <KillUI
+          activePlayerName={activePlayerName}
+          victimName={nearestPlayer}
+          playerPositions={playerPositions}
+          setPlayerPositions={setPlayerPositions}
+          stompClient={stompClient}
+          lobbyCode={lobbyCode}
+        />
+      )}
     </div>
   );
 }
