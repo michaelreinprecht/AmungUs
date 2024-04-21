@@ -5,7 +5,7 @@ public class GlobalValues {
     private static GlobalValues instance = null;
 
     // Default values
-    private final float killRange = 30;
+    private final float killRange = 20;
 
     // Private constructor to prevent instantiation
     private GlobalValues() {}

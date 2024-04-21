@@ -1,6 +1,6 @@
 import { PlayerPosition } from "../../../app/types";
 
-export function calculateNearestPlayer(
+export function calculateNearestVictim(
   playerPositions: PlayerPosition[],
   activePlayerName: string
 ) {
@@ -14,7 +14,7 @@ export function calculateNearestPlayer(
   let nearestDistanceSquared = Infinity;
 
   for (const pos of playerPositions) {
-    if (pos.playerName !== activePlayerName) {
+    if (pos.playerName !== activePlayerName && pos.playerRole === "crewmate") {
       const distanceSquared =
         Math.pow(
           pos.playerPositionX - currentPlayerPosition.playerPositionX,
