@@ -5,9 +5,9 @@ import {
   createKeyUpHandler,
 } from "../utilityFunctions/keyEventHandler";
 import {
+  getPlayerSpawnInfo,
   getPositionPlayer,
   getUpdatedPlayerPosition,
-  setPlayerSpawnInfo,
 } from "../utilityFunctions/playerPositionHandler";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { useFrame } from "@react-three/fiber";
@@ -47,22 +47,13 @@ export function usePlayerMovement(
 
   useEffect(() => {
     (async () => {
-      await setPlayerSpawnInfo(setPlayerPositions, activePlayerName, lobbyCode);
       //Initial position update of the player
       updatePlayerPosition(
-        getPositionPlayer(playerPositions, activePlayerName),
+        await getPlayerSpawnInfo(lobbyCode, activePlayerName),
         stompClient,
         lobbyCode
       );
     })();
-    /*
-    setPlayerSpawnInfo(setPlayerPositions, activePlayerName, lobbyCode);
-    //Initial position update of the player
-    updatePlayerPosition(
-      getPositionPlayer(playerPositions, activePlayerName),
-      stompClient,
-      lobbyCode
-    );*/
 
     const handleKeyDown = createKeyDownHandler(setMovement);
     const handleKeyUp = createKeyUpHandler(setMovement);
@@ -106,11 +97,16 @@ export function usePlayerMovement(
     }
   });
 
-  /*
   useEffect(() => {
-    setPlayerSpawnPosition(setPlayerPositions, activePlayerName);
+    (async () => {
+      //Initial position update of the player
+      updatePlayerPosition(
+        await getPlayerSpawnInfo(lobbyCode, activePlayerName),
+        stompClient,
+        lobbyCode
+      );
+    })();
   }, [activePlayerName, setPlayerPositions]);
-  */
 
   useSubscription(`/lobby/${lobbyCode}/playerInfo`, (message) => {
     const parsedMessage = JSON.parse(message.body);

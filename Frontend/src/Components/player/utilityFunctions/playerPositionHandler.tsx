@@ -57,13 +57,14 @@ export function getPositionPlayer(
   return playerPosition;
 }
 
+/*
 export async function setPlayerSpawnInfo(
   setPlayerPositions: (playerPositions: PlayerPosition[]) => void,
   activePlayerName: string,
   lobbyCode: string
 ) {
   setPlayerPositions([await getPlayerSpawnInfo(lobbyCode, activePlayerName)]);
-}
+}*/
 
 export async function getPlayerSpawnInfo(
   lobbyCode: string,

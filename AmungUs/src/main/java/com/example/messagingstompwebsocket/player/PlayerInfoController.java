@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -52,7 +53,6 @@ public class PlayerInfoController {
 
             // Update the player position in the lobby or add it if it's a new player
             lobby.updatePlayerInfo(playerInfo);
-
             // Send the updated player positions to all players
             return lobby.getPlayerInfos();
         } else {
