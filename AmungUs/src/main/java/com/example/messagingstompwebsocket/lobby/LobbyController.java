@@ -37,6 +37,7 @@ public class LobbyController {
     @ResponseBody
     public ResponseEntity<Map<String, String>> createLobby(@RequestBody Map<String, Object> requestBody) {
         Integer maxPlayerCount = (Integer) requestBody.get("maxPlayerCount");
+        Integer maxKillerCount = (Integer) requestBody.get("maxKillerCount");
         boolean isPrivate = (boolean) requestBody.get("isPrivate");
 
         // Generate a random lobby code
@@ -46,7 +47,7 @@ public class LobbyController {
             lobbyCode = generateRandomCode();
         }
 
-        lobbyService.createLobby(lobbyCode, maxPlayerCount, isPrivate);
+        lobbyService.createLobby(lobbyCode, maxPlayerCount, maxKillerCount, isPrivate);
 
         // Return the generated lobby code as a JSON object
         Map<String, String> responseBody = new HashMap<>();

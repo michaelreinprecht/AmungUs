@@ -11,11 +11,12 @@ import java.util.Map;
 public class LobbyService implements Lobby.LobbyEmptyListener {
     private Map<String, Lobby> lobbies = new HashMap<>();
 
-    public void createLobby(String lobbyCode, int maxPlayerCount, boolean isPrivate) {
+    public void createLobby(String lobbyCode, int maxPlayerCount, int maxKillerCount, boolean isPrivate) {
         if (!isLobbyCodeUsed(lobbyCode)) {
             Lobby lobby = new Lobby();
             lobby.setLobbyCode(lobbyCode);
             lobby.setMaxPlayerCount(maxPlayerCount);
+            lobby.setMaxKillerCount(maxKillerCount);
             lobby.setPrivate(isPrivate);
             // Start player heartbeat
             lobby.startHeartbeatChecking();

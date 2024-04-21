@@ -4,8 +4,10 @@ import useCreateLobbyScene from "@/Components/menu/hooks/useCreateLobbyScene";
 export default function CreateLobbyScene() {
   const {
     maxPlayerCount,
+    maxKillerCount,
     isPrivate,
     setMaxPlayerCount,
+    setMaxKillerCount,
     setIsPrivate,
     createLobby,
   } = useCreateLobbyScene();
@@ -26,10 +28,28 @@ export default function CreateLobbyScene() {
               type="number"
               id="maxPlayerCount"
               name="maxPlayerCount"
-              min={4}
+              min={5}
               max={10}
               value={maxPlayerCount}
               onChange={(e) => setMaxPlayerCount(parseInt(e.target.value))}
+              className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="maxKillerCount"
+              className="block text-sm font-medium text-white"
+            >
+              Killer Count:
+            </label>
+            <input
+              type="number"
+              id="maxKillerCount"
+              name="maxKillerCount"
+              min={1}
+              max={3}
+              value={maxKillerCount}
+              onChange={(e) => setMaxKillerCount(parseInt(e.target.value))}
               className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>

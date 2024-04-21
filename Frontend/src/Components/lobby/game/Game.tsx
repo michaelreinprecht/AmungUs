@@ -5,7 +5,10 @@ import PlayerCharacter from "../../player/PlayerCharacter";
 import KillUI from "./KillUI";
 import { PlayerPosition } from "../../../app/types";
 import { useStompClient } from "react-stomp-hooks";
-import { getPositionPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
+import {
+  getPlayerSpawnInfo,
+  getPositionPlayer,
+} from "@/Components/player/utilityFunctions/playerPositionHandler";
 import { killRange } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 
@@ -17,15 +20,7 @@ type GameProps = {
 export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
-  const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([
-    {
-      playerName: activePlayerName,
-      playerPositionX: (Math.random() - 0.5) * 20,
-      playerPositionY: (Math.random() - 0.5) * 20,
-      alive: true,
-      playerRole: Math.random() < 0.5 ? "killer" : "crewmate",
-    },
-  ]);
+  const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([]);
 
   const stompClient = useStompClient();
 

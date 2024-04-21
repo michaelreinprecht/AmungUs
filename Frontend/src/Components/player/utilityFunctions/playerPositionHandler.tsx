@@ -1,4 +1,6 @@
-import { PlayerPosition } from "../../../app/types";
+import { getLobbyByCode } from "@/Components/utilityFunctions/APIService";
+import { PlayerPosition, PlayerRole } from "../../../app/types";
+import { platform } from "os";
 
 export function getUpdatedPlayerPosition(
   delta: number,
@@ -55,17 +57,45 @@ export function getPositionPlayer(
   return playerPosition;
 }
 
-export function setPlayerSpawnPosition(
+export async function setPlayerSpawnInfo(
   setPlayerPositions: (playerPositions: PlayerPosition[]) => void,
+  activePlayerName: string,
+  lobbyCode: string
+) {
+  setPlayerPositions([await getPlayerSpawnInfo(lobbyCode, activePlayerName)]);
+}
+
+export async function getPlayerSpawnInfo(
+  lobbyCode: string,
   activePlayerName: string
 ) {
-  setPlayerPositions([
-    {
-      playerName: activePlayerName,
-      playerPositionX: (Math.random() - 0.5) * 20,
-      playerPositionY: (Math.random() - 0.5) * 20,
-      alive: true,
-      playerRole: Math.random() < 0.5 ? "killer" : "crewmate",
-    },
-  ]);
+  const lobbyData = await getLobbyByCode(lobbyCode);
+  console.log("MaxKillerCount: " + lobbyData.maxKillerCount);
+  console.log("KillerCount: " + lobbyData.killerCount);
+  console.log("MaxPlayerCount: " + lobbyData.maxPlayerCount);
+  console.log("PlayerCount: " + lobbyData.playerCount);
+
+  let playerRole: PlayerRole = "crewmate";
+  if (lobbyData.killerCount < lobbyData.maxKillerCount) {
+    if (
+      lobbyData.maxPlayerCount - lobbyData.playerCount <=
+      lobbyData.maxKillerCount - lobbyData.killerCount
+    ) {
+      playerRole = "killer";
+    } else {
+      playerRole = Math.random() < 0.5 ? "killer" : "crewmate";
+    }
+  } else {
+    playerRole = "crewmate";
+  }
+
+  const spawnInfo = {
+    playerName: activePlayerName,
+    playerPositionX: (Math.random() - 0.5) * 20,
+    playerPositionY: (Math.random() - 0.5) * 20,
+    alive: true,
+    playerRole: playerRole,
+  };
+
+  return spawnInfo;
 }

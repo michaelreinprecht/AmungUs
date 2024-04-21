@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,8 @@ public class Lobby {
     private boolean isGameRunning;
     private int playerCount;
     private int maxPlayerCount;
+    private int killerCount;
+    private int maxKillerCount;
     private boolean isPrivate;
 
     @JsonIgnore
@@ -41,6 +44,7 @@ public class Lobby {
         this.isGameRunning = false; //TODO set this once the lobby is created, and allow no more players to join
         this.isPrivate = false; //TODO set this once the lobby is created, depending on if lobby is private
         this.playerCount = 0;
+        this.killerCount = 0;
         this.executor = Executors.newSingleThreadScheduledExecutor(); // Initialize the executor
     }
 
@@ -50,12 +54,11 @@ public class Lobby {
         for (PlayerInfo existingPlayer : playerInfos) {
             if (existingPlayer.getPlayerName().equals(playerInfo.getPlayerName())) {
                 // Update the player's position
-
                 existingPlayer.setPlayerPositionX(playerInfo.getPlayerPositionX());
                 existingPlayer.setPlayerPositionY(playerInfo.getPlayerPositionY());
                 existingPlayer.setAlive(playerInfo.isAlive());
-                //existingPlayer.setPlayerRole(playerInfo.getPlayerRole()); //Ändert sich eigentle au ned während dam game
                 existingPlayer.setLastHeartbeat(playerInfo.getLastHeartbeat()); //Update the heartbeat once player info is updated
+
                 System.out.println("ExistingPlayer" + existingPlayer);
                 playerExists = true;
                 break;
@@ -66,6 +69,10 @@ public class Lobby {
             //Increase player count and add player to playerInfos list
             playerCount++;
             playerInfos.add(playerInfo);
+            //If the new player got killer role, increase killerCount by 1
+            if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {
+                killerCount++;
+            }
         }
     }
 
@@ -76,7 +83,7 @@ public class Lobby {
         executor.scheduleAtFixedRate(this::checkPlayerHeartbeats, 0, 10, TimeUnit.SECONDS); // Run every 10 seconds
     }
 
-    // Method to stop periodic checking of player heartbeats, TODO: call once lobby is removed!
+    // Method to stop periodic checking of player heartbeats -> called once lobby is removed
     public void stopHeartbeatChecking() {
         executor.shutdown();
     }
@@ -84,17 +91,19 @@ public class Lobby {
     // Method to periodically check player heartbeats and remove inactive players from the lobby
     private void checkPlayerHeartbeats() {
         try {
-            System.out.println("Checking player heartbeats for lobby: " + lobbyCode);
+            logger.debug("Checking player heartbeats for lobby: {}", lobbyCode);
             Instant now = Instant.now();
             Iterator<PlayerInfo> iterator = playerInfos.iterator();
             while (iterator.hasNext()) {
                 PlayerInfo playerInfo = iterator.next();
                 Instant lastHeartbeat = playerInfo.getLastHeartbeat();
-                System.out.println("Last heartbeat: " + lastHeartbeat.toString());
-                System.out.println("Now: " + now.toString());
+                logger.debug("Last heartbeat: {}", lastHeartbeat.toString());
                 if (lastHeartbeat != null && Duration.between(lastHeartbeat, now).getSeconds() > 10) {
-                    System.out.println("Player " + playerInfo.getPlayerName() + " has lost heartbeat");
+                    logger.info("Player {} has lost heartbeat", playerInfo.getPlayerName());
                     playerCount--;
+                    if (playerInfo.getPlayerRole().equals("killer")) {
+                        killerCount--;
+                    }
                     iterator.remove(); // Safely remove the playerInfo from the list
                     if (playerInfos.isEmpty()) {
                         notifyEmptyListener();
@@ -102,14 +111,14 @@ public class Lobby {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error checking player heartbeats: " + e.getMessage());
+            logger.info("Error checking player heartbeats: {}", e.getMessage());
         }
     }
 
     // Method to notify listener when lobby becomes empty
     private void notifyEmptyListener() {
         if (emptyListener != null) {
-            System.out.println("Notifying empty listener");
+            logger.debug("Notifying empty listener");
             stopHeartbeatChecking();
             emptyListener.onLobbyEmpty(lobbyCode);
         }
@@ -120,6 +129,7 @@ public class Lobby {
         void onLobbyEmpty(String lobbyCode);
     }
 
+    // Returns the player info for the given name, if it exists
     public PlayerInfo getPlayerInfoForName(String playerName) {
         for (PlayerInfo playerInfo : playerInfos) {
             if (playerInfo.getPlayerName().equals(playerName)) {
@@ -129,6 +139,7 @@ public class Lobby {
         return null;
     }
 
+    //Kill the given player
     public void killPlayer(PlayerInfo victim) {
         for (PlayerInfo playerInfo : playerInfos) {
             if (playerInfo.getPlayerName().equals(victim.getPlayerName())) {
