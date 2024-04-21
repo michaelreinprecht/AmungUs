@@ -47,7 +47,7 @@ export default function CreateLobbyScene() {
               id="maxKillerCount"
               name="maxKillerCount"
               min={1}
-              max={3}
+              max={Math.floor(maxPlayerCount / 3)}
               value={maxKillerCount}
               onChange={(e) => setMaxKillerCount(parseInt(e.target.value))}
               className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"

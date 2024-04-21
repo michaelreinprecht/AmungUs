@@ -84,7 +84,7 @@ export async function getPlayerSpawnInfo(
     ) {
       playerRole = "killer";
     } else {
-      playerRole = Math.random() < 0.5 ? "killer" : "crewmate";
+      playerRole = Math.random() > 0.7 ? "killer" : "crewmate";
     }
   } else {
     playerRole = "crewmate";

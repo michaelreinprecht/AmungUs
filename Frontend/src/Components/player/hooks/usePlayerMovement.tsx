@@ -97,17 +97,6 @@ export function usePlayerMovement(
     }
   });
 
-  useEffect(() => {
-    (async () => {
-      //Initial position update of the player
-      updatePlayerPosition(
-        await getPlayerSpawnInfo(lobbyCode, activePlayerName),
-        stompClient,
-        lobbyCode
-      );
-    })();
-  }, [activePlayerName, setPlayerPositions]);
-
   useSubscription(`/lobby/${lobbyCode}/playerInfo`, (message) => {
     const parsedMessage = JSON.parse(message.body);
     setPlayerPositions(parsedMessage);
