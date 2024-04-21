@@ -14,7 +14,7 @@ export function calculateNearestVictim(
   let nearestDistanceSquared = Infinity;
 
   for (const pos of playerPositions) {
-    if (pos.playerName !== activePlayerName && pos.playerRole === "crewmate") {
+    if (pos.playerName !== activePlayerName && pos.playerRole === "crewmate" && pos.alive) {
       const distanceSquared =
         Math.pow(
           pos.playerPositionX - currentPlayerPosition.playerPositionX,

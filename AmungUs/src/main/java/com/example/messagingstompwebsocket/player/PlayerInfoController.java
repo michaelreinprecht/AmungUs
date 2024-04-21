@@ -124,8 +124,10 @@ public class PlayerInfoController {
     private boolean isKillAllowed(PlayerInfo killer, PlayerInfo victim) {
         if (Objects.equals(killer.getPlayerRole(), "killer")) { //Check if player is really killer!
             if (!Objects.equals(victim.getPlayerRole(), "killer")) { //Make sure killers cannot kill other killers!
-                if (victimInRange(killer, victim)) { //Make sure the killer is in range for the kill
-                    return true;
+                if (victim.isAlive()) { //Make sure victim is still alive
+                    if (victimInRange(killer, victim)) { //Make sure the killer is in range for the kill
+                        return true;
+                    }
                 }
             }
         }

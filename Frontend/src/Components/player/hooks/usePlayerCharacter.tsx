@@ -24,7 +24,6 @@ export function usePlayerCharacter({
   playerPositions,
   setPlayerPositions,
 }: usePlayerCharacterProps) {
-  const colorMap = useLoader(TextureLoader, "/rick.png");
   const meshRef = useRef<THREE.Mesh>(null);
 
   usePlayerMovement(
@@ -49,5 +48,5 @@ export function usePlayerCharacter({
     }
   }, [playerPositions]);
 
-  return { playerPositions, meshRef, colorMap };
+  return { playerPositions, meshRef };
 }

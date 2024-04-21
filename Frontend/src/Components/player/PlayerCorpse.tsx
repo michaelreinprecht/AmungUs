@@ -23,7 +23,7 @@ const PlayerCorpse : React.FC<PlayerCorpseProps> =  ({
     const {  meshRef } = usePlayerCharacter(
         {activePlayerName, scale, lobbyCode, onNearestPlayerChange, playerPositions, setPlayerPositions}
       );
-      const colorMap = useLoader(TextureLoader, "/rick_dead.png");
+    const colorMap = useLoader(TextureLoader, "/rick_dead.png");
       
 
     return (

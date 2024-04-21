@@ -28,7 +28,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   function isKillEnabled() {
     const killer = getPositionPlayer(playerPositions, activePlayerName);
     const victim = getPositionPlayer(playerPositions, nearestPlayer);
-    if (killer && victim) {
+    if (killer && victim && killer.alive && victim.alive) {
       const distance = getDistanceBetween(
         killer.playerPositionX,
         killer.playerPositionY,
