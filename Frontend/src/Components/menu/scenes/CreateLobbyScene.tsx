@@ -3,7 +3,6 @@ import useCreateLobbyScene from "@/Components/menu/hooks/useCreateLobbyScene";
 
 export default function CreateLobbyScene() {
   const {
-    lobbyCode,
     maxPlayerCount,
     isPrivate,
     setMaxPlayerCount,

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function useCreateLobbyScene() {
-  const [lobbyCode, setLobbyCode] = useState("");
   const [maxPlayerCount, setMaxPlayerCount] = useState(4);
   const [isPrivate, setIsPrivate] = useState(false);
   const router = useRouter();
@@ -30,7 +29,6 @@ export default function useCreateLobbyScene() {
       }
 
       const data = await response.json();
-      setLobbyCode(data.lobbyCode);
       // Lobby created successfully
       router.push(`/lobby/${data.lobbyCode}`);
     } catch (error) {
@@ -39,7 +37,6 @@ export default function useCreateLobbyScene() {
   }
 
   return {
-    lobbyCode,
     maxPlayerCount,
     isPrivate,
     setMaxPlayerCount,
