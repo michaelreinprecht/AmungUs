@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function useCreateLobbyScene() {
-  const [lobbyCode, setLobbyCode] = useState("");
-  const [maxPlayerCount, setMaxPlayerCount] = useState(4);
+  const [maxPlayerCount, setMaxPlayerCount] = useState(5);
+  const [maxKillerCount, setMaxKillerCount] = useState(1);
   const [isPrivate, setIsPrivate] = useState(false);
   const router = useRouter();
 
@@ -14,6 +14,7 @@ export default function useCreateLobbyScene() {
     const url = "http://localhost:8080/api/lobby/createLobby";
     const requestBody = {
       maxPlayerCount: maxPlayerCount,
+      maxKillerCount: maxKillerCount,
       isPrivate: isPrivate,
     };
     try {
@@ -30,7 +31,6 @@ export default function useCreateLobbyScene() {
       }
 
       const data = await response.json();
-      setLobbyCode(data.lobbyCode);
       // Lobby created successfully
       router.push(`/lobby/${data.lobbyCode}`);
     } catch (error) {
@@ -39,10 +39,11 @@ export default function useCreateLobbyScene() {
   }
 
   return {
-    lobbyCode,
+    maxKillerCount,
     maxPlayerCount,
     isPrivate,
     setMaxPlayerCount,
+    setMaxKillerCount,
     setIsPrivate,
     createLobby,
   };
