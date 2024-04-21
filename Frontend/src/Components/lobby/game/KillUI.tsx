@@ -1,19 +1,19 @@
-import { getPositionOfCurrentPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
+import { getPositionPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
 import { sendKillRequest } from "@/Components/utilityFunctions/webSocketHandler";
 import { PlayerPosition } from "@/app/types";
 import React from "react";
 import { Client } from "react-stomp-hooks";
 
 type KillUIProps = {
+  isKillEnabled: boolean | undefined;
   activePlayerName: string;
   victimName: string;
-  playerPositions: PlayerPosition[];
-  setPlayerPositions: (playerPositions: PlayerPosition[]) => void;
   stompClient: Client | undefined;
   lobbyCode: string;
 };
 
 export default function KillUI({
+  isKillEnabled,
   activePlayerName,
   victimName,
   stompClient,
@@ -23,21 +23,9 @@ export default function KillUI({
     console.log("Kill button clicked");
     console.log("Kill initiated by: " + activePlayerName);
     console.log("Attempting to kill: " + victimName);
-    sendKillRequest(activePlayerName, victimName, stompClient, lobbyCode);
-
-    /*
-    const newPlayerPositions = playerPositions.map((player) =>
-      player.playerName === nearestPlayer ? { ...player, alive: false } : player
-    );
-
-    console.log(newPlayerPositions);
-    setPlayerPositions(newPlayerPositions);
-    const nearestPlayerPos = newPlayerPositions.filter(
-      (player) => player.playerName === nearestPlayer
-    )[0];
-    nearestPlayerPos.alive = false;
-    updatePlayerPosition(nearestPlayerPos, stompClient, lobbyCode);
-    */
+    if (isKillEnabled) {
+      sendKillRequest(activePlayerName, victimName, stompClient, lobbyCode);
+    }
   };
 
   return (
@@ -46,14 +34,18 @@ export default function KillUI({
         position: "absolute",
         bottom: 10,
         left: 10,
-        cursor: "pointer",
+        cursor: isKillEnabled ? "pointer" : "not-allowed",
       }}
       onClick={handleKill}
     >
       <img
         src="/KillUI.png"
         alt="UI Element"
-        style={{ width: 100, height: 100 }}
+        style={{
+          width: 100,
+          height: 100,
+          opacity: isKillEnabled ? 1 : 0.5, // Lower opacity if killing is disabled
+        }}
       />
     </div>
   );

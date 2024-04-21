@@ -1,6 +1,6 @@
 import { it, expect } from "vitest";
 import { PlayerPosition } from "../../../app/types";
-import { calculateNearestPlayer } from "./calculateNearestPlayer";
+import { calculateNearestVictim } from "./calculateNearestPlayer";
 
 it("Can calculate nearest player", () => {
   //Arrange
@@ -29,7 +29,7 @@ it("Can calculate nearest player", () => {
   ];
 
   // Act
-  const nearestPlayer = calculateNearestPlayer(playerPositions, "MyPlayer");
+  const nearestPlayer = calculateNearestVictim(playerPositions, "MyPlayer");
 
   // Assert
   expect(nearestPlayer).toBe("ClosestPlayer");

@@ -5,6 +5,9 @@ import PlayerCharacter from "../../player/PlayerCharacter";
 import KillUI from "./KillUI";
 import { PlayerPosition } from "../../../app/types";
 import { useStompClient } from "react-stomp-hooks";
+import { getPositionPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
+import { killRange } from "@/app/globals";
+import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 
 type GameProps = {
   activePlayerName: string;
@@ -25,6 +28,27 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   ]);
 
   const stompClient = useStompClient();
+
+  function isKillEnabled() {
+    const killer = getPositionPlayer(playerPositions, activePlayerName);
+    const victim = getPositionPlayer(playerPositions, nearestPlayer);
+    if (killer && victim) {
+      const distance = getDistanceBetween(
+        killer.playerPositionX,
+        killer.playerPositionY,
+        victim.playerPositionX,
+        victim.playerPositionY
+      );
+      return distance <= killRange;
+    }
+  }
+
+  function isKillUIVisible() {
+    return playerPositions.find(
+      (player) =>
+        player.playerName === activePlayerName && player.playerRole === "killer"
+    );
+  }
 
   return (
     <div ref={canvasRef} className="w-screen h-screen">
@@ -63,16 +87,11 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       </Canvas>
 
       {/* Kill UI */}
-      {playerPositions.find(
-        (player) =>
-          player.playerName === activePlayerName &&
-          player.playerRole === "killer"
-      ) && (
+      {isKillUIVisible() && (
         <KillUI
+          isKillEnabled={isKillEnabled()}
           activePlayerName={activePlayerName}
           victimName={nearestPlayer}
-          playerPositions={playerPositions}
-          setPlayerPositions={setPlayerPositions}
           stompClient={stompClient}
           lobbyCode={lobbyCode}
         />
