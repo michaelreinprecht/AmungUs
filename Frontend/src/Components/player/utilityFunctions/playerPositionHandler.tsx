@@ -37,8 +37,11 @@ export function getUpdatedPlayerPosition(
         playerName: activePlayerName,
         playerPositionX: newPositionX,
         playerPositionY: newPositionY,
+        killedPlayerPositionX: playerPosition.killedPlayerPositionX,
+        killedPlayerPositionY: playerPosition.killedPlayerPositionY,
         alive: playerPosition.alive,
         playerRole: playerPosition.playerRole,
+        
       };
       return updatedPlayerPosition;
     }
@@ -94,6 +97,8 @@ export async function getPlayerSpawnInfo(
     playerName: activePlayerName,
     playerPositionX: (Math.random() - 0.5) * 20,
     playerPositionY: (Math.random() - 0.5) * 20,
+    killedPlayerPositionX: null,
+    killedPlayerPositionY: null,
     alive: true,
     playerRole: playerRole,
   };

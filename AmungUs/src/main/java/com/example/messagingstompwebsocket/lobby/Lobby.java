@@ -144,6 +144,8 @@ public class Lobby {
         for (PlayerInfo playerInfo : playerInfos) {
             if (playerInfo.getPlayerName().equals(victim.getPlayerName())) {
                 playerInfo.setAlive(false);
+                playerInfo.setKilledPlayerPositionX(victim.getPlayerPositionX());
+                playerInfo.setKilledPlayerPositionY(victim.getPlayerPositionY());
                 logger.info("Player {} was killed", victim.getPlayerName());
             }
         }

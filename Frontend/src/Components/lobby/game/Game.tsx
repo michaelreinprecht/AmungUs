@@ -11,6 +11,7 @@ import {
 } from "@/Components/player/utilityFunctions/playerPositionHandler";
 import { killRange } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
+import PlayerCorpse from "@/Components/player/PlayerCorpse";
 
 type GameProps = {
   activePlayerName: string;
@@ -70,6 +71,18 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
 
         {/* Render player character */}
         <PlayerCharacter
+          activePlayerName={activePlayerName}
+          scale={5}
+          lobbyCode={lobbyCode}
+          onNearestPlayerChange={(playerName: string) =>
+            setNearestPlayer(playerName)
+          }
+          playerPositions={playerPositions}
+          setPlayerPositions={setPlayerPositions}
+        />
+
+        {/* Render player corpse */}
+        <PlayerCorpse 
           activePlayerName={activePlayerName}
           scale={5}
           lobbyCode={lobbyCode}
