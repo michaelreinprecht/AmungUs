@@ -3,7 +3,7 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
 import { PlayerPosition } from "../../../app/types";
-import { calculateNearestPlayer } from "../utilityFunctions/calculateNearestPlayer";
+import { calculateNearestVictim } from "../utilityFunctions/calculateNearestPlayer";
 import { usePlayerMovement } from "./usePlayerMovement";
 import { usePlayerHeartbeat } from "./usePlayerHeartbeat";
 
@@ -40,7 +40,10 @@ export function usePlayerCharacter({
 
   useEffect(() => {
     // Calculate nearest player and call onNearestPlayerChange once playerPositions change
-    const nearestPlayer = calculateNearestPlayer(playerPositions, activePlayerName);
+    const nearestPlayer = calculateNearestVictim(
+      playerPositions,
+      activePlayerName
+    );
     if (nearestPlayer !== null) {
       onNearestPlayerChange(nearestPlayer);
     }
