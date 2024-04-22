@@ -56,3 +56,20 @@ export function sendKillRequest(
     alert("Lost connection to server!");
   }
 }
+
+export function corpseFoundRequest(
+  corpsePlayerName: string,
+  stompClient: Client | undefined,
+  lobbyCode: string
+) {
+  try {
+    if (stompClient) {
+      stompClient.publish({
+        destination: `/app/${lobbyCode}/corpseFoundReceiver`,
+        body: corpsePlayerName,
+      });
+    }
+  } catch (error) {
+    alert("Lost connection to server!");
+  }
+}

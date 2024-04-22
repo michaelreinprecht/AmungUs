@@ -154,7 +154,7 @@ public class Lobby {
         existingPlayer.setAlive(updatedPlayer.isAlive());
         existingPlayer.setLastHeartbeat(updatedPlayer.getLastHeartbeat()); //Update the heartbeat once player info is updated
 
-        logger.info("ExistingPlayer{}", existingPlayer);
+        logger.debug("ExistingPlayer{}", existingPlayer);
     }
 
     private void addPlayerToLobby(PlayerInfo playerInfo) {

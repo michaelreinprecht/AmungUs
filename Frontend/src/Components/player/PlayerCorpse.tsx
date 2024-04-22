@@ -1,7 +1,9 @@
-import { useLoader } from "@react-three/fiber";
+import { ThreeEvent, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { PlayerPosition } from "@/app/types";
+import { corpseFoundRequest } from "../utilityFunctions/webSocketHandler";
+import { useStompClient } from "react-stomp-hooks";
 
 interface PlayerCorpseProps {
   activePlayerName: string;
@@ -28,7 +30,16 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
     playerPositions,
     setPlayerPositions,
   });
+
   const colorMap = useLoader(TextureLoader, "/gravestone.png");
+  const stompClient = useStompClient();
+
+  function startVoting(corpsePlayerName: string) {
+    //TODO: Pause game
+    //TODO: Remove corpse
+    corpseFoundRequest(corpsePlayerName, stompClient, lobbyCode);
+    //TODO: Start voting
+  }
 
   return (
     <>
@@ -39,7 +50,10 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
             key={pos.playerName}
             position={[pos.killedPlayerPositionX, pos.killedPlayerPositionY, 0]}
           >
-            <mesh ref={activePlayerName === pos.playerName ? meshRef : null}>
+            <mesh
+              onClick={() => startVoting(pos.playerName)}
+              ref={activePlayerName === pos.playerName ? meshRef : null}
+            >
               <planeGeometry args={[2 * scale, 2 * scale]} />
               <meshStandardMaterial map={colorMap} transparent={true} />
             </mesh>

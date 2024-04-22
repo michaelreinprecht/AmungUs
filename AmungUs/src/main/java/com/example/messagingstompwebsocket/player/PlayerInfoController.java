@@ -68,7 +68,7 @@ public class PlayerInfoController {
             for (PlayerInfo playerInfo : lobby.getPlayerInfos()) {
                 if (playerInfo.getPlayerName().equals(playerName)) {
                     playerInfo.setLastHeartbeat(Instant.now());
-                    logger.info("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
+                    logger.debug("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
 
                     // Update the player position in the lobby or add it if it's a new player
                     lobby.updatePlayerInfo(playerInfo);
