@@ -19,14 +19,11 @@ export default function KillUI({
   stompClient,
   lobbyCode,
 }: KillUIProps) {
-  const handleKill = () => {
-    console.log("Kill button clicked");
-    console.log("Kill initiated by: " + activePlayerName);
-    console.log("Attempting to kill: " + victimName);
+  function handleKill() {
     if (isKillEnabled) {
       sendKillRequest(activePlayerName, victimName, stompClient, lobbyCode);
     }
-  };
+  }
 
   return (
     <div

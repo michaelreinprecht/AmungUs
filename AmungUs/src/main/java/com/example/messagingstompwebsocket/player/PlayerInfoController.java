@@ -45,8 +45,8 @@ public class PlayerInfoController {
             //Updating players heartbeat every time he sends a signal
             playerInfo.setLastHeartbeat(Instant.now());
 
-            logger.info("PlayerInfo received for lobby code: {}", lobbyCode);
-            logger.debug("PlayerInfo: {}", playerInfo);
+            logger.debug("PlayerInfo received for lobby code: {}", lobbyCode);
+            logger.info("PlayerInfo: {}", playerInfo);
 
             // Update the player position in the lobby or add it if it's a new player
             lobby.updatePlayerInfo(playerInfo);
@@ -60,7 +60,7 @@ public class PlayerInfoController {
     @MessageMapping("/{lobbyCode}/heartbeatReceiver")
     @SendTo("/lobby/{lobbyCode}/heartbeat")
     public boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
-        System.out.println("Received heartbeat request for lobby code: " + lobbyCode);
+        logger.debug("Received heartbeat request for lobby code: {}", lobbyCode);
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {

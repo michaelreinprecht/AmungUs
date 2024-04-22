@@ -1,19 +1,12 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "../../player/PlayerCharacter";
 import KillUI from "./KillUI";
-import { PlayerPosition } from "../../../app/types";
-import { useStompClient, useSubscription } from "react-stomp-hooks";
-import {
-  getPlayerSpawnInfo,
-  getPositionPlayer,
-} from "@/Components/player/utilityFunctions/playerPositionHandler";
-import { killRange } from "@/app/globals";
-import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 import PlayerCorpse from "@/Components/player/PlayerCorpse";
 import VotingUI from "./VotingUI";
 import ChatWindow from "../chat/ChatWindow";
+import { useGame } from "./hooks/useGame";
 
 type GameProps = {
   activePlayerName: string;
@@ -22,38 +15,20 @@ type GameProps = {
 
 export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
-  const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
-  const [nearestPlayer, setNearestPlayer] = useState<string>("");
-  const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([]);
-  const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
 
-  const stompClient = useStompClient();
-
-  function isKillEnabled() {
-    const killer = getPositionPlayer(playerPositions, activePlayerName);
-    const victim = getPositionPlayer(playerPositions, nearestPlayer);
-    if (killer && victim && killer.alive && victim.alive) {
-      const distance = getDistanceBetween(
-        killer.playerPositionX,
-        killer.playerPositionY,
-        victim.playerPositionX,
-        victim.playerPositionY
-      );
-      return distance <= killRange;
-    }
-  }
-
-  function isKillUIVisible() {
-    return playerPositions.find(
-      (player) =>
-        player.playerName === activePlayerName && player.playerRole === "killer"
-    );
-  }
-
-  useSubscription(`/lobby/${lobbyCode}/isVoting`, (message) => {
-    const parsedMessage = JSON.parse(message.body);
-    setIsVotingActive(parsedMessage);
-  });
+  const {
+    isGamePaused,
+    setIsGamePaused,
+    nearestPlayer,
+    setNearestPlayer,
+    playerPositions,
+    setPlayerPositions,
+    isVotingActive,
+    setIsVotingActive,
+    isKillEnabled,
+    isKillUIVisible,
+    stompClient,
+  } = useGame(activePlayerName, lobbyCode);
 
   return (
     <div ref={canvasRef} className="w-screen h-screen">

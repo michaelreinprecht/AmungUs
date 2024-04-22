@@ -45,12 +45,8 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   const stompClient = useStompClient();
 
   function startVoting(corpsePlayerName: string) {
-    //Pause the game while voting
-    setIsGamePaused(true);
-    //Remove the corpse from the game
-    //TODO: Maybe move this to after voting finished? -> probably doesn't matter
-    corpseFoundRequest(corpsePlayerName, stompClient, lobbyCode);
-    //Display voting UI
+    setIsGamePaused(true); //Pause the game
+    corpseFoundRequest(corpsePlayerName, stompClient, lobbyCode); //Remove the corpse from the game
     sendIsVotingRequest(true, stompClient, lobbyCode); //Send the voting result to the server
   }
 
