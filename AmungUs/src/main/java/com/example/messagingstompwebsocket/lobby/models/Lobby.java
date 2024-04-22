@@ -26,6 +26,7 @@ public class Lobby {
     private String lobbyCode;
     private List<PlayerInfo> playerInfos;
     private boolean isGameRunning;
+    private boolean isVoting;
     private int playerCount;
     private int maxPlayerCount;
     private int killerCount;

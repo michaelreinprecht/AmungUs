@@ -2,7 +2,10 @@ import { ThreeEvent, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { PlayerPosition } from "@/app/types";
-import { corpseFoundRequest } from "../utilityFunctions/webSocketHandler";
+import {
+  corpseFoundRequest,
+  sendIsVotingRequest,
+} from "../utilityFunctions/webSocketHandler";
 import { useStompClient } from "react-stomp-hooks";
 
 interface PlayerCorpseProps {
@@ -48,7 +51,7 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
     //TODO: Maybe move this to after voting finished? -> probably doesn't matter
     corpseFoundRequest(corpsePlayerName, stompClient, lobbyCode);
     //Display voting UI
-    setIsVotingActive(true);
+    sendIsVotingRequest(true, stompClient, lobbyCode); //Send the voting result to the server
   }
 
   return (

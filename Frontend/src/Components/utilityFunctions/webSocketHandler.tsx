@@ -73,3 +73,20 @@ export function corpseFoundRequest(
     alert("Lost connection to server!");
   }
 }
+
+export function sendIsVotingRequest(
+  isVoting: boolean,
+  stompClient: Client | undefined,
+  lobbyCode: string
+) {
+  try {
+    if (stompClient) {
+      stompClient.publish({
+        destination: `/app/${lobbyCode}/isVotingReceiver`,
+        body: isVoting.toString(),
+      });
+    }
+  } catch (error) {
+    alert("Lost connection to server!");
+  }
+}

@@ -112,6 +112,16 @@ public class PlayerInfoController {
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
     }
 
+    @MessageMapping("/{lobbyCode}/isVotingReceiver")
+    @SendTo("/lobby/{lobbyCode}/isVoting")
+    public boolean setIsVoting(@DestinationVariable String lobbyCode, boolean isVoting) throws Exception {
+        logger.info("IsVoting state changed to: {}, for lobby: {}", isVoting, lobbyCode);
+
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        lobby.setVoting(isVoting);
+        return lobby.isVoting();
+    }
+
     @GetMapping("/api/lobby/{lobbyCode}/playerNames")
     @ResponseBody
     public List<String> getPlayerNames(@PathVariable String lobbyCode) {

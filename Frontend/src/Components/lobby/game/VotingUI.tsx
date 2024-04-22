@@ -1,36 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { useVotingUI } from "./hooks/useVotingUI";
+import { votingTimer } from "@/app/globals";
+import { sendIsVotingRequest } from "@/Components/utilityFunctions/webSocketHandler";
 
 type VotingUIProps = {
   setIsVotingActive: (isVotingActive: boolean) => void;
   setIsGamePaused: (isGamePaused: boolean) => void;
+  lobbyCode: string;
 };
 
 export default function VotingUI({
   setIsVotingActive,
   setIsGamePaused,
+  lobbyCode,
 }: VotingUIProps) {
-  const [timer, setTimer] = useState(10); // Initial timer value
-
-  function stopVoting() {
-    setIsVotingActive(false); //Stop the voting
-    setIsGamePaused(false); //Resume the game
-  }
-
-  useEffect(() => {
-    const timerInterval = setInterval(() => {
-      setTimer((prevTimer) => prevTimer - 1); // Decrease timer by 1 every second
-    }, 1000);
-
-    // Clean up the interval when component unmounts or when timer reaches 0
-    return () => clearInterval(timerInterval);
-  }, []);
-
-  // Call stopVoting function after 10 seconds
-  useEffect(() => {
-    if (timer === 0) {
-      stopVoting();
-    }
-  }, [timer]);
+  const { timer, stopVoting } = useVotingUI(
+    votingTimer, //Using global value
+    setIsVotingActive,
+    setIsGamePaused,
+    lobbyCode
+  );
 
   return (
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-600 w-3/4 h-3/4 flex flex-col justify-center items-center">
@@ -38,7 +27,6 @@ export default function VotingUI({
         Just a placeholder for the real voting UI
       </h1>
       <p className="text-white text-lg mb-2">Remaining voting time: {timer}</p>{" "}
-      {/* Display timer here */}
       <button
         onClick={stopVoting}
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline"

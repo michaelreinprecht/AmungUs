@@ -4,7 +4,7 @@ import Background from "./Background";
 import PlayerCharacter from "../../player/PlayerCharacter";
 import KillUI from "./KillUI";
 import { PlayerPosition } from "../../../app/types";
-import { useStompClient } from "react-stomp-hooks";
+import { useStompClient, useSubscription } from "react-stomp-hooks";
 import {
   getPlayerSpawnInfo,
   getPositionPlayer,
@@ -49,6 +49,11 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         player.playerName === activePlayerName && player.playerRole === "killer"
     );
   }
+
+  useSubscription(`/lobby/${lobbyCode}/isVoting`, (message) => {
+    const parsedMessage = JSON.parse(message.body);
+    setIsVotingActive(parsedMessage);
+  });
 
   return (
     <div ref={canvasRef} className="w-screen h-screen">
@@ -118,6 +123,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         <VotingUI
           setIsVotingActive={setIsVotingActive}
           setIsGamePaused={setIsGamePaused}
+          lobbyCode={lobbyCode}
         />
       )}
 
