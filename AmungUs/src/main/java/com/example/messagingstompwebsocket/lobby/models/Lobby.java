@@ -1,8 +1,6 @@
-package com.example.messagingstompwebsocket.lobby;
+package com.example.messagingstompwebsocket.lobby.models;
 
-import com.example.messagingstompwebsocket.player.KillRequest;
-import com.example.messagingstompwebsocket.player.PlayerInfo;
-import com.example.messagingstompwebsocket.player.PlayerInfoController;
+import com.example.messagingstompwebsocket.player.models.PlayerInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;

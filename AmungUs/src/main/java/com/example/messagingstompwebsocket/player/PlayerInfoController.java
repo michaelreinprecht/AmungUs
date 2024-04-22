@@ -2,22 +2,19 @@ package com.example.messagingstompwebsocket.player;
 
 import com.example.messagingstompwebsocket.GlobalValues;
 import com.example.messagingstompwebsocket.Utils;
-import com.example.messagingstompwebsocket.lobby.Lobby;
+import com.example.messagingstompwebsocket.lobby.models.Lobby;
 import com.example.messagingstompwebsocket.lobby.LobbyService;
+import com.example.messagingstompwebsocket.player.models.KillRequest;
+import com.example.messagingstompwebsocket.player.models.PlayerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
