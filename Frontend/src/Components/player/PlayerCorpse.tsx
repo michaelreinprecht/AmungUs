@@ -6,6 +6,8 @@ import { corpseFoundRequest } from "../utilityFunctions/webSocketHandler";
 import { useStompClient } from "react-stomp-hooks";
 
 interface PlayerCorpseProps {
+  isGamePaused: boolean;
+  setIsGamePaused: (isGamePaused: boolean) => void;
   activePlayerName: string;
   scale: number;
   lobbyCode: string;
@@ -15,6 +17,8 @@ interface PlayerCorpseProps {
 }
 
 const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
+  isGamePaused,
+  setIsGamePaused,
   activePlayerName,
   scale,
   playerPositions,
@@ -23,6 +27,7 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   onNearestPlayerChange,
 }) => {
   const { meshRef } = usePlayerCharacter({
+    isGamePaused,
     activePlayerName,
     scale,
     lobbyCode,
@@ -36,6 +41,7 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
 
   function startVoting(corpsePlayerName: string) {
     //TODO: Pause game
+    setIsGamePaused(true);
     //TODO: Remove corpse
     corpseFoundRequest(corpsePlayerName, stompClient, lobbyCode);
     //TODO: Start voting

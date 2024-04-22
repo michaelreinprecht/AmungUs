@@ -20,6 +20,7 @@ type GameProps = {
 
 export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
+  const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([]);
 
@@ -71,6 +72,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
 
         {/* Render player character */}
         <PlayerCharacter
+          isGamePaused={isGamePaused}
           activePlayerName={activePlayerName}
           scale={5}
           lobbyCode={lobbyCode}
@@ -82,7 +84,9 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         />
 
         {/* Render player corpse */}
-        <PlayerCorpse 
+        <PlayerCorpse
+          isGamePaused={isGamePaused}
+          setIsGamePaused={setIsGamePaused}
           activePlayerName={activePlayerName}
           scale={5}
           lobbyCode={lobbyCode}

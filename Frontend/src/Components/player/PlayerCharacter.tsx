@@ -6,33 +6,45 @@ import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 
 interface PlayerCharacterProps {
+  isGamePaused: boolean;
   activePlayerName: string;
   scale: number;
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
   playerPositions: PlayerPosition[];
   setPlayerPositions: (playerPositions: PlayerPosition[]) => void;
-
 }
 
 const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
+  isGamePaused,
   activePlayerName,
   scale,
   lobbyCode,
   onNearestPlayerChange,
   playerPositions,
-  setPlayerPositions
+  setPlayerPositions,
 }) => {
-  const {  meshRef } = usePlayerCharacter(
-    {activePlayerName, scale, lobbyCode, onNearestPlayerChange, playerPositions, setPlayerPositions}
-  );
+  const { meshRef } = usePlayerCharacter({
+    isGamePaused,
+    activePlayerName,
+    scale,
+    lobbyCode,
+    onNearestPlayerChange,
+    playerPositions,
+    setPlayerPositions,
+  });
   const colorMapPlayer = useLoader(TextureLoader, "/rick.png");
   const colorMapGhost = useLoader(TextureLoader, "/ghost.png");
 
   return (
     <>
       {playerPositions
-        .filter((pos) => pos.alive || !playerPositions.find((p) => p.playerName === activePlayerName)?.alive)
+        .filter(
+          (pos) =>
+            pos.alive ||
+            !playerPositions.find((p) => p.playerName === activePlayerName)
+              ?.alive
+        )
         .map((pos) => (
           <group
             key={pos.playerName}
@@ -45,7 +57,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
                 transparent={true}
               />
             </mesh>
-            
+
             <Text
               position={[0, scale, 0]}
               fontSize={0.6 * scale}
