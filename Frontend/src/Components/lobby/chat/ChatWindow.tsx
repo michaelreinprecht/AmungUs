@@ -15,17 +15,22 @@ export default function ChatWindow({
 
   return (
     <>
-      <div
-        className="fixed bottom-4 right-4 w-96 h-48"
-        onMouseEnter={show()}
-        onMouseLeave={hide()}
-      >
-        <ChatMessageList
-          showChat={showChat}
-          setShowChat={setShowChat} // Pass setShowChat to ChatMessageList
-          lobbyCode={lobbyCode}
-        />
-        <ChatField activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
+      <div className="row">
+        <div
+          className="fixed bottom-4 right-4 w-96 h-48"
+          onMouseEnter={show()}
+          onMouseLeave={hide()}
+        >
+          <ChatMessageList
+            showChat={showChat}
+            setShowChat={setShowChat} // Pass setShowChat to ChatMessageList
+            lobbyCode={lobbyCode}
+          />
+          <ChatField
+            activePlayerName={activePlayerName}
+            lobbyCode={lobbyCode}
+          />
+        </div>
       </div>
     </>
   );

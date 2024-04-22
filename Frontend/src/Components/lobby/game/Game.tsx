@@ -12,6 +12,8 @@ import {
 import { killRange } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 import PlayerCorpse from "@/Components/player/PlayerCorpse";
+import VotingUI from "./VotingUI";
+import ChatWindow from "../chat/ChatWindow";
 
 type GameProps = {
   activePlayerName: string;
@@ -23,6 +25,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([]);
+  const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
 
   const stompClient = useStompClient();
 
@@ -87,6 +90,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         <PlayerCorpse
           isGamePaused={isGamePaused}
           setIsGamePaused={setIsGamePaused}
+          setIsVotingActive={setIsVotingActive}
           activePlayerName={activePlayerName}
           scale={5}
           lobbyCode={lobbyCode}
@@ -107,6 +111,19 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           stompClient={stompClient}
           lobbyCode={lobbyCode}
         />
+      )}
+
+      {/* Voting UI */}
+      {isVotingActive && (
+        <VotingUI
+          setIsVotingActive={setIsVotingActive}
+          setIsGamePaused={setIsGamePaused}
+        />
+      )}
+
+      {/* Render MessageForm and MessageList only if connected */}
+      {isVotingActive && (
+        <ChatWindow activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
       )}
     </div>
   );

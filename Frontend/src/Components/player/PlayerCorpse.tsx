@@ -8,6 +8,7 @@ import { useStompClient } from "react-stomp-hooks";
 interface PlayerCorpseProps {
   isGamePaused: boolean;
   setIsGamePaused: (isGamePaused: boolean) => void;
+  setIsVotingActive: (isVotingActive: boolean) => void;
   activePlayerName: string;
   scale: number;
   lobbyCode: string;
@@ -19,6 +20,7 @@ interface PlayerCorpseProps {
 const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   isGamePaused,
   setIsGamePaused,
+  setIsVotingActive,
   activePlayerName,
   scale,
   playerPositions,
@@ -40,11 +42,13 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   const stompClient = useStompClient();
 
   function startVoting(corpsePlayerName: string) {
-    //TODO: Pause game
+    //Pause the game while voting
     setIsGamePaused(true);
-    //TODO: Remove corpse
+    //Remove the corpse from the game
+    //TODO: Maybe move this to after voting finished? -> probably doesn't matter
     corpseFoundRequest(corpsePlayerName, stompClient, lobbyCode);
-    //TODO: Start voting
+    //Display voting UI
+    setIsVotingActive(true);
   }
 
   return (
