@@ -6,7 +6,6 @@ import {
 } from "../utilityFunctions/keyEventHandler";
 import {
   getPlayerSpawnInfo,
-  getPositionPlayer,
   getUpdatedPlayerPosition,
 } from "../utilityFunctions/playerPositionHandler";
 import { useStompClient, useSubscription } from "react-stomp-hooks";

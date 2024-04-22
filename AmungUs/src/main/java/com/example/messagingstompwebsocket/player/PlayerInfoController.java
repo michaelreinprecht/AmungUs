@@ -100,6 +100,17 @@ public class PlayerInfoController {
         return false;
     }
 
+    @MessageMapping("/{lobbyCode}/corpseFoundReceiver")
+    public void corpseFound(@DestinationVariable String lobbyCode, String corpsePlayerName) throws Exception {
+        logger.info("Found corpse for lobby code: {}", lobbyCode);
+        logger.info("Corps of player: {}", corpsePlayerName);
+        // Get the lobby from the lobby service
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        lobby.removeCorpse(corpsePlayerName);
+        List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
+        // Send the updated player info to all players
+        messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
+    }
 
     @GetMapping("/api/lobby/{lobbyCode}/playerNames")
     @ResponseBody

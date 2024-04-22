@@ -51,26 +51,14 @@ public class Lobby {
         boolean playerExists = false;
         for (PlayerInfo existingPlayer : playerInfos) {
             if (existingPlayer.getPlayerName().equals(playerInfo.getPlayerName())) {
-                // Update the player's position
-                existingPlayer.setPlayerPositionX(playerInfo.getPlayerPositionX());
-                existingPlayer.setPlayerPositionY(playerInfo.getPlayerPositionY());
-                existingPlayer.setAlive(playerInfo.isAlive());
-                existingPlayer.setLastHeartbeat(playerInfo.getLastHeartbeat()); //Update the heartbeat once player info is updated
-
-                System.out.println("ExistingPlayer" + existingPlayer);
+                updateExistingPlayer(existingPlayer, playerInfo);
                 playerExists = true;
                 break;
             }
         }
         // If the player doesn't exist in the lobby, add them
         if (!playerExists) {
-            //Increase player count and add player to playerInfos list
-            playerCount++;
-            playerInfos.add(playerInfo);
-            //If the new player got killer role, increase killerCount by 1
-            if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {
-                killerCount++;
-            }
+            addPlayerToLobby(playerInfo);
         }
     }
 
@@ -146,6 +134,39 @@ public class Lobby {
                 playerInfo.setKilledPlayerPositionY(victim.getPlayerPositionY());
                 logger.info("Player {} was killed", victim.getPlayerName());
             }
+        }
+    }
+
+    //Remove the corpse for all players once it's been found
+    public void removeCorpse(String corpsePlayerName) {
+        for (PlayerInfo playerInfo : playerInfos) {
+            if (playerInfo.getPlayerName().equals(corpsePlayerName)) {
+                playerInfo.setCorpseFound(true);
+                logger.info("Corpse of player {} was removed", corpsePlayerName);
+            }
+        }
+    }
+
+    private void updateExistingPlayer(PlayerInfo existingPlayer, PlayerInfo updatedPlayer) {
+        // Update the player's position
+        existingPlayer.setPlayerPositionX(updatedPlayer.getPlayerPositionX());
+        existingPlayer.setPlayerPositionY(updatedPlayer.getPlayerPositionY());
+        existingPlayer.setAlive(updatedPlayer.isAlive());
+        existingPlayer.setLastHeartbeat(updatedPlayer.getLastHeartbeat()); //Update the heartbeat once player info is updated
+
+        logger.info("ExistingPlayer{}", existingPlayer);
+    }
+
+    private void addPlayerToLobby(PlayerInfo playerInfo) {
+        //Set default values for playerInfo
+        playerInfo.setToDefault();
+
+        //Increase player count and add player to playerInfos list
+        playerCount++;
+        playerInfos.add(playerInfo);
+        //If the new player got killer role, increase killerCount by 1
+        if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {
+            killerCount++;
         }
     }
 }

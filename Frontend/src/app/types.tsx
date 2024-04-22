@@ -5,6 +5,7 @@ export type PlayerPosition = {
   killedPlayerPositionX: number;
   killedPlayerPositionY: number;
   alive: boolean;
+  corpseFound: boolean;
   playerRole: "killer" | "crewmate";
 };
 
