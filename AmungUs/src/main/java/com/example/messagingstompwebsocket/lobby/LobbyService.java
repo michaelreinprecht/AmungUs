@@ -1,5 +1,6 @@
 package com.example.messagingstompwebsocket.lobby;
 
+import com.example.messagingstompwebsocket.lobby.models.Lobby;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

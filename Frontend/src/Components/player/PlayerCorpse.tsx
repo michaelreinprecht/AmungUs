@@ -1,48 +1,75 @@
-import { useLoader } from "@react-three/fiber";
+import { ThreeEvent, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { PlayerPosition } from "@/app/types";
+import {
+  corpseFoundRequest,
+  sendIsVotingRequest,
+} from "../utilityFunctions/webSocketHandler";
+import { useStompClient } from "react-stomp-hooks";
 
 interface PlayerCorpseProps {
-    activePlayerName: string;
-    scale: number;
-    lobbyCode: string;
-    onNearestPlayerChange: (playerName: string) => void;
-    playerPositions: PlayerPosition[];
-    setPlayerPositions: (playerPositions: PlayerPosition[]) => void;
+  isGamePaused: boolean;
+  setIsGamePaused: (isGamePaused: boolean) => void;
+  setIsVotingActive: (isVotingActive: boolean) => void;
+  activePlayerName: string;
+  scale: number;
+  lobbyCode: string;
+  onNearestPlayerChange: (playerName: string) => void;
+  playerPositions: PlayerPosition[];
+  setPlayerPositions: (playerPositions: PlayerPosition[]) => void;
 }
 
-const PlayerCorpse : React.FC<PlayerCorpseProps> =  ({ 
-    activePlayerName, 
-    scale, 
-    playerPositions, 
-    setPlayerPositions,
-    lobbyCode,
-    onNearestPlayerChange
+const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
+  isGamePaused,
+  setIsGamePaused,
+  setIsVotingActive,
+  activePlayerName,
+  scale,
+  playerPositions,
+  setPlayerPositions,
+  lobbyCode,
+  onNearestPlayerChange,
 }) => {
-    const {  meshRef } = usePlayerCharacter(
-        {activePlayerName, scale, lobbyCode, onNearestPlayerChange, playerPositions, setPlayerPositions}
-      );
-    const colorMap = useLoader(TextureLoader, "/rick_dead.png");
-      
+  const { meshRef } = usePlayerCharacter({
+    isGamePaused,
+    activePlayerName,
+    scale,
+    lobbyCode,
+    onNearestPlayerChange,
+    playerPositions,
+    setPlayerPositions,
+  });
 
-    return (
-        <>
-           {playerPositions
-              .filter((pos) => !pos.alive)
-              .map((pos) => (
-        <group
-          key={pos.playerName}
-          position={[pos.killedPlayerPositionX, pos.killedPlayerPositionY, 0]}
-        >
-          <mesh ref={activePlayerName === pos.playerName ? meshRef : null}>
-            <planeGeometry args={[2 * scale, 2 * scale]} />
-            <meshStandardMaterial map={colorMap} transparent={true} />
-          </mesh>
-        </group>
-      ))}
-        </>
-    );
+  const colorMap = useLoader(TextureLoader, "/gravestone.png");
+  const stompClient = useStompClient();
+
+  function startVoting(corpsePlayerName: string) {
+    setIsGamePaused(true); //Pause the game
+    corpseFoundRequest(corpsePlayerName, stompClient, lobbyCode); //Remove the corpse from the game
+    sendIsVotingRequest(true, stompClient, lobbyCode); //Send the voting result to the server
+  }
+
+  return (
+    <>
+      {playerPositions
+        .filter((pos) => !pos.alive && !pos.corpseFound)
+        .map((pos) => (
+          <group
+            key={pos.playerName}
+            position={[pos.killedPlayerPositionX, pos.killedPlayerPositionY, 0]}
+          >
+            <mesh
+              onClick={() => startVoting(pos.playerName)}
+              ref={activePlayerName === pos.playerName ? meshRef : null}
+            >
+              <planeGeometry args={[2 * scale, 2 * scale]} />
+              <meshStandardMaterial map={colorMap} transparent={true} />
+            </mesh>
+          </group>
+        ))}
+    </>
+  );
 };
 
-    export default PlayerCorpse;
+export default PlayerCorpse;

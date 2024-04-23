@@ -2,22 +2,19 @@ package com.example.messagingstompwebsocket.player;
 
 import com.example.messagingstompwebsocket.GlobalValues;
 import com.example.messagingstompwebsocket.Utils;
-import com.example.messagingstompwebsocket.lobby.Lobby;
+import com.example.messagingstompwebsocket.lobby.models.Lobby;
 import com.example.messagingstompwebsocket.lobby.LobbyService;
+import com.example.messagingstompwebsocket.player.models.KillRequest;
+import com.example.messagingstompwebsocket.player.models.PlayerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -48,8 +45,8 @@ public class PlayerInfoController {
             //Updating players heartbeat every time he sends a signal
             playerInfo.setLastHeartbeat(Instant.now());
 
-            logger.info("PlayerInfo received for lobby code: {}", lobbyCode);
-            logger.debug("PlayerInfo: {}", playerInfo);
+            logger.debug("PlayerInfo received for lobby code: {}", lobbyCode);
+            logger.info("PlayerInfo: {}", playerInfo);
 
             // Update the player position in the lobby or add it if it's a new player
             lobby.updatePlayerInfo(playerInfo);
@@ -63,7 +60,7 @@ public class PlayerInfoController {
     @MessageMapping("/{lobbyCode}/heartbeatReceiver")
     @SendTo("/lobby/{lobbyCode}/heartbeat")
     public boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
-        System.out.println("Received heartbeat request for lobby code: " + lobbyCode);
+        logger.debug("Received heartbeat request for lobby code: {}", lobbyCode);
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
@@ -71,7 +68,7 @@ public class PlayerInfoController {
             for (PlayerInfo playerInfo : lobby.getPlayerInfos()) {
                 if (playerInfo.getPlayerName().equals(playerName)) {
                     playerInfo.setLastHeartbeat(Instant.now());
-                    logger.info("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
+                    logger.debug("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
 
                     // Update the player position in the lobby or add it if it's a new player
                     lobby.updatePlayerInfo(playerInfo);
@@ -103,6 +100,27 @@ public class PlayerInfoController {
         return false;
     }
 
+    @MessageMapping("/{lobbyCode}/corpseFoundReceiver")
+    public void corpseFound(@DestinationVariable String lobbyCode, String corpsePlayerName) throws Exception {
+        logger.info("Found corpse for lobby code: {}", lobbyCode);
+        logger.info("Corps of player: {}", corpsePlayerName);
+        // Get the lobby from the lobby service
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        lobby.removeCorpse(corpsePlayerName);
+        List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
+        // Send the updated player info to all players
+        messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
+    }
+
+    @MessageMapping("/{lobbyCode}/isVotingReceiver")
+    @SendTo("/lobby/{lobbyCode}/isVoting")
+    public boolean setIsVoting(@DestinationVariable String lobbyCode, boolean isVoting) throws Exception {
+        logger.info("IsVoting state changed to: {}, for lobby: {}", isVoting, lobbyCode);
+
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        lobby.setVoting(isVoting);
+        return lobby.isVoting();
+    }
 
     @GetMapping("/api/lobby/{lobbyCode}/playerNames")
     @ResponseBody

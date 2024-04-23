@@ -6,7 +6,6 @@ import {
 } from "../utilityFunctions/keyEventHandler";
 import {
   getPlayerSpawnInfo,
-  getPositionPlayer,
   getUpdatedPlayerPosition,
 } from "../utilityFunctions/playerPositionHandler";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
@@ -15,6 +14,7 @@ import * as THREE from "three";
 import { updatePlayerPosition } from "@/Components/utilityFunctions/webSocketHandler";
 
 export function usePlayerMovement(
+  isGamePaused: boolean,
   activePlayerName: string,
   scale: number,
   playerPositions: PlayerPosition[],
@@ -74,25 +74,27 @@ export function usePlayerMovement(
   }, []);
 
   useFrame((_, delta) => {
-    if (meshRef.current) {
-      if (
-        movement.forward ||
-        movement.backward ||
-        movement.left ||
-        movement.right
-      ) {
-        updatePlayerPosition(
-          getUpdatedPlayerPosition(
-            delta,
-            activePlayerName,
-            movement,
-            bounds,
-            scale,
-            playerPositions
-          ),
-          stompClient,
-          lobbyCode
-        );
+    if (!isGamePaused) {
+      if (meshRef.current) {
+        if (
+          movement.forward ||
+          movement.backward ||
+          movement.left ||
+          movement.right
+        ) {
+          updatePlayerPosition(
+            getUpdatedPlayerPosition(
+              delta,
+              activePlayerName,
+              movement,
+              bounds,
+              scale,
+              playerPositions
+            ),
+            stompClient,
+            lobbyCode
+          );
+        }
       }
     }
   });

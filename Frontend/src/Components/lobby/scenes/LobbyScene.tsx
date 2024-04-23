@@ -40,19 +40,6 @@ function LobbyScene({ lobbyCode }: LobbyProps) {
         {activePlayerName !== "" && (
           <>
             <Game activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
-            <div id="main-content" className="container">
-              {/* Render MessageForm and MessageList only if connected */}
-              {true && (
-                <>
-                  <div className="row">
-                    <ChatWindow
-                      activePlayerName={activePlayerName}
-                      lobbyCode={lobbyCode}
-                    />
-                  </div>
-                </>
-              )}
-            </div>
           </>
         )}
       </StompSessionProvider>

@@ -1,4 +1,4 @@
-package com.example.messagingstompwebsocket.chat;
+package com.example.messagingstompwebsocket.chat.models;
 
 import lombok.Getter;
 import lombok.Setter;

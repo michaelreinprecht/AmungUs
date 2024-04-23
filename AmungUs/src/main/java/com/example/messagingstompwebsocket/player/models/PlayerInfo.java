@@ -1,4 +1,4 @@
-package com.example.messagingstompwebsocket.player;
+package com.example.messagingstompwebsocket.player.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -16,10 +16,15 @@ public class PlayerInfo {
     private float playerPositionY;
     private float killedPlayerPositionX;
     private float killedPlayerPositionY;
+    private boolean corpseFound;
     private boolean alive;
     private String playerRole;
 
     @JsonIgnore
     private Instant lastHeartbeat;
 
+    public void setToDefault() {
+        alive = true;
+        corpseFound = false;
+    }
 }

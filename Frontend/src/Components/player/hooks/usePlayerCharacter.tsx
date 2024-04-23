@@ -8,6 +8,7 @@ import { usePlayerMovement } from "./usePlayerMovement";
 import { usePlayerHeartbeat } from "./usePlayerHeartbeat";
 
 type usePlayerCharacterProps = {
+  isGamePaused: boolean;
   activePlayerName: string;
   scale: number;
   lobbyCode: string;
@@ -17,6 +18,7 @@ type usePlayerCharacterProps = {
 };
 
 export function usePlayerCharacter({
+  isGamePaused,
   activePlayerName,
   scale,
   lobbyCode,
@@ -27,6 +29,7 @@ export function usePlayerCharacter({
   const meshRef = useRef<THREE.Mesh>(null);
 
   usePlayerMovement(
+    isGamePaused,
     activePlayerName,
     scale,
     playerPositions,

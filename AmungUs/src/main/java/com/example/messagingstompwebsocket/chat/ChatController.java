@@ -1,6 +1,7 @@
 package com.example.messagingstompwebsocket.chat;
 
-import com.example.messagingstompwebsocket.lobby.Lobby;
+import com.example.messagingstompwebsocket.chat.models.ChatMessage;
+import com.example.messagingstompwebsocket.lobby.models.Lobby;
 import com.example.messagingstompwebsocket.lobby.LobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
