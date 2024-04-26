@@ -4,15 +4,15 @@ import ChatMessageListItem from "./ChatMessageListItem";
 type ChatMessageListProps = {
   showChat: boolean;
   setShowChat: (newShowChat: boolean) => void;
-  lobbyCode: string;
+  messages: string[];
 };
 
 export default function ChatMessageList({
   showChat,
   setShowChat,
-  lobbyCode,
+  messages,
 }: ChatMessageListProps) {
-  const { messages, tableRef } = useChatMessageList(lobbyCode, setShowChat);
+  const { tableRef } = useChatMessageList(messages, setShowChat);
 
   return (
     <>

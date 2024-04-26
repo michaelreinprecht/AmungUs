@@ -74,8 +74,7 @@ export function corpseFoundRequest(
   }
 }
 
-export function sendIsVotingRequest(
-  isVoting: boolean,
+export function sendStartVoting(
   stompClient: Client | undefined,
   lobbyCode: string
 ) {
@@ -83,7 +82,23 @@ export function sendIsVotingRequest(
     if (stompClient) {
       stompClient.publish({
         destination: `/app/${lobbyCode}/isVotingReceiver`,
-        body: isVoting.toString(),
+      });
+    }
+  } catch (error) {
+    alert("Lost connection to server!");
+  }
+}
+
+export function sendVotingState(
+  stompClient: Client | undefined,
+  lobbyCode: string,
+  votingState: boolean
+) {
+  try {
+    if (stompClient) {
+      stompClient.publish({
+        destination: `/app/${lobbyCode}/votingStateReceiver`,
+        body: JSON.stringify(votingState),
       });
     }
   } catch (error) {

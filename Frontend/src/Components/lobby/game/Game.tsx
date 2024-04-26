@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "../../player/PlayerCharacter";
@@ -27,7 +27,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     setIsVotingActive,
     isKillEnabled,
     isKillUIVisible,
-    stompClient,
   } = useGame(activePlayerName, lobbyCode);
 
   return (
@@ -69,8 +68,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         {/* Render player corpse */}
         <PlayerCorpse
           isGamePaused={isGamePaused}
-          setIsGamePaused={setIsGamePaused}
-          setIsVotingActive={setIsVotingActive}
           activePlayerName={activePlayerName}
           scale={5}
           lobbyCode={lobbyCode}
@@ -88,19 +85,12 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           isKillEnabled={isKillEnabled()}
           activePlayerName={activePlayerName}
           victimName={nearestPlayer}
-          stompClient={stompClient}
           lobbyCode={lobbyCode}
         />
       )}
 
       {/* Voting UI */}
-      {isVotingActive && (
-        <VotingUI
-          setIsVotingActive={setIsVotingActive}
-          setIsGamePaused={setIsGamePaused}
-          lobbyCode={lobbyCode}
-        />
-      )}
+      {isVotingActive && <VotingUI lobbyCode={lobbyCode} />}
 
       {/* Render MessageForm and MessageList only if connected */}
       {isVotingActive && (

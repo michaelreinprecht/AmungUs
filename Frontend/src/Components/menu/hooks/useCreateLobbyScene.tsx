@@ -10,7 +10,6 @@ export default function useCreateLobbyScene() {
   async function createLobby(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); // Prevent the default form submission behavior
 
-    console.log("Creating lobby");
     const url = "http://localhost:8080/api/lobby/createLobby";
     const requestBody = {
       maxPlayerCount: maxPlayerCount,

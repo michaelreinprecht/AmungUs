@@ -1,19 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import LobbyListItem from "../LobbyListItem";
 import useSelectLobbyScene from "../hooks/useSelectLobbyScene";
 
 export type Lobby = {
   lobbyCode: string;
-  //playerInfo -> might need at some point
   isGameRunning: boolean;
   playerCount: number;
   maxPlayerCount: number;
 };
 
 export default function SelectLobbyScene() {
-  const {lobbies, fetchLobbies} = useSelectLobbyScene();
+  const { lobbies, fetchLobbies } = useSelectLobbyScene();
 
   return (
     <div className="bg-gray-800 p-14 border border-gray-700 h-screen">

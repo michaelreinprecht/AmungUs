@@ -1,9 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { useSubscription } from "react-stomp-hooks";
+import { Client } from "@stomp/stompjs";
 
-export function useChatMessageList(lobbyCode: string, setShowChat: (newShowChat: boolean) => void) {
-  const [messages, setMessages] = useState<string[]>([]);
+export function useChatMessageList(
+  messages: string[], // List of chat messages
+  setShowChat: (newShowChat: boolean) => void
+) {
   const tableRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const client = new Client({
+      brokerURL: "ws://localhost:8080/lobbyService",
+      onConnect: () => {},
+    });
+    client.activate();
+  }, []);
 
   // UseEffect is a react function, it gets called whenever the passed list (in this case messages) is changed.
   // In this case we use it so scroll to the bottom of the list once a new message is added.
@@ -21,13 +31,5 @@ export function useChatMessageList(lobbyCode: string, setShowChat: (newShowChat:
     }, 5000);
   }, [messages]);
 
-  //Subscribe to messages websocket
-  useSubscription(`/lobby/${lobbyCode}/messages`, (message) => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      message.body,
-    ]);
-  });
-
-  return { messages, tableRef };
+  return { tableRef };
 }

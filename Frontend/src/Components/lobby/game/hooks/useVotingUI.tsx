@@ -1,15 +1,8 @@
-import { sendIsVotingRequest } from "@/Components/utilityFunctions/webSocketHandler";
 import { useEffect, useState } from "react";
-import { useStompClient } from "react-stomp-hooks";
+import { Client } from "@stomp/stompjs";
 
-export function useVotingUI(
-  initialTimer: number,
-  setIsVotingActive: (isVotingActive: boolean) => void,
-  setIsGamePaused: (isGamePaused: boolean) => void,
-  lobbyCode: string
-) {
+export function useVotingUI(initialTimer: number, lobbyCode: string) {
   const [timer, setTimer] = useState(initialTimer);
-  const stompClient = useStompClient();
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
@@ -27,8 +20,16 @@ export function useVotingUI(
   }, [timer]);
 
   function stopVoting() {
-    sendIsVotingRequest(false, stompClient, lobbyCode); //Send the voting result to the server
-    setIsGamePaused(false); //Resume the game
+    const votingClient = new Client({
+      brokerURL: "ws://localhost:8081/votingService",
+      onConnect: () => {
+        votingClient.publish({
+          destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
+          body: JSON.stringify(false),
+        });
+      },
+    });
+    votingClient.activate();
   }
 
   return { timer, stopVoting };

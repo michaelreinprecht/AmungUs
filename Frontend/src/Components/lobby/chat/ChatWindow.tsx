@@ -1,6 +1,7 @@
 import { useChatWindow } from "./hooks/useChatWindow";
 import ChatField from "./ChatField";
 import ChatMessageList from "./ChatMessageList";
+import { useState } from "react";
 
 type ChatWindowProps = {
   activePlayerName: string;
@@ -12,6 +13,7 @@ export default function ChatWindow({
   lobbyCode,
 }: ChatWindowProps) {
   const { showChat, show, hide, setShowChat } = useChatWindow();
+  const [messages, setMessages] = useState<string[]>([]);
 
   return (
     <>
@@ -22,11 +24,12 @@ export default function ChatWindow({
           onMouseLeave={hide()}
         >
           <ChatMessageList
+            messages={messages}
             showChat={showChat}
             setShowChat={setShowChat} // Pass setShowChat to ChatMessageList
-            lobbyCode={lobbyCode}
           />
           <ChatField
+            setMessages={setMessages} // Pass setMessages
             activePlayerName={activePlayerName}
             lobbyCode={lobbyCode}
           />

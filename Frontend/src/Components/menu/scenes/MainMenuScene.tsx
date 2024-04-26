@@ -1,5 +1,6 @@
-import MainMenuNavButton from "../MainMenuNavButton";
+"use client";
 
+import MainMenuNavButton from "../MainMenuNavButton";
 export default function MainMenuScene() {
   return (
     <div className="bg-gray-900 flex flex-col items-center justify-center min-h-screen gap-4">

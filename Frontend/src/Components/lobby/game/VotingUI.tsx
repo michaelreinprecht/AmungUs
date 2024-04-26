@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useVotingUI } from "./hooks/useVotingUI";
 import { votingTimer } from "@/app/globals";
-import { sendIsVotingRequest } from "@/Components/utilityFunctions/webSocketHandler";
 
 type VotingUIProps = {
-  setIsVotingActive: (isVotingActive: boolean) => void;
-  setIsGamePaused: (isGamePaused: boolean) => void;
   lobbyCode: string;
 };
 
-export default function VotingUI({
-  setIsVotingActive,
-  setIsGamePaused,
-  lobbyCode,
-}: VotingUIProps) {
+export default function VotingUI({ lobbyCode }: VotingUIProps) {
   const { timer, stopVoting } = useVotingUI(
     votingTimer, //Using global value
-    setIsVotingActive,
-    setIsGamePaused,
     lobbyCode
   );
 
