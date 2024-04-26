@@ -1,17 +1,12 @@
-import { ThreeEvent, useLoader } from "@react-three/fiber";
+import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { PlayerPosition } from "@/app/types";
-import {
-  corpseFoundRequest,
-  sendIsVotingRequest,
-} from "../utilityFunctions/webSocketHandler";
-import { useStompClient } from "react-stomp-hooks";
+import { useEffect, useState } from "react";
+import { Client } from "@stomp/stompjs";
 
 interface PlayerCorpseProps {
   isGamePaused: boolean;
-  setIsGamePaused: (isGamePaused: boolean) => void;
-  setIsVotingActive: (isVotingActive: boolean) => void;
   activePlayerName: string;
   scale: number;
   lobbyCode: string;
@@ -22,8 +17,6 @@ interface PlayerCorpseProps {
 
 const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   isGamePaused,
-  setIsGamePaused,
-  setIsVotingActive,
   activePlayerName,
   scale,
   playerPositions,
@@ -42,12 +35,36 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   });
 
   const colorMap = useLoader(TextureLoader, "/gravestone.png");
-  const stompClient = useStompClient();
+
+  const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
+  const [votingClient, setVotingClient] = useState<Client | undefined>();
+
+  useEffect(() => {
+    const lClient = new Client({
+      brokerURL: "ws://localhost:8080/lobbyService",
+      onConnect: () => {
+        setLobbyClient(lClient);
+      },
+    });
+    lClient.activate();
+    const vClient = new Client({
+      brokerURL: "ws://localhost:8081/votingService",
+      onConnect: () => {
+        setVotingClient(vClient);
+      },
+    });
+    vClient.activate();
+  }, []);
 
   function startVoting(corpsePlayerName: string) {
-    setIsGamePaused(true); //Pause the game
-    corpseFoundRequest(corpsePlayerName, stompClient, lobbyCode); //Remove the corpse from the game
-    sendIsVotingRequest(true, stompClient, lobbyCode); //Send the voting result to the server
+    votingClient?.publish({
+      destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
+      body: JSON.stringify(true),
+    });
+    lobbyClient?.publish({
+      destination: `/app/${lobbyCode}/corpseFoundReceiver`,
+      body: corpsePlayerName,
+    });
   }
 
   return (

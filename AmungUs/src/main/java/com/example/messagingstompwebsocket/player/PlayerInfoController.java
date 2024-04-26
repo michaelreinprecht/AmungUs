@@ -41,7 +41,7 @@ public class PlayerInfoController {
     public List<PlayerInfo> playerPositions(@DestinationVariable String lobbyCode, PlayerInfo playerInfo) throws Exception {
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
-        if (lobby != null) {
+        if (lobby != null && !isColliding()) { //<- hier Kollision abfragen
             //Updating players heartbeat every time he sends a signal
             playerInfo.setLastHeartbeat(Instant.now());
 
@@ -55,6 +55,16 @@ public class PlayerInfoController {
         } else {
             return null;
         }
+    }
+
+    private boolean isColliding() {
+        // Hier überprüfen, ob die Fläche welcher der Spieler abdeckt (Fläche aus seiner Position, Höhe, Breite
+        // berechnen) mit einer der Flächen definiert in den Collildeable Object Kollidiert! Wenn ja dann return
+        // false.
+
+        // Zusätzlich könnte man hier noch prüfen, ob die Kollision nur Vertikal oder Horizontal ist und dann
+        // die PlayerPosition doch updaten aber halt jeweils nur horizontal/vertikal.
+        return true;
     }
 
     @MessageMapping("/{lobbyCode}/heartbeatReceiver")

@@ -1,6 +1,4 @@
 import React, { useRef, useEffect } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
-import { TextureLoader } from "three";
 import * as THREE from "three";
 import { PlayerPosition } from "../../../app/types";
 import { calculateNearestVictim } from "../utilityFunctions/calculateNearestPlayer";

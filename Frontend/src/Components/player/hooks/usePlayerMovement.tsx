@@ -8,10 +8,9 @@ import {
   getPlayerSpawnInfo,
   getUpdatedPlayerPosition,
 } from "../utilityFunctions/playerPositionHandler";
-import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { updatePlayerPosition } from "@/Components/utilityFunctions/webSocketHandler";
+import { Client } from "@stomp/stompjs";
 
 export function usePlayerMovement(
   isGamePaused: boolean,
@@ -28,7 +27,7 @@ export function usePlayerMovement(
   >,
   setPlayerPositions: (playerPositions: PlayerPosition[]) => void
 ) {
-  const stompClient = useStompClient();
+  const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
 
   const [movement, setMovement] = useState<Movement>({
     forward: false,
@@ -46,14 +45,26 @@ export function usePlayerMovement(
   };
 
   useEffect(() => {
-    (async () => {
-      //Initial position update of the player
-      updatePlayerPosition(
-        await getPlayerSpawnInfo(lobbyCode, activePlayerName),
-        stompClient,
-        lobbyCode
-      );
-    })();
+    const client = new Client({
+      brokerURL: "ws://localhost:8080/lobbyService",
+      onConnect: () => {
+        client?.subscribe(`/lobby/${lobbyCode}/playerInfo`, (message) => {
+          const parsedMessage = JSON.parse(message.body);
+          setPlayerPositions(parsedMessage);
+        });
+        (async () => {
+          //Initial position update of the player
+          client?.publish({
+            destination: `/app/${lobbyCode}/playerInfoReceiver`,
+            body: JSON.stringify(
+              await getPlayerSpawnInfo(lobbyCode, activePlayerName)
+            ),
+          });
+        })();
+      },
+    });
+    client.activate();
+    setLobbyClient(client);
 
     const handleKeyDown = createKeyDownHandler(setMovement);
     const handleKeyUp = createKeyUpHandler(setMovement);
@@ -66,10 +77,7 @@ export function usePlayerMovement(
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
 
-      // Unsubscribe from websocket on component unmount
-      if (stompClient) {
-        stompClient.unsubscribe(`/lobby/${lobbyCode}/playerInfo`);
-      }
+      // TODO: Unsubscribe from websocket on component unmount
     };
   }, []);
 
@@ -82,26 +90,25 @@ export function usePlayerMovement(
           movement.left ||
           movement.right
         ) {
-          updatePlayerPosition(
-            getUpdatedPlayerPosition(
-              delta,
-              activePlayerName,
-              movement,
-              bounds,
-              scale,
-              playerPositions
-            ),
-            stompClient,
-            lobbyCode
-          );
+          //Initial position update of the player
+          if (lobbyClient != undefined) {
+            lobbyClient?.publish({
+              destination: `/app/${lobbyCode}/playerInfoReceiver`,
+              body: JSON.stringify(
+                getUpdatedPlayerPosition(
+                  delta,
+                  activePlayerName,
+                  movement,
+                  bounds,
+                  scale,
+                  playerPositions
+                )
+              ),
+            });
+          }
         }
       }
     }
-  });
-
-  useSubscription(`/lobby/${lobbyCode}/playerInfo`, (message) => {
-    const parsedMessage = JSON.parse(message.body);
-    setPlayerPositions(parsedMessage);
   });
 
   return {};

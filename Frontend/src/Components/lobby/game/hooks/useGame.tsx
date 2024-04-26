@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import { useStompClient, useSubscription } from "react-stomp-hooks";
+import { useEffect, useState } from "react";
 import { getPositionPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
 import { killRange } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 import { PlayerPosition } from "@/app/types";
+import { Client } from "@stomp/stompjs";
 
 export function useGame(activePlayerName: string, lobbyCode: string) {
   const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
@@ -11,7 +11,22 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
 
-  const stompClient = useStompClient();
+  useEffect(() => {
+    const votingClient = new Client({
+      brokerURL: "ws://localhost:8081/votingService",
+      onConnect: () => {
+        votingClient.subscribe(
+          `/voting/${lobbyCode}/votingState`,
+          (message) => {
+            const votingActive = JSON.parse(message.body);
+            setIsGamePaused(votingActive); //Pause or unpause the game
+            setIsVotingActive(votingActive); //Display or stop displaying votingUI
+          }
+        );
+      },
+    });
+    votingClient.activate();
+  }, []);
 
   function isKillEnabled() {
     const killer = getPositionPlayer(playerPositions, activePlayerName);
@@ -34,11 +49,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     );
   }
 
-  useSubscription(`/lobby/${lobbyCode}/isVoting`, (message) => {
-    const parsedMessage = JSON.parse(message.body);
-    setIsVotingActive(parsedMessage);
-  });
-
   return {
     isGamePaused,
     setIsGamePaused,
@@ -50,6 +60,5 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     setIsVotingActive,
     isKillEnabled,
     isKillUIVisible,
-    stompClient,
   };
 }

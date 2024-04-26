@@ -1,14 +1,10 @@
-import { getPositionPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
-import { sendKillRequest } from "@/Components/utilityFunctions/webSocketHandler";
-import { PlayerPosition } from "@/app/types";
-import React from "react";
-import { Client } from "react-stomp-hooks";
+import React, { useEffect, useState } from "react";
+import { Client } from "@stomp/stompjs";
 
 type KillUIProps = {
   isKillEnabled: boolean | undefined;
   activePlayerName: string;
   victimName: string;
-  stompClient: Client | undefined;
   lobbyCode: string;
 };
 
@@ -16,14 +12,30 @@ export default function KillUI({
   isKillEnabled,
   activePlayerName,
   victimName,
-  stompClient,
   lobbyCode,
 }: KillUIProps) {
+  const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
+
   function handleKill() {
     if (isKillEnabled) {
-      sendKillRequest(activePlayerName, victimName, stompClient, lobbyCode);
+      const requestBody = {
+        killerName: activePlayerName,
+        victimName: victimName,
+      };
+      lobbyClient?.publish({
+        destination: `/app/${lobbyCode}/killReceiver`,
+        body: JSON.stringify(requestBody),
+      });
     }
   }
+
+  useEffect(() => {
+    const client = new Client({
+      brokerURL: "ws://localhost:8080/lobbyService",
+    });
+    client.activate();
+    setLobbyClient(client);
+  }, []);
 
   return (
     <div

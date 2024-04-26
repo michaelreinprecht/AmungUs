@@ -11,6 +11,9 @@ it("Can calculate nearest player", () => {
       playerPositionY: 20,
       alive: true,
       playerRole: "killer",
+      killedPlayerPositionX: 0,
+      killedPlayerPositionY: 0,
+      corpseFound: false,
     },
     {
       playerName: "ClosestPlayer",
@@ -18,6 +21,9 @@ it("Can calculate nearest player", () => {
       playerPositionY: 30,
       alive: true,
       playerRole: "crewmate",
+      killedPlayerPositionX: 0,
+      killedPlayerPositionY: 0,
+      corpseFound: false,
     },
     {
       playerName: "FurtherPlayer",
@@ -25,6 +31,9 @@ it("Can calculate nearest player", () => {
       playerPositionY: 50,
       alive: true,
       playerRole: "crewmate",
+      killedPlayerPositionX: 0,
+      killedPlayerPositionY: 0,
+      corpseFound: false,
     },
   ];
 
