@@ -40,7 +40,8 @@ export default function VotingUI({
             }`}
             disabled={!playerInfo.alive}
           >
-            {playerInfo.playerName} - Votes: {playerInfo.voteCount}
+            {playerInfo.playerName} - Votes: {playerInfo.voteCount} - Votes:{" "}
+            {Array.from(playerInfo.votes).join(", ")}
           </button>
         ))}
       </div>
