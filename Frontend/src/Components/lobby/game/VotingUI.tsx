@@ -28,7 +28,7 @@ export default function VotingUI({
         onClick={stopVoting}
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline"
       >
-        Skip
+        Skip Voting
       </button>
       <div className="flex flex-col">
         {votingPlayerInfos.map((playerInfo: VotingPlayerInfo) => (
