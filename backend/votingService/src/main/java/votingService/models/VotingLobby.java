@@ -89,12 +89,16 @@ public class VotingLobby {
 
     private boolean isVoteValid(VotingPlayerInfo votingPlayerInfo, VotingPlayerInfo votedPlayerInfo) {
         if (votingPlayerInfo == null) {
-            logger.warn("Voting Player not found in the voting lobby.");
+            logger.debug("Voting Player not found in the voting lobby.");
         } else {
-            if (votedPlayerInfo == null) {
-                logger.warn("Voted Player not found in the voting lobby.");
+            if (!votingPlayerInfo.isAlive()) {
+                logger.debug("Dead Player attempted to vote.");
             } else {
-                return true;
+                if (votedPlayerInfo == null) {
+                    logger.debug("Voted Player not found in the voting lobby.");
+                } else {
+                    return true;
+                }
             }
         }
         return false;
