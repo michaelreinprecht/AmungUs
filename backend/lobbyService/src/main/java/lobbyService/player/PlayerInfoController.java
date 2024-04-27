@@ -14,9 +14,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import lobbyService.player.models.VotingKillRequest;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -102,13 +101,30 @@ public class PlayerInfoController {
         return false;
     }
 
+    @PostMapping("/api/lobby/{lobbyCode}/killVotedPlayer")
+    public void killVotedPlayer(@PathVariable String lobbyCode, @RequestBody VotingKillRequest killRequest) throws Exception {
+        logger.info("Voted out and killing player: {}", killRequest.getVictimName());
+        // Get the lobby from the lobby service
+
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
+        lobby.killPlayer(victim);
+        List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
+        lobby.removeCorpse();
+
+        // Send the updated player info to all players
+        messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
+        // Remove the corpse
+        messagingTemplate.convertAndSend("/app/" + lobbyCode + "/corpseFoundReceiver", victim.getPlayerName());
+    }
+
     @MessageMapping("/{lobbyCode}/corpseFoundReceiver")
     public void corpseFound(@DestinationVariable String lobbyCode, String corpsePlayerName) throws Exception {
         logger.info("Found corpse for lobby code: {}", lobbyCode);
         logger.info("Corps of player: {}", corpsePlayerName);
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
-        lobby.removeCorpse(corpsePlayerName);
+        lobby.removeCorpse();
         List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
         // Send the updated player info to all players
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);

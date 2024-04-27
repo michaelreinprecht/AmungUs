@@ -139,11 +139,11 @@ public class Lobby {
     }
 
     //Remove the corpse for all players once it's been found
-    public void removeCorpse(String corpsePlayerName) {
+    public void removeCorpse() {
         for (PlayerInfo playerInfo : playerInfos) {
-            if (playerInfo.getPlayerName().equals(corpsePlayerName)) {
+            if (!playerInfo.isAlive()) {
                 playerInfo.setCorpseFound(true);
-                logger.info("Corpse of player {} was removed", corpsePlayerName);
+                logger.info("Corpse of player {} was removed", playerInfo.getPlayerName());
             }
         }
     }

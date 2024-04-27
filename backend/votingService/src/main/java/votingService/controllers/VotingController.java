@@ -9,20 +9,16 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import lobbyService.player.models.VotingKillRequest;
 import votingService.models.VotingLobby;
 import votingService.models.VotingPlayerInfo;
 import votingService.models.VotingRequest;
 import votingService.services.VotingLobbyService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Controller
@@ -43,12 +39,10 @@ public class VotingController {
     public boolean votingState(@DestinationVariable String lobbyCode, boolean votingState) throws Exception {
         // Get the lobby from the lobby service
         logger.debug("Getting voting state for lobby: {}", lobbyCode);
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8080/api/lobby/" + lobbyCode;
         if (votingState) {
-            // Get lobby from lobbyService and add it in here
-            RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:8080/api/lobby/" + lobbyCode;
             Lobby lobby = restTemplate.getForObject(url, Lobby.class);
-
             if (lobby != null) {
                 logger.info("Starting voting for lobby: {}", lobby.getLobbyCode());
                 votingLobbyService.createLobby(lobby);
@@ -56,10 +50,24 @@ public class VotingController {
             } else {
                 logger.debug("Attempted to create a voting for a non existing lobby.");
             }
-        } else {
+        } else { //End of voting process
+            VotingLobby lobby = votingLobbyService.getLobby(lobbyCode);
+            String playerToKill = lobby.getMostVotedPlayer();
+            if (playerToKill != null) {
+                //Send message to lobbyService WebSocket to kill the player
+                VotingKillRequest killRequest = new VotingKillRequest(playerToKill);
+                url = "http://localhost:8080/api/lobby/{lobbyCode}/killVotedPlayer";
+                logger.info("KillRequest: {}", killRequest.getVictimName());
+                try {
+                    restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
+                }
+                catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            //Remove the lobby from the votingService
             votingLobbyService.removeLobby(lobbyCode);
         }
-
 
         VotingLobby lobby = votingLobbyService.getLobby(lobbyCode);
         return lobby != null;
@@ -82,8 +90,5 @@ public class VotingController {
             logger.debug("Attempted to vote for a non existing lobby.");
             return null;
         }
-    }
-
-    private void isAddingNewVote(VotingRequest votingRequest, VotingLobby lobby) {
     }
 }

@@ -10,7 +10,7 @@ public class VotingRequest {
     private String votingPlayerName;
     private String votedPlayerName;
 
-    public VotingRequest(String votingPlayerName, String votedPlayerName, boolean addingVote) {
+    public VotingRequest(String votingPlayerName, String votedPlayerName) {
         this.votingPlayerName = votingPlayerName;
         this.votedPlayerName = votedPlayerName;
     }

@@ -53,6 +53,25 @@ public class VotingLobby {
         }
     }
 
+    public String getMostVotedPlayer() {
+        int maxVoteCount = Integer.MIN_VALUE;
+        String mostVotedPlayer = null;
+        boolean tie = false;
+
+        for (VotingPlayerInfo playerInfo : votingPlayerInfos.values()) {
+            int voteCount = playerInfo.getVoteCount();
+            if (voteCount > maxVoteCount) {
+                maxVoteCount = voteCount;
+                mostVotedPlayer = playerInfo.getPlayerName();
+                tie = false; // Reset tie flag since a new highest vote count is found
+            } else if (voteCount == maxVoteCount) {
+                // Found another player with the same highest vote count
+                tie = true;
+            }
+        }
+
+        return tie ? null : mostVotedPlayer;
+    }
 
     // Method used to add a new vote, based on the voting requests votingPlayer and votedPlayer
     private void addVote(VotingPlayerInfo votingPlayerInfo, VotingPlayerInfo votedPlayerInfo) {
