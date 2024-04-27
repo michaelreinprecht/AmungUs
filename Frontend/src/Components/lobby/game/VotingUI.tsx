@@ -1,15 +1,21 @@
 import React from "react";
 import { useVotingUI } from "./hooks/useVotingUI";
 import { votingTimer } from "@/app/globals";
+import { VotingPlayerInfo } from "@/app/types";
 
 type VotingUIProps = {
   lobbyCode: string;
+  activePlayerName: string;
 };
 
-export default function VotingUI({ lobbyCode }: VotingUIProps) {
-  const { timer, stopVoting } = useVotingUI(
+export default function VotingUI({
+  lobbyCode,
+  activePlayerName,
+}: VotingUIProps) {
+  const { timer, stopVoting, votingPlayerInfos, updateVote } = useVotingUI(
     votingTimer, //Using global value
-    lobbyCode
+    lobbyCode,
+    activePlayerName
   );
 
   return (
@@ -24,6 +30,20 @@ export default function VotingUI({ lobbyCode }: VotingUIProps) {
       >
         Skip
       </button>
+      <div className="flex flex-col">
+        {votingPlayerInfos.map((playerInfo: VotingPlayerInfo) => (
+          <button
+            onClick={() => updateVote(playerInfo.playerName)}
+            key={playerInfo.playerName}
+            className={`bg-green-500 text-white font-bold py-2 px-4 rounded-full shadow-md mb-2 ${
+              !playerInfo.alive && "bg-gray-400 cursor-not-allowed"
+            }`}
+            disabled={!playerInfo.alive}
+          >
+            {playerInfo.playerName} - Votes: {playerInfo.voteCount}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

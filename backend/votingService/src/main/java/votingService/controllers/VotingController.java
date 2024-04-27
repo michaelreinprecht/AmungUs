@@ -9,10 +9,20 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import votingService.models.VotingLobby;
+import votingService.models.VotingPlayerInfo;
+import votingService.models.VotingRequest;
 import votingService.services.VotingLobbyService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -32,7 +42,7 @@ public class VotingController {
     @SendTo("/voting/{lobbyCode}/votingState")
     public boolean votingState(@DestinationVariable String lobbyCode, boolean votingState) throws Exception {
         // Get the lobby from the lobby service
-        logger.info("Voting state change called");
+        logger.debug("Getting voting state for lobby: {}", lobbyCode);
         if (votingState) {
             // Get lobby from lobbyService and add it in here
             RestTemplate restTemplate = new RestTemplate();
@@ -40,33 +50,40 @@ public class VotingController {
             Lobby lobby = restTemplate.getForObject(url, Lobby.class);
 
             if (lobby != null) {
-                logger.info("Starting voting for lobby: " + lobby.getLobbyCode());
+                logger.info("Starting voting for lobby: {}", lobby.getLobbyCode());
                 votingLobbyService.createLobby(lobby);
                 //messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingState", true);
             } else {
-                logger.info("Attempted to create a voting for a non existing lobby.");
+                logger.debug("Attempted to create a voting for a non existing lobby.");
             }
         } else {
             votingLobbyService.removeLobby(lobbyCode);
         }
 
 
-        logger.info("Getting voting state for lobby: " + lobbyCode);
         VotingLobby lobby = votingLobbyService.getLobby(lobbyCode);
         return lobby != null;
     }
 
-    /*
-    @MessageMapping("/{lobbyCode}/startVotingReceiver")
-    public void startVotingForLobby(@DestinationVariable String lobbyCode) throws Exception {
+    @MessageMapping("/{lobbyCode}/votingInfoReceiver")
+    @SendTo("/voting/{lobbyCode}/votingInfo")
+    public List<VotingPlayerInfo> votingInfo(@DestinationVariable String lobbyCode, VotingRequest votingRequest) throws Exception {
+        // Get the lobby from the lobby service
+        logger.info("Receiving new vote for lobby: {}", lobbyCode);
+        logger.info("Vote by player: {}", votingRequest.getVotingPlayerName());
+        logger.info("Vote for player: {}", votingRequest.getVotedPlayerName());
 
+        VotingLobby lobby = votingLobbyService.getLobby(lobbyCode);
+        if (lobby != null) {
+            //Handle votes ...
+            lobby.updateVote(votingRequest);
+            return new ArrayList<>(lobby.getVotingPlayerInfos().values()); //Convert values of hashMap to list and return
+        } else {
+            logger.debug("Attempted to vote for a non existing lobby.");
+            return null;
+        }
     }
 
-    @MessageMapping("/{lobbyCode}/stopVotingReceiver")
-    public void stopVotingForLobby(@DestinationVariable String lobbyCode) throws Exception {
-        // Get lobby from lobbyService and add it in here
-        votingLobbyService.removeLobby(lobbyCode);
-        messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/votingState");
+    private void isAddingNewVote(VotingRequest votingRequest, VotingLobby lobby) {
     }
-     */
 }

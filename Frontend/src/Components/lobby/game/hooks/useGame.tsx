@@ -51,13 +51,11 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
 
   return {
     isGamePaused,
-    setIsGamePaused,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
     setPlayerPositions,
     isVotingActive,
-    setIsVotingActive,
     isKillEnabled,
     isKillUIVisible,
   };

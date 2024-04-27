@@ -18,13 +18,11 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
 
   const {
     isGamePaused,
-    setIsGamePaused,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
     setPlayerPositions,
     isVotingActive,
-    setIsVotingActive,
     isKillEnabled,
     isKillUIVisible,
   } = useGame(activePlayerName, lobbyCode);
@@ -90,7 +88,9 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       )}
 
       {/* Voting UI */}
-      {isVotingActive && <VotingUI lobbyCode={lobbyCode} />}
+      {isVotingActive && (
+        <VotingUI lobbyCode={lobbyCode} activePlayerName={activePlayerName} />
+      )}
 
       {/* Render MessageForm and MessageList only if connected */}
       {isVotingActive && (
