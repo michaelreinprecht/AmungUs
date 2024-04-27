@@ -3,6 +3,7 @@ package lobbyService.chat;
 import lobbyService.chat.models.ChatMessage;
 import lobbyService.lobby.LobbyService;
 import lobbyService.lobby.models.Lobby;
+import lobbyService.player.models.PlayerInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +25,18 @@ public class ChatController {
 	@SendTo("/lobby/{lobbyCode}/messages")
 	public String message(@DestinationVariable String lobbyCode, ChatMessage message) {
 		//Just print some debug logs.
-		logger.info("Message received from: " + message.getMessageSenderName());
-		logger.info("Message content: " + message.getMessageText());
+        logger.info("Message received from: {}", message.getMessageSenderName());
+        logger.info("Message content: {}", message.getMessageText());
 
 		Lobby lobby = lobbyService.getLobby(lobbyCode);
 
 		if (lobby != null) {
-			//Return a formatted chat message string
-			return HtmlUtils.htmlEscape(message.getMessageSenderName() + ": " + message.getMessageText());
-		} else {
-			// Handle case where lobby with provided code doesn't exist
-			return null;
+			PlayerInfo messageSender = lobby.getPlayerInfoForName(message.getMessageSenderName());
+			if (messageSender.isAlive()) {
+				//Return a formatted chat message string
+				return HtmlUtils.htmlEscape(message.getMessageSenderName() + ": " + message.getMessageText());
+			}
 		}
+		return null;
 	}
 }
