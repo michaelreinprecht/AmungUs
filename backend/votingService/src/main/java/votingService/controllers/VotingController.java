@@ -1,5 +1,6 @@
 package votingService.controllers;
 
+import lobbyService.lobby.models.Lobby;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,10 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
-import lobbyService.lobby.models.Lobby;
 
 import votingService.models.VotingLobby;
 import votingService.services.VotingLobbyService;
+
 
 @Controller
 public class VotingController {
