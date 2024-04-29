@@ -119,6 +119,19 @@ public class PlayerInfoController {
         messagingTemplate.convertAndSend("/app/" + lobbyCode + "/corpseFoundReceiver", victim.getPlayerName());
     }
 
+    @PostMapping("/api/lobby/{lobbyCode}/teleportPlayersToSpawn")
+    public void teleportPlayersToSpawn(@PathVariable String lobbyCode) throws Exception {
+        logger.info("Teleporting players to spawn.");
+        // Get the lobby from the lobby service
+
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        if (lobby != null) {
+            lobby.teleportPlayersToSpawn();
+            List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
+        }
+    }
+
     @MessageMapping("/{lobbyCode}/corpseFoundReceiver")
     public void corpseFound(@DestinationVariable String lobbyCode, CorpseFoundRequest request) throws Exception {
         String senderName = request.getSenderName();
@@ -138,6 +151,8 @@ public class PlayerInfoController {
         // Send the updated player info to all players
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
     }
+
+
 
     @MessageMapping("/{lobbyCode}/isVotingReceiver")
     @SendTo("/lobby/{lobbyCode}/isVoting")
