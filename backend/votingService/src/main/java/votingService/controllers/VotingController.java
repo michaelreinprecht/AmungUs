@@ -1,6 +1,7 @@
 package votingService.controllers;
 
 import lobbyService.lobby.models.Lobby;
+import lobbyService.player.models.PlayerInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import lobbyService.player.models.VotingKillRequest;
 import votingService.models.VotingLobby;
 import votingService.models.VotingPlayerInfo;
 import votingService.models.VotingRequest;
+import votingService.models.VotingStateRequest;
 import votingService.services.VotingLobbyService;
 
 import java.util.ArrayList;
@@ -36,37 +38,17 @@ public class VotingController {
 
     @MessageMapping("/{lobbyCode}/votingStateReceiver")
     @SendTo("/voting/{lobbyCode}/votingState")
-    public boolean votingState(@DestinationVariable String lobbyCode, boolean votingState) throws Exception {
+    public boolean votingState(@DestinationVariable String lobbyCode, VotingStateRequest request) throws Exception {
         // Get the lobby from the lobby service
+        String senderName = request.getSenderName();
+        boolean votingState = request.isVotingState();
+
         logger.debug("Getting voting state for lobby: {}", lobbyCode);
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8080/api/lobby/" + lobbyCode;
         if (votingState) {
-            Lobby lobby = restTemplate.getForObject(url, Lobby.class);
-            if (lobby != null) {
-                logger.info("Starting voting for lobby: {}", lobby.getLobbyCode());
-                votingLobbyService.createLobby(lobby);
-                //messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingState", true);
-            } else {
-                logger.debug("Attempted to create a voting for a non existing lobby.");
-            }
+            startVoting(restTemplate, senderName, lobbyCode);
         } else { //End of voting process
-            VotingLobby lobby = votingLobbyService.getLobby(lobbyCode);
-            String playerToKill = lobby.getMostVotedPlayer();
-            if (playerToKill != null) {
-                //Send message to lobbyService WebSocket to kill the player
-                VotingKillRequest killRequest = new VotingKillRequest(playerToKill);
-                url = "http://localhost:8080/api/lobby/{lobbyCode}/killVotedPlayer";
-                logger.info("KillRequest: {}", killRequest.getVictimName());
-                try {
-                    restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
-                }
-                catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-            //Remove the lobby from the votingService
-            votingLobbyService.removeLobby(lobbyCode);
+            stopVoting(restTemplate, senderName, lobbyCode);
         }
 
         VotingLobby lobby = votingLobbyService.getLobby(lobbyCode);
@@ -89,6 +71,42 @@ public class VotingController {
         } else {
             logger.debug("Attempted to vote for a non existing lobby.");
             return null;
+        }
+    }
+
+    private void startVoting(RestTemplate restTemplate, String senderName, String lobbyCode) {
+        String url = "http://localhost:8080/api/lobby/" + lobbyCode;
+
+        Lobby lobby = restTemplate.getForObject(url, Lobby.class);
+        if (lobby != null) {
+            PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
+            if (senderPlayerInfo.isAlive()) { //Check if player sending message is alive
+                logger.info("Starting voting for lobby: {}", lobby.getLobbyCode());
+                votingLobbyService.createLobby(lobby);
+            }
+        } else {
+            logger.debug("Attempted to create a voting for a non existing lobby.");
+        }
+    }
+
+    private void stopVoting(RestTemplate restTemplate, String senderName, String lobbyCode) {
+        VotingLobby lobby = votingLobbyService.getLobby(lobbyCode);
+        VotingPlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
+        if (senderPlayerInfo.isAlive()) { //Check if player sending message is alive
+            String playerToKill = lobby.getMostVotedPlayer();
+            if (playerToKill != null) {
+                //Send message to lobbyService WebSocket to kill the player
+                VotingKillRequest killRequest = new VotingKillRequest(playerToKill);
+                String url = "http://localhost:8080/api/lobby/{lobbyCode}/killVotedPlayer";
+                logger.info("KillRequest: {}", killRequest.getVictimName());
+                try {
+                    restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            //Remove the lobby from the votingService
+            votingLobbyService.removeLobby(lobbyCode);
         }
     }
 }

@@ -73,6 +73,10 @@ public class VotingLobby {
         return tie ? null : mostVotedPlayer;
     }
 
+    public VotingPlayerInfo getPlayerInfoForName(String name) {
+        return votingPlayerInfos.get(name);
+    }
+
     // Method used to add a new vote, based on the voting requests votingPlayer and votedPlayer
     private void addVote(VotingPlayerInfo votingPlayerInfo, VotingPlayerInfo votedPlayerInfo) {
         String votingPlayerName = votingPlayerInfo.getPlayerName();

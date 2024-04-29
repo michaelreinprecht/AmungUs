@@ -69,9 +69,13 @@ export function useVotingUI(
 
   function stopVoting() {
     if (votingClient != undefined) {
+      const votingStateRequest = {
+        senderName: activePlayerName,
+        votingState: false,
+      };
       votingClient.publish({
         destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
-        body: JSON.stringify(false),
+        body: JSON.stringify(votingStateRequest),
       });
     }
   }

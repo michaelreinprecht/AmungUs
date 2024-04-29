@@ -57,13 +57,21 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   }, []);
 
   function startVoting(corpsePlayerName: string) {
+    const votingStateRequest = {
+      senderName: activePlayerName,
+      votingState: true,
+    };
     votingClient?.publish({
       destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
-      body: JSON.stringify(true),
+      body: JSON.stringify(votingStateRequest),
     });
+    const corpseFoundRequest = {
+      senderName: activePlayerName,
+      corpsePlayerName: corpsePlayerName,
+    };
     lobbyClient?.publish({
       destination: `/app/${lobbyCode}/corpseFoundReceiver`,
-      body: corpsePlayerName,
+      body: JSON.stringify(corpseFoundRequest),
     });
   }
 

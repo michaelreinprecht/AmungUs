@@ -4,6 +4,7 @@ import lobbyService.GlobalValues;
 import lobbyService.Utils;
 import lobbyService.lobby.LobbyService;
 import lobbyService.lobby.models.Lobby;
+import lobbyService.player.models.CorpseFoundRequest;
 import lobbyService.player.models.KillRequest;
 import lobbyService.player.models.PlayerInfo;
 import org.apache.logging.log4j.LogManager;
@@ -119,12 +120,20 @@ public class PlayerInfoController {
     }
 
     @MessageMapping("/{lobbyCode}/corpseFoundReceiver")
-    public void corpseFound(@DestinationVariable String lobbyCode, String corpsePlayerName) throws Exception {
+    public void corpseFound(@DestinationVariable String lobbyCode, CorpseFoundRequest request) throws Exception {
+        String senderName = request.getSenderName();
+        String corpsePlayerName = request.getCorpsePlayerName();
+
         logger.info("Found corpse for lobby code: {}", lobbyCode);
         logger.info("Corps of player: {}", corpsePlayerName);
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
-        lobby.removeCorpse();
+        if (lobby != null) {
+            PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
+            if (senderPlayerInfo.isAlive()) {
+                lobby.removeCorpse();
+            }
+        }
         List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
         // Send the updated player info to all players
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);

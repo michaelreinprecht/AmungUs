@@ -78,7 +78,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       </Canvas>
 
       {/* Kill UI */}
-      {isKillUIVisible() && (
+      {isKillUIVisible() && !isVotingActive && (
         <KillUI
           isKillEnabled={isKillEnabled()}
           activePlayerName={activePlayerName}
