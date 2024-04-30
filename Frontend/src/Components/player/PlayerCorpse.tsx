@@ -1,4 +1,4 @@
-import { useLoader } from "@react-three/fiber";
+import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { PlayerPosition } from "@/app/types";
@@ -24,7 +24,10 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   lobbyCode,
   onNearestPlayerChange,
 }) => {
+  const camera = useThree((state) => state.camera);
+
   const { meshRef } = usePlayerCharacter({
+    camera,
     isGamePaused,
     activePlayerName,
     scale,
@@ -57,13 +60,28 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   }, []);
 
   function startVoting(corpsePlayerName: string) {
+    const votingStateRequest = {
+      senderName: activePlayerName,
+      votingState: true,
+    };
     votingClient?.publish({
       destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
-      body: JSON.stringify(true),
+      body: JSON.stringify(votingStateRequest),
     });
+    const corpseFoundRequest = {
+      senderName: activePlayerName,
+      corpsePlayerName: corpsePlayerName,
+    };
     lobbyClient?.publish({
       destination: `/app/${lobbyCode}/corpseFoundReceiver`,
-      body: corpsePlayerName,
+      body: JSON.stringify(corpseFoundRequest),
+    });
+    const teleportToSpawnRequest = {
+      senderName: activePlayerName,
+    };
+    lobbyClient?.publish({
+      destination: `/app/${lobbyCode}/teleportPlayersToSpawn`,
+      body: JSON.stringify(teleportToSpawnRequest),
     });
   }
 

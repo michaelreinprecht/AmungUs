@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
+import { VotingPlayerInfo, VotingRequest } from "@/app/types";
 
-export function useVotingUI(initialTimer: number, lobbyCode: string) {
+export function useVotingUI(
+  initialTimer: number,
+  lobbyCode: string,
+  activePlayerName: string
+) {
   const [timer, setTimer] = useState(initialTimer);
+  const [votingPlayerInfos, setVotingPlayerInfos] = useState<
+    VotingPlayerInfo[]
+  >([]);
+
+  const [votingClient, setVotingClient] = useState<Client | undefined>();
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
@@ -13,24 +23,62 @@ export function useVotingUI(initialTimer: number, lobbyCode: string) {
     return () => clearInterval(timerInterval);
   }, []);
 
+  // Subscribe to voting info updates
+  useEffect(() => {
+    const client = new Client({
+      brokerURL: "ws://localhost:8081/votingService",
+      onConnect: () => {
+        client.subscribe(`/voting/${lobbyCode}/votingInfo`, (message) => {
+          const votingInfo = JSON.parse(message.body);
+          setVotingPlayerInfos(votingInfo);
+          console.log(votingInfo);
+        });
+        let emptyVotingRequest: VotingRequest = {
+          votingPlayerName: "",
+          votedPlayerName: "",
+        };
+        client.publish({
+          destination: `/votingApp/${lobbyCode}/votingInfoReceiver`,
+          body: JSON.stringify(emptyVotingRequest),
+        });
+      },
+    });
+    client.activate();
+    setVotingClient(client);
+  }, []);
+
   useEffect(() => {
     if (timer === 0) {
       stopVoting();
     }
   }, [timer]);
 
-  function stopVoting() {
-    const votingClient = new Client({
-      brokerURL: "ws://localhost:8081/votingService",
-      onConnect: () => {
-        votingClient.publish({
-          destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
-          body: JSON.stringify(false),
-        });
-      },
-    });
-    votingClient.activate();
+  // Function to handle adding a new vote
+  function updateVote(votedPlayerName: string) {
+    if (votingClient) {
+      const votingRequest = {
+        votingPlayerName: activePlayerName,
+        votedPlayerName: votedPlayerName,
+      };
+      votingClient.publish({
+        destination: `/votingApp/${lobbyCode}/votingInfoReceiver`,
+        body: JSON.stringify(votingRequest),
+      });
+    }
   }
 
-  return { timer, stopVoting };
+  function stopVoting() {
+    if (votingClient != undefined) {
+      const votingStateRequest = {
+        senderName: activePlayerName,
+        votingState: false,
+      };
+      votingClient.publish({
+        destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
+        body: JSON.stringify(votingStateRequest),
+      });
+    }
+  }
+
+  return { timer, stopVoting, votingPlayerInfos, updateVote };
 }

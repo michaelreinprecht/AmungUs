@@ -1,29 +1,66 @@
 import React from "react";
 import { useVotingUI } from "./hooks/useVotingUI";
 import { votingTimer } from "@/app/globals";
+import { VotingPlayerInfo } from "@/app/types";
 
 type VotingUIProps = {
   lobbyCode: string;
+  activePlayerName: string;
 };
 
-export default function VotingUI({ lobbyCode }: VotingUIProps) {
-  const { timer, stopVoting } = useVotingUI(
+export default function VotingUI({
+  lobbyCode,
+  activePlayerName,
+}: VotingUIProps) {
+  const { timer, stopVoting, votingPlayerInfos, updateVote } = useVotingUI(
     votingTimer, //Using global value
-    lobbyCode
+    lobbyCode,
+    activePlayerName
   );
 
   return (
-    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-600 w-3/4 h-3/4 flex flex-col justify-center items-center">
-      <h1 className="text-white text-xl mb-4">
-        Just a placeholder for the real voting UI
-      </h1>
-      <p className="text-white text-lg mb-2">Remaining voting time: {timer}</p>{" "}
-      <button
-        onClick={stopVoting}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline"
-      >
-        Skip
-      </button>
+    <div className="fixed inset-0 bg-black bg-opacity-50 rounded flex items-center justify-center p-4">
+    <div className="bg-black border-2 border-white rounded-xl shadow-2xl p-8 w-full max-w-4xl mx-auto">
+      <h2 className="font-mono text-center text-3xl text-white font-bold mb-12">Who Is The Imposter?</h2>
+
+      <div className="grid grid-cols-3 gap-8 mb-8">
+        {votingPlayerInfos.map((playerInfo) => (
+          <div key={playerInfo.playerName} className={`flex flex-col items-center justify-center space-y-4 ${!playerInfo.alive && "opacity-50"}`}>
+            <div className="text-white text-xl font-bold">{playerInfo.playerName}</div>
+            <button
+              onClick={() => updateVote(playerInfo.playerName)}
+              className={`w-24 h-24 bg-green-600 rounded-full flex items-center justify-center p-1 overflow-hidden ${
+                playerInfo.alive ? "hover:bg-green-700 shadow-lg" : "cursor-not-allowed bg-gray-500"
+              }`}
+              disabled={!playerInfo.alive}
+            >
+              <img
+                src="/character-logo.png"
+                alt={`${playerInfo.playerName} avatar`}
+                className="w-full h-full object-cover rounded-full"
+              />
+            </button>
+            <div className="text-gray-300 text-sm">Votes: {playerInfo.voteCount}</div>
+            <div className="text-gray-400 text-xs">
+            {playerInfo.votes
+              ? `Voted by: ${Array.from(playerInfo.votes).join(', ')}`
+              : 'No votes'}
+          </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-between items-center">
+        <p className="text-gray-400 text-lg">Remaining voting time: {timer}</p>
+        <button
+          onClick={stopVoting}
+          className="text-lg font-semibold py-2 px-6 border-2 border-gray-600 text-gray-300 rounded-lg transition-colors duration-200 ease-in-out hover:border-gray-400 hover:text-white"
+        >
+          Skip Voting
+        </button>
+      </div>
     </div>
+  </div>
+
   );
 }

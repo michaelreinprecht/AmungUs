@@ -9,6 +9,18 @@ export type PlayerPosition = {
   playerRole: "killer" | "crewmate";
 };
 
+export type VotingPlayerInfo = {
+  playerName: string;
+  alive: boolean;
+  votes: Set<string>;
+  voteCount: number;
+};
+
+export type VotingRequest = {
+  votingPlayerName: string;
+  votedPlayerName: string;
+};
+
 export type Movement = {
   forward: boolean;
   backward: boolean;

@@ -138,12 +138,19 @@ public class Lobby {
         }
     }
 
-    //Remove the corpse for all players once it's been found
-    public void removeCorpse(String corpsePlayerName) {
+    public void teleportPlayersToSpawn() {
         for (PlayerInfo playerInfo : playerInfos) {
-            if (playerInfo.getPlayerName().equals(corpsePlayerName)) {
+            playerInfo.setPlayerPositionX((float)(Math.random()-0.5)*20);
+            playerInfo.setPlayerPositionY((float)(Math.random()-0.5)*20);
+        }
+    }
+
+    //Remove the corpse for all players once it's been found
+    public void removeCorpse() {
+        for (PlayerInfo playerInfo : playerInfos) {
+            if (!playerInfo.isAlive()) {
                 playerInfo.setCorpseFound(true);
-                logger.info("Corpse of player {} was removed", corpsePlayerName);
+                logger.info("Corpse of player {} was removed", playerInfo.getPlayerName());
             }
         }
     }
