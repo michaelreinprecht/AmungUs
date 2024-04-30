@@ -7,6 +7,7 @@ import PlayerCorpse from "@/Components/player/PlayerCorpse";
 import VotingUI from "./VotingUI";
 import ChatWindow from "../chat/ChatWindow";
 import { useGame } from "./hooks/useGame";
+import TaskObject from "@/Components/task/TaskObject";
 
 type GameProps = {
   activePlayerName: string;
@@ -77,6 +78,10 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           playerPositions={playerPositions}
           setPlayerPositions={setPlayerPositions}
         />
+
+        {/* Render task objects */}
+        <TaskObject position={[0, 25, 0]} scale={5} taskName="FuseBox"/>
+
       </Canvas>
 
       {/* Kill UI */}
