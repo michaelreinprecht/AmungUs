@@ -119,8 +119,8 @@ public class PlayerInfoController {
         messagingTemplate.convertAndSend("/app/" + lobbyCode + "/corpseFoundReceiver", victim.getPlayerName());
     }
 
-    @PostMapping("/api/lobby/{lobbyCode}/teleportPlayersToSpawn")
-    public void teleportPlayersToSpawn(@PathVariable String lobbyCode) throws Exception {
+    @MessageMapping("/{lobbyCode}/teleportPlayersToSpawn")
+    public void teleportPlayersToSpawn(@DestinationVariable String lobbyCode) throws Exception {
         logger.info("Teleporting players to spawn.");
         // Get the lobby from the lobby service
 
