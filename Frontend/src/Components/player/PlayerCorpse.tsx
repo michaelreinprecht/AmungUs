@@ -76,8 +76,12 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
       destination: `/app/${lobbyCode}/corpseFoundReceiver`,
       body: JSON.stringify(corpseFoundRequest),
     });
+    const teleportToSpawnRequest = {
+      senderName: activePlayerName,
+    };
     lobbyClient?.publish({
       destination: `/app/${lobbyCode}/teleportPlayersToSpawn`,
+      body: JSON.stringify(teleportToSpawnRequest),
     });
   }
 

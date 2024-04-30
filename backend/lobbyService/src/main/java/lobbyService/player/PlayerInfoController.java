@@ -4,9 +4,7 @@ import lobbyService.GlobalValues;
 import lobbyService.Utils;
 import lobbyService.lobby.LobbyService;
 import lobbyService.lobby.models.Lobby;
-import lobbyService.player.models.CorpseFoundRequest;
-import lobbyService.player.models.KillRequest;
-import lobbyService.player.models.PlayerInfo;
+import lobbyService.player.models.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import lobbyService.player.models.VotingKillRequest;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -120,15 +117,20 @@ public class PlayerInfoController {
     }
 
     @MessageMapping("/{lobbyCode}/teleportPlayersToSpawn")
-    public void teleportPlayersToSpawn(@DestinationVariable String lobbyCode) throws Exception {
+    public void teleportPlayersToSpawn(@DestinationVariable String lobbyCode, TeleportToSpawnRequest request) throws Exception {
+        String senderName = request.getSenderName();
+
         logger.info("Teleporting players to spawn.");
         // Get the lobby from the lobby service
 
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
-            lobby.teleportPlayersToSpawn();
-            List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
-            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
+            PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
+            if (senderPlayerInfo.isAlive()) {
+                lobby.teleportPlayersToSpawn();
+                List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
+                messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
+            }
         }
     }
 
