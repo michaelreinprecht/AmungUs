@@ -10,19 +10,33 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
+  const [votingKill, setVotingKill] = useState<String>("");
+  let votingClientIsConnected = false;
 
   useEffect(() => {
     const votingClient = new Client({
       brokerURL: "ws://localhost:8081/votingService",
       onConnect: () => {
-        votingClient.subscribe(
-          `/voting/${lobbyCode}/votingState`,
-          (message) => {
-            const votingActive = JSON.parse(message.body);
-            setIsGamePaused(votingActive); //Pause or unpause the game
-            setIsVotingActive(votingActive); //Display or stop displaying votingUI
-          }
-        );
+        if (!votingClientIsConnected) {
+          votingClientIsConnected = true;
+          votingClient.subscribe(
+            `/voting/${lobbyCode}/votingState`,
+            (message) => {
+              const votingActive = JSON.parse(message.body);
+              setIsGamePaused(votingActive); //Pause or unpause the game
+              setIsVotingActive(votingActive); //Display or stop displaying votingUI
+            }
+          );
+          votingClient.subscribe(
+            `/voting/${lobbyCode}/votingKill`,
+            (message) => {
+              setVotingKill(message.body);
+              setTimeout(() => {
+                setVotingKill("");
+              }, 5000);
+            }
+          );
+        }
       },
     });
     votingClient.activate();
@@ -50,6 +64,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   }
 
   return {
+    votingKill,
     isGamePaused,
     nearestPlayer,
     setNearestPlayer,

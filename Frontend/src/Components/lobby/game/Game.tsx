@@ -17,6 +17,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const {
+    votingKill,
     isGamePaused,
     nearestPlayer,
     setNearestPlayer,
@@ -95,6 +96,12 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       {/* Render MessageForm and MessageList only if connected */}
       {isVotingActive && (
         <ChatWindow activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
+      )}
+
+      {votingKill !== "" && (
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl text-red-600 font-bold">
+          Player {votingKill} was voted out!
+        </div>
       )}
     </div>
   );

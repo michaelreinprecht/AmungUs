@@ -74,6 +74,12 @@ public class VotingController {
         }
     }
 
+    @MessageMapping("/{lobbyCode}/votingKillReceiver")
+    @SendTo("/voting/{lobbyCode}/votingKill")
+    public String votingKill(@DestinationVariable String lobbyCode, String killedPlayer) throws Exception {
+        return killedPlayer;
+    }
+
     private void startVoting(RestTemplate restTemplate, String senderName, String lobbyCode) {
         String url = "http://localhost:8080/api/lobby/" + lobbyCode;
 
@@ -100,6 +106,7 @@ public class VotingController {
                 String url = "http://localhost:8080/api/lobby/{lobbyCode}/killVotedPlayer";
                 logger.info("KillRequest: {}", killRequest.getVictimName());
                 try {
+                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingKill", killRequest.getVictimName());
                     restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
