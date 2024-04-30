@@ -28,6 +28,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   const camera = useThree((state) => state.camera);
 
   const { meshRef } = usePlayerCharacter({
+    camera,
     isGamePaused,
     activePlayerName,
     scale,
@@ -38,18 +39,6 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   });
   const colorMapPlayer = useLoader(TextureLoader, "/rick.png");
   const colorMapGhost = useLoader(TextureLoader, "/ghost.png");
-
-  useEffect(() => {
-    // Update camera position when active player's position changes
-    const activePlayerPosition = getPositionOfPlayer(
-      playerPositions,
-      activePlayerName
-    );
-    if (activePlayerPosition) {
-      camera.position.x = activePlayerPosition.playerPositionX;
-      camera.position.y = activePlayerPosition.playerPositionY;
-    }
-  }, [playerPositions]);
 
   return (
     <>

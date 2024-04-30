@@ -1,4 +1,4 @@
-import { useLoader } from "@react-three/fiber";
+import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { PlayerPosition } from "@/app/types";
@@ -24,7 +24,10 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
   lobbyCode,
   onNearestPlayerChange,
 }) => {
+  const camera = useThree((state) => state.camera);
+
   const { meshRef } = usePlayerCharacter({
+    camera,
     isGamePaused,
     activePlayerName,
     scale,
