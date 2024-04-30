@@ -8,7 +8,7 @@ import {
   getPlayerSpawnInfo,
   getUpdatedPlayerPosition,
 } from "../utilityFunctions/playerPositionHandler";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { Client } from "@stomp/stompjs";
 
@@ -28,7 +28,6 @@ export function usePlayerMovement(
   setPlayerPositions: (playerPositions: PlayerPosition[]) => void
 ) {
   const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
-
   const [movement, setMovement] = useState<Movement>({
     forward: false,
     backward: false,

@@ -1,6 +1,6 @@
 import { getLobbyByCode } from "@/Components/utilityFunctions/APIService";
 import { PlayerPosition, PlayerRole } from "../../../app/types";
-import { platform } from "os";
+import { useThree } from "@react-three/fiber";
 
 export function getUpdatedPlayerPosition(
   delta: number,
@@ -13,7 +13,7 @@ export function getUpdatedPlayerPosition(
   const speed = 30 * delta;
   const { forward, backward, left, right } = movement;
 
-  const playerPosition = getPositionPlayer(playerPositions, activePlayerName);
+  const playerPosition = getPositionOfPlayer(playerPositions, activePlayerName);
 
   if (playerPosition) {
     let newPositionX = playerPosition.playerPositionX;
@@ -41,7 +41,6 @@ export function getUpdatedPlayerPosition(
         killedPlayerPositionY: playerPosition.killedPlayerPositionY,
         alive: playerPosition.alive,
         playerRole: playerPosition.playerRole,
-        
       };
       return updatedPlayerPosition;
     }
@@ -50,7 +49,7 @@ export function getUpdatedPlayerPosition(
   }
 }
 
-export function getPositionPlayer(
+export function getPositionOfPlayer(
   playerPositions: PlayerPosition[],
   playerName: string
 ) {
@@ -59,15 +58,6 @@ export function getPositionPlayer(
   );
   return playerPosition;
 }
-
-/*
-export async function setPlayerSpawnInfo(
-  setPlayerPositions: (playerPositions: PlayerPosition[]) => void,
-  activePlayerName: string,
-  lobbyCode: string
-) {
-  setPlayerPositions([await getPlayerSpawnInfo(lobbyCode, activePlayerName)]);
-}*/
 
 export async function getPlayerSpawnInfo(
   lobbyCode: string,

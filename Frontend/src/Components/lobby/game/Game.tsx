@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "../../player/PlayerCharacter";
@@ -15,7 +15,6 @@ type GameProps = {
 
 export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
-
   const {
     votingKill,
     isGamePaused,
@@ -33,7 +32,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       <Canvas
         camera={{
           position: [0, 0, 32],
-          zoom: 10,
+          zoom: 20,
           near: 0.1,
           far: 64,
           aspect: canvasRef.current

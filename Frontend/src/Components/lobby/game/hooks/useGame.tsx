@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPositionPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
+import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
 import { killRange } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 import { PlayerPosition } from "@/app/types";
@@ -43,8 +43,8 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   }, []);
 
   function isKillEnabled() {
-    const killer = getPositionPlayer(playerPositions, activePlayerName);
-    const victim = getPositionPlayer(playerPositions, nearestPlayer);
+    const killer = getPositionOfPlayer(playerPositions, activePlayerName);
+    const victim = getPositionOfPlayer(playerPositions, nearestPlayer);
     if (killer && victim && killer.alive && victim.alive) {
       const distance = getDistanceBetween(
         killer.playerPositionX,

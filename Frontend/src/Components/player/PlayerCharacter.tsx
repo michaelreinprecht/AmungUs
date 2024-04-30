@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { Text } from "@react-three/drei";
 import { PlayerPosition } from "../../app/types";
-import { useLoader } from "@react-three/fiber";
+import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
+import { getPositionOfPlayer } from "./utilityFunctions/playerPositionHandler";
 
 interface PlayerCharacterProps {
   isGamePaused: boolean;
@@ -24,6 +25,8 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   playerPositions,
   setPlayerPositions,
 }) => {
+  const camera = useThree((state) => state.camera);
+
   const { meshRef } = usePlayerCharacter({
     isGamePaused,
     activePlayerName,
@@ -35,6 +38,18 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   });
   const colorMapPlayer = useLoader(TextureLoader, "/rick.png");
   const colorMapGhost = useLoader(TextureLoader, "/ghost.png");
+
+  useEffect(() => {
+    // Update camera position when active player's position changes
+    const activePlayerPosition = getPositionOfPlayer(
+      playerPositions,
+      activePlayerName
+    );
+    if (activePlayerPosition) {
+      camera.position.x = activePlayerPosition.playerPositionX;
+      camera.position.y = activePlayerPosition.playerPositionY;
+    }
+  }, [playerPositions]);
 
   return (
     <>
