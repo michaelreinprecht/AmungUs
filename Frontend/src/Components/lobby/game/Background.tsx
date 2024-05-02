@@ -8,7 +8,7 @@ const Background = ({ textureUrl }: { textureUrl: string }) => {
 
   return (
     <mesh position={[0, 0, -1]}>
-      <planeGeometry args={[100, 100, 1, 1]} />
+      <planeGeometry args={[472, 272, 1, 1]} />
       <meshBasicMaterial map={texture} side={THREE.FrontSide} />
     </mesh>
   );

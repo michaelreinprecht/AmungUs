@@ -32,7 +32,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       <Canvas
         camera={{
           position: [0, 0, 32],
-          zoom: 20,
+          zoom: 16,
           near: 0.1,
           far: 64,
           aspect: canvasRef.current
@@ -48,7 +48,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         <directionalLight position={[0, 0, 5]} />
 
         {/* Background component */}
-        <Background textureUrl="/background.jpg" />
+        <Background textureUrl="/AmungUsMap.png" />
 
         {/* Render player character */}
         <PlayerCharacter

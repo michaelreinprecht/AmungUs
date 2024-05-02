@@ -37,10 +37,10 @@ export function usePlayerMovement(
 
   // Bounds that match the background
   const bounds = {
-    minX: -50, // Minimum x-coordinate
-    maxX: 50, // Maximum x-coordinate
-    minY: -35, // Minimum y-coordinate
-    maxY: 35, // Maximum y-coordinate
+    minX: -236, // Minimum x-coordinate
+    maxX: 236, // Maximum x-coordinate
+    minY: -136, // Minimum y-coordinate
+    maxY: 136, // Maximum y-coordinate
   };
 
   useEffect(() => {
