@@ -43,6 +43,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         gl={{ antialias: false }}
         onContextMenu={(e) => e.preventDefault()}
       >
+        <color attach="background" args={["#000000"]} />
         {/* Ambient light and directional light */}
         <ambientLight intensity={0.1} />
         <directionalLight position={[0, 0, 5]} />
