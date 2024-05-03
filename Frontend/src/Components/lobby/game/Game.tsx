@@ -7,6 +7,7 @@ import PlayerCorpse from "@/Components/player/PlayerCorpse";
 import VotingUI from "./VotingUI";
 import ChatWindow from "../chat/ChatWindow";
 import { useGame } from "./hooks/useGame";
+import EmergencyButton from "./Emergency";
 
 type GameProps = {
   activePlayerName: string;
@@ -48,7 +49,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         <ambientLight intensity={0.1} />
         <directionalLight position={[0, 0, 5]} />
 
-        {/* Background component */}
+        {/* Background component with overlay image */}
         <Background textureUrl="/AmungUsMap.png" />
 
         {/* Render player character */}
@@ -62,6 +63,13 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           }
           playerPositions={playerPositions}
           setPlayerPositions={setPlayerPositions}
+        />
+
+        <EmergencyButton
+          position={{ x: 26, y: 74, z: 0 }}
+          texturePath="/EmergencyButton.png"
+          label=""
+          scale={3} isGamePaused={false} activePlayerName={activePlayerName} lobbyCode={lobbyCode}
         />
 
         {/* Render player corpse */}
