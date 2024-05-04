@@ -8,6 +8,8 @@ import VotingUI from "./VotingUI";
 import ChatWindow from "../chat/ChatWindow";
 import { useGame } from "./hooks/useGame";
 import EmergencyButton from "./Emergency";
+import TaskObject from "@/Components/task/TaskObject";
+import ColorTask from "@/Components/task/ColorTask";
 
 type GameProps = {
   activePlayerName: string;
@@ -26,6 +28,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     isVotingActive,
     isKillEnabled,
     isKillUIVisible,
+    currentTask,
+    setCurrentTask,    
   } = useGame(activePlayerName, lobbyCode);
 
   return (
@@ -84,6 +88,10 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           playerPositions={playerPositions}
           setPlayerPositions={setPlayerPositions}
         />
+
+        {/* Render task objects */}
+        <TaskObject position={[0, 25, 0]} scale={5} taskName="ColorTask" setCurrentTask={setCurrentTask} currentTask={currentTask}/>
+
       </Canvas>
 
       {/* Kill UI */}
@@ -106,11 +114,15 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         <ChatWindow activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
       )}
 
+      {/* Color task */}
+      {currentTask === "ColorTask" && <ColorTask setCurrentTask={setCurrentTask}/>}
+
       {votingKill !== "" && (
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl text-red-600 font-bold">
           Player {votingKill} was voted out!
         </div>
       )}
+
     </div>
   );
 }

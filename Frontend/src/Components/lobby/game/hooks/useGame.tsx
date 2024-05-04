@@ -10,6 +10,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
+  const [currentTask, setCurrentTask] = useState<string>("");
   const [votingKill, setVotingKill] = useState<String>("");
   let votingClientIsConnected = false;
 
@@ -63,6 +64,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     );
   }
 
+
   return {
     votingKill,
     isGamePaused,
@@ -73,5 +75,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     isVotingActive,
     isKillEnabled,
     isKillUIVisible,
+    currentTask,
+    setCurrentTask
   };
 }
