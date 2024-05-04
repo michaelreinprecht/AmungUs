@@ -7,6 +7,7 @@ import PlayerCorpse from "@/Components/player/PlayerCorpse";
 import VotingUI from "./VotingUI";
 import ChatWindow from "../chat/ChatWindow";
 import { useGame } from "./hooks/useGame";
+import EmergencyButton from "./Emergency";
 import TaskObject from "@/Components/task/TaskObject";
 import ColorTask from "@/Components/task/ColorTask";
 
@@ -36,7 +37,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       <Canvas
         camera={{
           position: [0, 0, 32],
-          zoom: 20,
+          zoom: 16,
           near: 0.1,
           far: 64,
           aspect: canvasRef.current
@@ -47,12 +48,13 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         gl={{ antialias: false }}
         onContextMenu={(e) => e.preventDefault()}
       >
+        <color attach="background" args={["#000000"]} />
         {/* Ambient light and directional light */}
         <ambientLight intensity={0.1} />
         <directionalLight position={[0, 0, 5]} />
 
-        {/* Background component */}
-        <Background textureUrl="/background.jpg" />
+        {/* Background component with overlay image */}
+        <Background textureUrl="/AmungUsMap.png" />
 
         {/* Render player character */}
         <PlayerCharacter
@@ -65,6 +67,13 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           }
           playerPositions={playerPositions}
           setPlayerPositions={setPlayerPositions}
+        />
+
+        <EmergencyButton
+          position={{ x: 26, y: 74, z: 0 }}
+          texturePath="/EmergencyButton.png"
+          label=""
+          scale={3} isGamePaused={false} activePlayerName={activePlayerName} lobbyCode={lobbyCode}
         />
 
         {/* Render player corpse */}
