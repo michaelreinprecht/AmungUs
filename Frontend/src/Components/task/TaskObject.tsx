@@ -5,15 +5,18 @@ import { useTaskObject } from './useTaskObject';
 type TaskObjectProps = {
     position: [number, number, number],
     scale: number,
-    taskName: string  
+    taskName: string,
+    setCurrentTask: React.Dispatch<React.SetStateAction<string>>,
+    currentTask: string
 };
 
-function TaskObject({ position, scale, taskName }: TaskObjectProps) {
-    const { handleTaskClick } = useTaskObject();  
-    const texture = useLoader(TextureLoader, '/FuseBox.png');
+function TaskObject({ position, scale, taskName, setCurrentTask, currentTask }: TaskObjectProps) {
+    const { handleTaskClick } = useTaskObject(setCurrentTask);  
+    const texture = useLoader(TextureLoader, '/TaskObject.png');
 
     const onClick = (event: ThreeEvent<MouseEvent>) => {
-        handleTaskClick(event, taskName);  
+        handleTaskClick(event, taskName, currentTask);
+        
     };
 
     return (

@@ -8,6 +8,7 @@ import VotingUI from "./VotingUI";
 import ChatWindow from "../chat/ChatWindow";
 import { useGame } from "./hooks/useGame";
 import TaskObject from "@/Components/task/TaskObject";
+import ColorTask from "@/Components/task/ColorTask";
 
 type GameProps = {
   activePlayerName: string;
@@ -28,6 +29,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     setIsVotingActive,
     isKillEnabled,
     isKillUIVisible,
+    currentTask,
+    setCurrentTask,    
   } = useGame(activePlayerName, lobbyCode);
 
   return (
@@ -80,7 +83,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         />
 
         {/* Render task objects */}
-        <TaskObject position={[0, 25, 0]} scale={5} taskName="FuseBox"/>
+        <TaskObject position={[0, 25, 0]} scale={5} taskName="ColorTask" setCurrentTask={setCurrentTask} currentTask={currentTask}/>
 
       </Canvas>
 
@@ -101,6 +104,10 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       {isVotingActive && (
         <ChatWindow activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
       )}
+
+      {/* Wire task */}
+      {currentTask === "ColorTask" && <ColorTask setCurrentTask={setCurrentTask}/>}
+
     </div>
   );
 }
