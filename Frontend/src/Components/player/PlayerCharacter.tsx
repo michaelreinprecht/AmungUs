@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { Text } from "@react-three/drei";
 import { PlayerPosition } from "../../app/types";
-import { useLoader } from "@react-three/fiber";
+import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
+import { getPositionOfPlayer } from "./utilityFunctions/playerPositionHandler";
 
 interface PlayerCharacterProps {
   isGamePaused: boolean;
@@ -24,7 +25,10 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   playerPositions,
   setPlayerPositions,
 }) => {
+  const camera = useThree((state) => state.camera);
+
   const { meshRef } = usePlayerCharacter({
+    camera,
     isGamePaused,
     activePlayerName,
     scale,

@@ -8,22 +8,26 @@ export function useChatField(
 ) {
   const [message, setMessage] = useState("");
   const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
+  let lobbyClientConnected = false;
 
   useEffect(() => {
     const client = new Client({
       brokerURL: "ws://localhost:8080/lobbyService",
       onConnect: () => {
-        const subscription = client.subscribe(
-          `/lobby/${lobbyCode}/messages`,
-          (_message) => {
-            console.log("Received message: ", _message.body);
-            setMessages((prevMessages) => [...prevMessages, _message.body]);
-          }
-        );
-        // Clean up previous subscriptions before subscribing again
-        return () => {
-          subscription?.unsubscribe();
-        };
+        if (!lobbyClientConnected) {
+          lobbyClientConnected = true;
+          const subscription = client.subscribe(
+            `/lobby/${lobbyCode}/messages`,
+            (_message) => {
+              console.log("Received message: ", _message.body);
+              setMessages((prevMessages) => [...prevMessages, _message.body]);
+            }
+          );
+          // Clean up previous subscriptions before subscribing again
+          return () => {
+            subscription?.unsubscribe();
+          };
+        }
       },
     });
     client.activate();

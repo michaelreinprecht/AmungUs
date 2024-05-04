@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "../../player/PlayerCharacter";
@@ -17,16 +17,14 @@ type GameProps = {
 
 export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
-
   const {
+    votingKill,
     isGamePaused,
-    setIsGamePaused,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
     setPlayerPositions,
     isVotingActive,
-    setIsVotingActive,
     isKillEnabled,
     isKillUIVisible,
     currentTask,
@@ -38,7 +36,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       <Canvas
         camera={{
           position: [0, 0, 32],
-          zoom: 10,
+          zoom: 20,
           near: 0.1,
           far: 64,
           aspect: canvasRef.current
@@ -88,7 +86,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       </Canvas>
 
       {/* Kill UI */}
-      {isKillUIVisible() && (
+      {isKillUIVisible() && !isVotingActive && (
         <KillUI
           isKillEnabled={isKillEnabled()}
           activePlayerName={activePlayerName}
@@ -98,15 +96,23 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       )}
 
       {/* Voting UI */}
-      {isVotingActive && <VotingUI lobbyCode={lobbyCode} />}
+      {isVotingActive && (
+        <VotingUI lobbyCode={lobbyCode} activePlayerName={activePlayerName} />
+      )}
 
       {/* Render MessageForm and MessageList only if connected */}
       {isVotingActive && (
         <ChatWindow activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
       )}
 
-      {/* Wire task */}
+      {/* Color task */}
       {currentTask === "ColorTask" && <ColorTask setCurrentTask={setCurrentTask}/>}
+
+      {votingKill !== "" && (
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl text-red-600 font-bold">
+          Player {votingKill} was voted out!
+        </div>
+      )}
 
     </div>
   );

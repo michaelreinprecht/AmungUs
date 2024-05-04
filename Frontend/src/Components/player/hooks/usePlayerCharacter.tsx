@@ -4,8 +4,10 @@ import { PlayerPosition } from "../../../app/types";
 import { calculateNearestVictim } from "../utilityFunctions/calculateNearestPlayer";
 import { usePlayerMovement } from "./usePlayerMovement";
 import { usePlayerHeartbeat } from "./usePlayerHeartbeat";
+import { getPositionOfPlayer } from "../utilityFunctions/playerPositionHandler";
 
 type usePlayerCharacterProps = {
+  camera: THREE.Camera;
   isGamePaused: boolean;
   activePlayerName: string;
   scale: number;
@@ -16,6 +18,7 @@ type usePlayerCharacterProps = {
 };
 
 export function usePlayerCharacter({
+  camera,
   isGamePaused,
   activePlayerName,
   scale,
@@ -46,6 +49,18 @@ export function usePlayerCharacter({
     );
     if (nearestPlayer !== null) {
       onNearestPlayerChange(nearestPlayer);
+    }
+  }, [playerPositions]);
+
+  useEffect(() => {
+    // Update camera position when active player's position changes
+    const activePlayerPosition = getPositionOfPlayer(
+      playerPositions,
+      activePlayerName
+    );
+    if (activePlayerPosition) {
+      camera.position.x = activePlayerPosition.playerPositionX;
+      camera.position.y = activePlayerPosition.playerPositionY;
     }
   }, [playerPositions]);
 
