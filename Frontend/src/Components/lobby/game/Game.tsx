@@ -10,6 +10,7 @@ import { useGame } from "./hooks/useGame";
 import EmergencyButton from "./Emergency";
 import TaskObject from "@/Components/task/TaskObject";
 import ColorTask from "@/Components/task/ColorTask";
+import Colliders from "./Colliders";
 
 type GameProps = {
   activePlayerName: string;
@@ -29,7 +30,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     isKillEnabled,
     isKillUIVisible,
     currentTask,
-    setCurrentTask,    
+    setCurrentTask,
   } = useGame(activePlayerName, lobbyCode);
 
   return (
@@ -73,7 +74,10 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           position={{ x: 26, y: 74, z: 0 }}
           texturePath="/EmergencyButton.png"
           label=""
-          scale={3} isGamePaused={false} activePlayerName={activePlayerName} lobbyCode={lobbyCode}
+          scale={3}
+          isGamePaused={false}
+          activePlayerName={activePlayerName}
+          lobbyCode={lobbyCode}
         />
 
         {/* Render player corpse */}
@@ -90,8 +94,13 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         />
 
         {/* Render task objects */}
-        <TaskObject position={[0, 25, 0]} scale={5} taskName="ColorTask" setCurrentTask={setCurrentTask} currentTask={currentTask}/>
-
+        <TaskObject
+          position={[0, 25, 0]}
+          scale={5}
+          taskName="ColorTask"
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
       </Canvas>
 
       {/* Kill UI */}
@@ -115,14 +124,15 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       )}
 
       {/* Color task */}
-      {currentTask === "ColorTask" && <ColorTask setCurrentTask={setCurrentTask}/>}
+      {currentTask === "ColorTask" && (
+        <ColorTask setCurrentTask={setCurrentTask} />
+      )}
 
       {votingKill !== "" && (
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl text-red-600 font-bold">
           Player {votingKill} was voted out!
         </div>
       )}
-
     </div>
   );
 }
