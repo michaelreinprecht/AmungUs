@@ -2,6 +2,8 @@ package lobbyService.player;
 
 import lobbyService.GlobalValues;
 import lobbyService.Utils;
+import lobbyService.collission.models.Collideable;
+import lobbyService.collission.models.RectangleCollider;
 import lobbyService.lobby.LobbyService;
 import lobbyService.lobby.models.Lobby;
 import lobbyService.player.models.*;
@@ -48,7 +50,9 @@ public class PlayerInfoController {
             logger.info("PlayerInfo: {}", playerInfo);
 
             // Update the player position in the lobby or add it if it's a new player
-            lobby.updatePlayerInfo(playerInfo);
+            if (!isColliding(playerInfo)) {
+                lobby.updatePlayerInfo(playerInfo);
+            }
             // Send the updated player positions to all players
             return lobby.getPlayerInfos();
         } else {
@@ -203,4 +207,35 @@ public class PlayerInfoController {
 
         return distance <= killRange;
     }
+
+    private boolean isColliding(PlayerInfo playerInfo) {
+        double playerX = playerInfo.getPlayerPositionX();
+        double playerY = playerInfo.getPlayerPositionY();
+        double playerHalfWidth = 7 / 2.0; // Half of the player's width
+        double playerHalfHeight = 7 / 2.0; // Half of the player's height
+
+        List<Collideable> colliders = GlobalValues.getInstance().getCollideables();
+        for (Collideable collider : colliders) {
+            if (collider instanceof RectangleCollider) {
+                RectangleCollider rectangleCollider = (RectangleCollider) collider;
+                // Calculate the boundaries of the collider rectangle
+                double colliderLeft = rectangleCollider.getXPosition() - (rectangleCollider.getWidth() / 2.0); // Adjusted for center
+                double colliderRight = rectangleCollider.getXPosition() + (rectangleCollider.getWidth() / 2.0); // Adjusted for center
+                double colliderTop = rectangleCollider.getYPosition() - (rectangleCollider.getHeight() / 2.0); // Adjusted for center
+                double colliderBottom = rectangleCollider.getYPosition() + (rectangleCollider.getHeight() / 2.0); // Adjusted for center
+
+                // Check for collision
+                if (playerX - playerHalfWidth < colliderRight &&
+                        playerX + playerHalfWidth > colliderLeft &&
+                        playerY - playerHalfHeight < colliderBottom &&
+                        playerY + playerHalfHeight > colliderTop) {
+                    // Collision detected
+                    return true;
+                }
+            }
+        }
+        // No collision detected
+        return false;
+    }
+
 }
