@@ -101,6 +101,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           setCurrentTask={setCurrentTask}
           currentTask={currentTask}
         />
+
+        <Colliders />
       </Canvas>
 
       {/* Kill UI */}

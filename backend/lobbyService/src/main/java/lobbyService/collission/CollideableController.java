@@ -1,5 +1,3 @@
-
-/*
 package lobbyService.collission;
 
 import lobbyService.GlobalValues;
@@ -19,4 +17,3 @@ public class CollideableController {
         return GlobalValues.getInstance().getCollideables();
     }
 }
-*/

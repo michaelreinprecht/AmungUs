@@ -1,6 +1,7 @@
 package lobbyService.collission.models;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RectangleCollider implements Collideable {
+    @JsonProperty("xPosition")
     private double xPosition;
+    @JsonProperty("yPosition")
     private double yPosition;
     private double width;
     private double height;

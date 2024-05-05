@@ -120,9 +120,7 @@ public class PlayerInfoController {
     public void teleportPlayersToSpawn(@DestinationVariable String lobbyCode, TeleportToSpawnRequest request) throws Exception {
         String senderName = request.getSenderName();
 
-        logger.info("Teleporting players to spawn.");
         // Get the lobby from the lobby service
-
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
             PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
