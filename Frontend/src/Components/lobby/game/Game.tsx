@@ -10,6 +10,7 @@ import { useGame } from "./hooks/useGame";
 import EmergencyButton from "./Emergency";
 import TaskObject from "@/Components/task/TaskObject";
 import ColorTask from "@/Components/task/ColorTask";
+import Colliders from "./Colliders";
 
 type GameProps = {
   activePlayerName: string;
@@ -29,7 +30,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     isKillEnabled,
     isKillUIVisible,
     currentTask,
-    setCurrentTask,    
+    setCurrentTask,
   } = useGame(activePlayerName, lobbyCode);
 
   return (
@@ -90,8 +91,15 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         />
 
         {/* Render task objects */}
-        <TaskObject position={[0, 25, 0]} scale={5} taskName="ColorTask" setCurrentTask={setCurrentTask} currentTask={currentTask}/>
+        <TaskObject
+          position={[0, 25, 0]}
+          scale={5}
+          taskName="ColorTask"
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
 
+        <Colliders />
       </Canvas>
 
       {/* Kill UI */}
@@ -122,7 +130,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           Player {votingKill} was voted out!
         </div>
       )}
-
     </div>
   );
 }

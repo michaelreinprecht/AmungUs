@@ -140,8 +140,8 @@ public class Lobby {
 
     public void teleportPlayersToSpawn() {
         for (PlayerInfo playerInfo : playerInfos) {
-            playerInfo.setPlayerPositionX((float)(Math.random()-0.5)*20);
-            playerInfo.setPlayerPositionY((float)(Math.random()-0.5)*20);
+            playerInfo.setPlayerPositionX((float)((Math.random()-0.5)*20) + 27);
+            playerInfo.setPlayerPositionY((float)((Math.random()-0.5)*20) + 100);
         }
     }
 

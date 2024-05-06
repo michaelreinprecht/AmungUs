@@ -2,6 +2,8 @@ package lobbyService.player;
 
 import lobbyService.GlobalValues;
 import lobbyService.Utils;
+import lobbyService.collission.models.Collideable;
+import lobbyService.collission.models.RectangleCollider;
 import lobbyService.lobby.LobbyService;
 import lobbyService.lobby.models.Lobby;
 import lobbyService.player.models.*;
@@ -37,7 +39,6 @@ public class PlayerInfoController {
     @MessageMapping("/{lobbyCode}/playerInfoReceiver")
     @SendTo("/lobby/{lobbyCode}/playerInfo")
     public List<PlayerInfo> playerPositions(@DestinationVariable String lobbyCode, PlayerInfo playerInfo) throws Exception {
-        logger.info("PlayerINfoReceiver called");
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
@@ -45,10 +46,14 @@ public class PlayerInfoController {
             playerInfo.setLastHeartbeat(Instant.now());
 
             logger.debug("PlayerInfo received for lobby code: {}", lobbyCode);
-            logger.info("PlayerInfo: {}", playerInfo);
+            logger.debug("PlayerInfo: {}", playerInfo);
+            System.out.println("X: " + playerInfo.getPlayerPositionX());
+            System.out.println("Y: " + playerInfo.getPlayerPositionY());
 
             // Update the player position in the lobby or add it if it's a new player
-            lobby.updatePlayerInfo(playerInfo);
+            if (!isColliding(playerInfo)) {
+                lobby.updatePlayerInfo(playerInfo);
+            }
             // Send the updated player positions to all players
             return lobby.getPlayerInfos();
         } else {
@@ -59,7 +64,7 @@ public class PlayerInfoController {
     @MessageMapping("/{lobbyCode}/heartbeatReceiver")
     @SendTo("/lobby/{lobbyCode}/heartbeat")
     public boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
-        logger.info("Received heartbeat request for lobby code: {}", lobbyCode);
+        logger.debug("Received heartbeat request for lobby code: {}", lobbyCode);
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
@@ -120,9 +125,7 @@ public class PlayerInfoController {
     public void teleportPlayersToSpawn(@DestinationVariable String lobbyCode, TeleportToSpawnRequest request) throws Exception {
         String senderName = request.getSenderName();
 
-        logger.info("Teleporting players to spawn.");
         // Get the lobby from the lobby service
-
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
             PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
@@ -205,4 +208,35 @@ public class PlayerInfoController {
 
         return distance <= killRange;
     }
+
+    private boolean isColliding(PlayerInfo playerInfo) {
+        double playerX = playerInfo.getPlayerPositionX();
+        double playerY = playerInfo.getPlayerPositionY();
+        double playerHalfWidth = 7 / 2.0; // Half of the player's width
+        double playerHalfHeight = 7 / 2.0; // Half of the player's height
+
+        List<Collideable> colliders = GlobalValues.getInstance().getCollideables();
+        for (Collideable collider : colliders) {
+            if (collider instanceof RectangleCollider) {
+                RectangleCollider rectangleCollider = (RectangleCollider) collider;
+                // Calculate the boundaries of the collider rectangle
+                double colliderLeft = rectangleCollider.getXPosition() - (rectangleCollider.getWidth() / 2.0); // Adjusted for center
+                double colliderRight = rectangleCollider.getXPosition() + (rectangleCollider.getWidth() / 2.0); // Adjusted for center
+                double colliderTop = rectangleCollider.getYPosition() - (rectangleCollider.getHeight() / 2.0); // Adjusted for center
+                double colliderBottom = rectangleCollider.getYPosition() + (rectangleCollider.getHeight() / 2.0); // Adjusted for center
+
+                // Check for collision
+                if (playerX - playerHalfWidth < colliderRight &&
+                        playerX + playerHalfWidth > colliderLeft &&
+                        playerY - playerHalfHeight < colliderBottom &&
+                        playerY + playerHalfHeight > colliderTop) {
+                    // Collision detected
+                    return true;
+                }
+            }
+        }
+        // No collision detected
+        return false;
+    }
+
 }
