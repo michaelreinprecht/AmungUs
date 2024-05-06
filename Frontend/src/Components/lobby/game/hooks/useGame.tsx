@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
-import { killRange } from "@/app/globals";
+import {
+  emergencyButtonCooldown,
+  killCooldown,
+  killRange,
+} from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 import { PlayerPosition } from "@/app/types";
 import { Client } from "@stomp/stompjs";
@@ -37,12 +41,12 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
                 setIsKillingOnCooldown(true);
                 setTimeout(() => {
                   setIsKillingOnCooldown(false);
-                }, 10000);
+                }, killCooldown * 1000);
                 // Also add a cooldown to the emergency button before it can be pressed again
                 setIsEmergencyButtonOnCooldown(true);
                 setTimeout(() => {
                   setIsEmergencyButtonOnCooldown(false);
-                }, 30000);
+                }, emergencyButtonCooldown * 1000);
               }
             }
           );

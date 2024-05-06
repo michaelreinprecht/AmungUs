@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
+import { killCooldown } from "@/app/globals";
 
 type KillUIProps = {
   isKillEnabled: boolean | undefined;
@@ -31,7 +32,7 @@ export default function KillUI({
       setIsKillOnCooldown(true);
       setTimeout(() => {
         setIsKillOnCooldown(false);
-      }, 20000);
+      }, killCooldown * 1000);
     }
   }
 

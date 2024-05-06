@@ -15,6 +15,8 @@ public class GlobalValues {
     // Default values
     @Getter
     private float killRange;
+    @Getter
+    private float killCooldown;
 
     @Getter
     private List<Collideable> collideables;
@@ -34,7 +36,7 @@ public class GlobalValues {
 
     private void initializeDefaultValues() {
         killRange = 20;
-
+        killCooldown = 15;
         initializeCollideables();
     }
 

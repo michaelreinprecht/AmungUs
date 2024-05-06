@@ -17,6 +17,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,7 @@ public class PlayerInfoController {
         PlayerInfo killer = lobby.getPlayerInfoForName(killRequest.getKillerName());
         PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
         if (isKillAllowed(killer, victim)) {
-            lobby.killPlayer(victim);
+            lobby.killPlayer(victim, killer);
             List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
             // Send the updated player info to all players
             messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
@@ -111,7 +112,7 @@ public class PlayerInfoController {
 
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
-        lobby.killPlayer(victim);
+        lobby.killPlayer(victim, null);
         List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
         lobby.removeCorpse();
 
@@ -192,7 +193,12 @@ public class PlayerInfoController {
                 if (victim.isAlive()) { //Make sure victim is still alive
                     if (killer.isAlive()) { //Make sure killer is still alive
                         if (victimInRange(killer, victim)) { //Make sure the killer is in range for the kill
-                            return true;
+                            //Make sure kill is not on cooldown for this killer
+                            if (killer.getLastKillTime() == null) {
+                                return true;
+                            } else {
+                                return Duration.between(killer.getLastKillTime(), Instant.now()).getSeconds() >= 15;
+                            }
                         }
                     }
                 }
