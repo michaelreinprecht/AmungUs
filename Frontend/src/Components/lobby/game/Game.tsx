@@ -74,10 +74,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           position={{ x: 26, y: 74, z: 0 }}
           texturePath="/EmergencyButton.png"
           label=""
-          scale={3}
-          isGamePaused={false}
-          activePlayerName={activePlayerName}
-          lobbyCode={lobbyCode}
+          scale={3} isGamePaused={false} activePlayerName={activePlayerName} lobbyCode={lobbyCode}
         />
 
         {/* Render player corpse */}
@@ -126,9 +123,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       )}
 
       {/* Color task */}
-      {currentTask === "ColorTask" && (
-        <ColorTask setCurrentTask={setCurrentTask} />
-      )}
+      {currentTask === "ColorTask" && <ColorTask setCurrentTask={setCurrentTask}/>}
 
       {votingKill !== "" && (
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl text-red-600 font-bold">
