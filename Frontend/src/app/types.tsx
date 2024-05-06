@@ -28,4 +28,11 @@ export type Movement = {
   right: boolean;
 };
 
+export type RectangleCollider = {
+  xPosition: number;
+  yPosition: number;
+  width: number;
+  height: number;
+};
+
 export type PlayerRole = "killer" | "crewmate";
