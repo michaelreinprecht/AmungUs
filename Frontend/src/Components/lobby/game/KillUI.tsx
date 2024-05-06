@@ -6,6 +6,7 @@ type KillUIProps = {
   activePlayerName: string;
   victimName: string;
   lobbyCode: string;
+  setIsKillOnCooldown: (isKillOnCooldown: boolean) => void;
 };
 
 export default function KillUI({
@@ -13,6 +14,7 @@ export default function KillUI({
   activePlayerName,
   victimName,
   lobbyCode,
+  setIsKillOnCooldown,
 }: KillUIProps) {
   const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
 
@@ -26,6 +28,10 @@ export default function KillUI({
         destination: `/app/${lobbyCode}/killReceiver`,
         body: JSON.stringify(requestBody),
       });
+      setIsKillOnCooldown(true);
+      setTimeout(() => {
+        setIsKillOnCooldown(false);
+      }, 20000);
     }
   }
 

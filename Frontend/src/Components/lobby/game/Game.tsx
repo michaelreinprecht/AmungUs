@@ -7,7 +7,7 @@ import PlayerCorpse from "@/Components/player/PlayerCorpse";
 import VotingUI from "./VotingUI";
 import ChatWindow from "../chat/ChatWindow";
 import { useGame } from "./hooks/useGame";
-import EmergencyButton from "./Emergency";
+import EmergencyButton from "./EmergencyButton";
 import TaskObject from "@/Components/task/TaskObject";
 import ColorTask from "@/Components/task/ColorTask";
 import Colliders from "./Colliders";
@@ -31,6 +31,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     isKillUIVisible,
     currentTask,
     setCurrentTask,
+    setIsKillingOnCooldown,
+    isEmergencyButtonOnCooldown,
   } = useGame(activePlayerName, lobbyCode);
 
   return (
@@ -78,6 +80,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           isGamePaused={false}
           activePlayerName={activePlayerName}
           lobbyCode={lobbyCode}
+          isEmergencyButtonOnCooldown={isEmergencyButtonOnCooldown}
         />
 
         {/* Render player corpse */}
@@ -112,6 +115,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           activePlayerName={activePlayerName}
           victimName={nearestPlayer}
           lobbyCode={lobbyCode}
+          setIsKillOnCooldown={setIsKillingOnCooldown}
         />
       )}
 

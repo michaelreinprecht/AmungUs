@@ -12,6 +12,7 @@ interface EmergencyButtonProps {
   isGamePaused: boolean;
   activePlayerName: string;
   lobbyCode: string;
+  isEmergencyButtonOnCooldown: boolean;
 }
 
 const EmergencyButton: React.FC<EmergencyButtonProps> = ({
@@ -21,7 +22,8 @@ const EmergencyButton: React.FC<EmergencyButtonProps> = ({
   scale,
   isGamePaused,
   activePlayerName,
-  lobbyCode
+  lobbyCode,
+  isEmergencyButtonOnCooldown,
 }) => {
   const texture = useLoader(TextureLoader, texturePath);
 
@@ -45,29 +47,38 @@ const EmergencyButton: React.FC<EmergencyButtonProps> = ({
     vClient.activate();
   }, []);
 
-  const handleEmergencyClick = () => {
-    const votingStateRequest = {
-      senderName: activePlayerName,
-      votingState: true,
-    };
-    votingClient?.publish({
-      destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
-      body: JSON.stringify(votingStateRequest),
-    });
-    const teleportToSpawnRequest = {
-      senderName: activePlayerName,
-    };
-    lobbyClient?.publish({
-      destination: `/app/${lobbyCode}/teleportPlayersToSpawn`,
-      body: JSON.stringify(teleportToSpawnRequest),
-    });
-  };
+  function handleEmergencyClick() {
+    if (!isGamePaused && !isEmergencyButtonOnCooldown) {
+      const votingStateRequest = {
+        senderName: activePlayerName,
+        votingState: true,
+      };
+      votingClient?.publish({
+        destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
+        body: JSON.stringify(votingStateRequest),
+      });
+      const teleportToSpawnRequest = {
+        senderName: activePlayerName,
+      };
+      lobbyClient?.publish({
+        destination: `/app/${lobbyCode}/teleportPlayersToSpawn`,
+        body: JSON.stringify(teleportToSpawnRequest),
+      });
+    }
+  }
 
   return (
-    <group position={[position.x, position.y, position.z]} onClick={handleEmergencyClick}>
+    <group
+      position={[position.x, position.y, position.z]}
+      onClick={handleEmergencyClick}
+    >
       <mesh>
         <planeGeometry args={[2 * scale, 2 * scale]} />
-        <meshStandardMaterial map={texture} transparent={true} />
+        <meshStandardMaterial
+          map={texture}
+          transparent={true}
+          color={!isEmergencyButtonOnCooldown ? "white" : "gray"}
+        />
       </mesh>
 
       <Text
