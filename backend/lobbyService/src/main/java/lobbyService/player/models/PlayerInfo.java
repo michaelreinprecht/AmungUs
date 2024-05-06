@@ -16,6 +16,7 @@ public class PlayerInfo {
     private float playerPositionY;
     private float killedPlayerPositionX;
     private float killedPlayerPositionY;
+    private Instant lastKillTime;
     private boolean corpseFound;
     private boolean alive;
     private String playerRole;
