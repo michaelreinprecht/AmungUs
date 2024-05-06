@@ -39,7 +39,6 @@ public class PlayerInfoController {
     @MessageMapping("/{lobbyCode}/playerInfoReceiver")
     @SendTo("/lobby/{lobbyCode}/playerInfo")
     public List<PlayerInfo> playerPositions(@DestinationVariable String lobbyCode, PlayerInfo playerInfo) throws Exception {
-        logger.info("PlayerINfoReceiver called");
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
@@ -47,7 +46,9 @@ public class PlayerInfoController {
             playerInfo.setLastHeartbeat(Instant.now());
 
             logger.debug("PlayerInfo received for lobby code: {}", lobbyCode);
-            logger.info("PlayerInfo: {}", playerInfo);
+            logger.debug("PlayerInfo: {}", playerInfo);
+            System.out.println("X: " + playerInfo.getPlayerPositionX());
+            System.out.println("Y: " + playerInfo.getPlayerPositionY());
 
             // Update the player position in the lobby or add it if it's a new player
             if (!isColliding(playerInfo)) {
@@ -63,7 +64,7 @@ public class PlayerInfoController {
     @MessageMapping("/{lobbyCode}/heartbeatReceiver")
     @SendTo("/lobby/{lobbyCode}/heartbeat")
     public boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
-        logger.info("Received heartbeat request for lobby code: {}", lobbyCode);
+        logger.debug("Received heartbeat request for lobby code: {}", lobbyCode);
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {

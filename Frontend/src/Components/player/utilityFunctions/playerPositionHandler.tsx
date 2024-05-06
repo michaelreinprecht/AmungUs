@@ -85,8 +85,8 @@ export async function getPlayerSpawnInfo(
 
   const spawnInfo = {
     playerName: activePlayerName,
-    playerPositionX: (Math.random() - 0.5) * 20,
-    playerPositionY: (Math.random() - 0.5) * 20,
+    playerPositionX: (Math.random() - 0.5) * 20 + 27,
+    playerPositionY: (Math.random() - 0.5) * 20 + 100,
     killedPlayerPositionX: null,
     killedPlayerPositionY: null,
     alive: true,

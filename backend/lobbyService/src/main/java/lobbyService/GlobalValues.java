@@ -40,6 +40,32 @@ public class GlobalValues {
 
     private void initializeCollideables() {
         collideables = new ArrayList<>();
-        collideables.add(new RectangleCollider(40, 40, 10, 10));
+        collideables.add(new RectangleCollider(26, 72, 20, 24)); // ButtonCollider
+        collideables.add(new RectangleCollider(76, -1, 97, 59));
+        collideables.add(new RectangleCollider(-24, -1, 65, 59)); // ButtonRoom
+        collideables.add(new RectangleCollider(104, 42, 42, 59));
+        collideables.add(new RectangleCollider(104, 130, 42, 59));
+        collideables.add(new RectangleCollider(-76, 60, 82, 15));
+        collideables.add(new RectangleCollider(-80, 24, 17, 58));
+        collideables.add(new RectangleCollider(-76, 114, 81, 46));
+        collideables.add(new RectangleCollider(23, 130, 130, 12)); // Room to the left
+        collideables.add(new RectangleCollider(-154, 127, 90, 25));
+        collideables.add(new RectangleCollider(-216, 84, 40, 100));
+        collideables.add(new RectangleCollider(-204, 33, 72, 45));
+        collideables.add(new RectangleCollider(-115, 33, 65, 47));
+        collideables.add(new RectangleCollider(-178, 8, 20, 25)); // Room to bottom left
+        collideables.add(new RectangleCollider(-238, -17, 20, 60));
+        collideables.add(new RectangleCollider(-203, -61, 70, 43));
+        collideables.add(new RectangleCollider(-178, -35, 20, 20));
+        collideables.add(new RectangleCollider(-215, -107, 38, 60)); // Room to bottom
+        collideables.add(new RectangleCollider(-163, -134, 70, 20));
+        collideables.add(new RectangleCollider(-102, -90, 60, 100));
+        collideables.add(new RectangleCollider(-138, -54, 20, 58));
+        collideables.add(new RectangleCollider(-138, 6, 20, 20)); // Room to top right
+        collideables.add(new RectangleCollider(-80, -35, 16, 20));
+        collideables.add(new RectangleCollider(-38, -41, 37, 40)); // Room to bottom right
+        collideables.add(new RectangleCollider(-55, -111, 70, 60));
+        collideables.add(new RectangleCollider(16, -134, 100, 20));
+        collideables.add(new RectangleCollider(88, -103, 72, 100));
     }
 }
