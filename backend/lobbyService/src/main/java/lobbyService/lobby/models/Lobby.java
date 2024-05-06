@@ -127,13 +127,20 @@ public class Lobby {
     }
 
     //Kill the given player
-    public void killPlayer(PlayerInfo victim) {
+    public void killPlayer(PlayerInfo victim, PlayerInfo killer) {
         for (PlayerInfo playerInfo : playerInfos) {
             if (playerInfo.getPlayerName().equals(victim.getPlayerName())) {
                 playerInfo.setAlive(false);
                 playerInfo.setKilledPlayerPositionX(victim.getPlayerPositionX());
                 playerInfo.setKilledPlayerPositionY(victim.getPlayerPositionY());
                 logger.info("Player {} was killed", victim.getPlayerName());
+            }
+        }
+        if (killer != null) {
+            for (PlayerInfo playerInfo : playerInfos) {
+                if (playerInfo.getPlayerName().equals(killer.getPlayerName())) {
+                    playerInfo.setLastKillTime(Instant.now());
+                }
             }
         }
     }

@@ -7,7 +7,7 @@ import PlayerCorpse from "@/Components/player/PlayerCorpse";
 import VotingUI from "./VotingUI";
 import ChatWindow from "../chat/ChatWindow";
 import { useGame } from "./hooks/useGame";
-import EmergencyButton from "./Emergency";
+import EmergencyButton from "./EmergencyButton";
 import TaskObject from "@/Components/task/TaskObject";
 import ColorTask from "@/Components/task/ColorTask";
 import Colliders from "./Colliders";
@@ -31,6 +31,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     isKillUIVisible,
     currentTask,
     setCurrentTask,
+    setIsKillingOnCooldown,
+    isEmergencyButtonOnCooldown,
   } = useGame(activePlayerName, lobbyCode);
 
   return (
@@ -74,7 +76,11 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           position={{ x: 26, y: 74, z: 0 }}
           texturePath="/EmergencyButton.png"
           label=""
-          scale={3} isGamePaused={false} activePlayerName={activePlayerName} lobbyCode={lobbyCode}
+          scale={3}
+          isGamePaused={false}
+          activePlayerName={activePlayerName}
+          lobbyCode={lobbyCode}
+          isEmergencyButtonOnCooldown={isEmergencyButtonOnCooldown}
         />
 
         {/* Render player corpse */}
@@ -109,6 +115,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           activePlayerName={activePlayerName}
           victimName={nearestPlayer}
           lobbyCode={lobbyCode}
+          setIsKillOnCooldown={setIsKillingOnCooldown}
         />
       )}
 
@@ -123,7 +130,9 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       )}
 
       {/* Color task */}
-      {currentTask === "ColorTask" && <ColorTask setCurrentTask={setCurrentTask}/>}
+      {currentTask === "ColorTask" && (
+        <ColorTask setCurrentTask={setCurrentTask} />
+      )}
 
       {votingKill !== "" && (
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl text-red-600 font-bold">

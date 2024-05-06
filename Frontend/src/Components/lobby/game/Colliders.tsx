@@ -172,17 +172,9 @@ export default function Colliders() {
       width: 72,
       height: 100,
     },
-    {
-      //Room to left
-      xPosition: 88,
-      yPosition: -103,
-      width: 72,
-      height: 100,
-    },
   ]);
   const colliderTexture = useLoader(TextureLoader, "/bricks.jpg");
 
-  /*
   useEffect(() => {
     async function fetchColliders() {
       try {
@@ -202,7 +194,6 @@ export default function Colliders() {
 
     fetchColliders();
   }, []);
-  */
 
   return (
     <group>
