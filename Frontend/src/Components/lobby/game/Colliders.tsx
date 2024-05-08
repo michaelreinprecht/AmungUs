@@ -205,6 +205,44 @@ export default function Colliders() {
       width: 40,
       height: 79,
     },
+    {
+      //hallway bottom right
+      xPosition: 193,
+      yPosition: -70,
+      width: 40,
+      height: 28,
+    },
+    {
+      xPosition: 135,
+      yPosition: -70,
+      width: 40,
+      height: 28,
+    },
+    {
+      // room bottom right
+      xPosition: 135,
+      yPosition: -70,
+      width: 40,
+      height: 28,
+    },
+    {
+      xPosition: 116,
+      yPosition: -90,
+      width: 40,
+      height: 65,
+    },
+    {
+      xPosition: 150,
+      yPosition: -121,
+      width: 100,
+      height: 10,
+    },
+    {
+      xPosition: 197,
+      yPosition: -108,
+      width: 10,
+      height: 50,
+    },
   ]);
   const colliderTexture = useLoader(TextureLoader, "/bricks.jpg");
 
