@@ -62,6 +62,36 @@ public class PlayerInfoController {
         }
     }
 
+    private boolean isColliding(PlayerInfo playerInfo) {
+        double playerX = playerInfo.getPlayerPositionX();
+        double playerY = playerInfo.getPlayerPositionY();
+        double playerHalfWidth = 7 / 2.0; // Half of the player's width
+        double playerHalfHeight = 7 / 2.0; // Half of the player's height
+
+        List<Collideable> colliders = GlobalValues.getInstance().getCollideables();
+        for (Collideable collider : colliders) {
+            if (collider instanceof RectangleCollider) {
+                RectangleCollider rectangleCollider = (RectangleCollider) collider;
+                // Calculate the boundaries of the collider rectangle
+                double colliderLeft = rectangleCollider.getXPosition() - (rectangleCollider.getWidth() / 2.0); // Adjusted for center
+                double colliderRight = rectangleCollider.getXPosition() + (rectangleCollider.getWidth() / 2.0); // Adjusted for center
+                double colliderTop = rectangleCollider.getYPosition() - (rectangleCollider.getHeight() / 2.0); // Adjusted for center
+                double colliderBottom = rectangleCollider.getYPosition() + (rectangleCollider.getHeight() / 2.0); // Adjusted for center
+
+                // Check for collision
+                if (playerX - playerHalfWidth < colliderRight &&
+                        playerX + playerHalfWidth > colliderLeft &&
+                        playerY - playerHalfHeight < colliderBottom &&
+                        playerY + playerHalfHeight > colliderTop) {
+                    // Collision detected
+                    return true;
+                }
+            }
+        }
+        // No collision detected
+        return false;
+    }
+
     @MessageMapping("/{lobbyCode}/heartbeatReceiver")
     @SendTo("/lobby/{lobbyCode}/heartbeat")
     public boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
@@ -215,34 +245,5 @@ public class PlayerInfoController {
         return distance <= killRange;
     }
 
-    private boolean isColliding(PlayerInfo playerInfo) {
-        double playerX = playerInfo.getPlayerPositionX();
-        double playerY = playerInfo.getPlayerPositionY();
-        double playerHalfWidth = 7 / 2.0; // Half of the player's width
-        double playerHalfHeight = 7 / 2.0; // Half of the player's height
-
-        List<Collideable> colliders = GlobalValues.getInstance().getCollideables();
-        for (Collideable collider : colliders) {
-            if (collider instanceof RectangleCollider) {
-                RectangleCollider rectangleCollider = (RectangleCollider) collider;
-                // Calculate the boundaries of the collider rectangle
-                double colliderLeft = rectangleCollider.getXPosition() - (rectangleCollider.getWidth() / 2.0); // Adjusted for center
-                double colliderRight = rectangleCollider.getXPosition() + (rectangleCollider.getWidth() / 2.0); // Adjusted for center
-                double colliderTop = rectangleCollider.getYPosition() - (rectangleCollider.getHeight() / 2.0); // Adjusted for center
-                double colliderBottom = rectangleCollider.getYPosition() + (rectangleCollider.getHeight() / 2.0); // Adjusted for center
-
-                // Check for collision
-                if (playerX - playerHalfWidth < colliderRight &&
-                        playerX + playerHalfWidth > colliderLeft &&
-                        playerY - playerHalfHeight < colliderBottom &&
-                        playerY + playerHalfHeight > colliderTop) {
-                    // Collision detected
-                    return true;
-                }
-            }
-        }
-        // No collision detected
-        return false;
-    }
 
 }
