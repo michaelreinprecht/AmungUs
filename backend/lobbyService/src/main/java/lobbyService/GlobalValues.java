@@ -69,5 +69,16 @@ public class GlobalValues {
         collideables.add(new RectangleCollider(-55, -111, 70, 60));
         collideables.add(new RectangleCollider(16, -134, 100, 20));
         collideables.add(new RectangleCollider(88, -103, 72, 100));
+        collideables.add(new RectangleCollider(155, 118, 100, 20));//room top right
+        collideables.add(new RectangleCollider(214, 100, 20, 90));
+        collideables.add(new RectangleCollider(193, 16, 40, 79)); // hallway in the middle
+        collideables.add(new RectangleCollider(135, 16, 40, 79));
+        collideables.add(new RectangleCollider(224, -29, 40, 79)); // room inbetween the very right rooms
+        collideables.add(new RectangleCollider(193, -70, 40, 28)); //hallway bottom right
+        collideables.add(new RectangleCollider(135, -70, 40, 28));
+        collideables.add(new RectangleCollider(135, -70, 40, 28)); // room bottom right
+        collideables.add(new RectangleCollider(116, -90, 40, 65));
+        collideables.add(new RectangleCollider(150, -121, 100, 10));
+        collideables.add(new RectangleCollider(197, -108, 10, 50));
     }
 }
