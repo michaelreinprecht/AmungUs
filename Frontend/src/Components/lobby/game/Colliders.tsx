@@ -172,6 +172,39 @@ export default function Colliders() {
       width: 72,
       height: 100,
     },
+    {
+      //room to the very top right
+      xPosition: 155,
+      yPosition: 118,
+      width: 100,
+      height: 20,
+    },
+    {
+      xPosition: 214,
+      yPosition: 100,
+      width: 20,
+      height: 90,
+    },
+    {
+      //Hallway to the right middle
+      xPosition: 193,
+      yPosition: 16,
+      width: 40,
+      height: 79,
+    },
+    {
+      xPosition: 135,
+      yPosition: 16,
+      width: 40,
+      height: 79,
+    },
+    {
+      //room inbetween the very right ones
+      xPosition: 224,
+      yPosition: -29,
+      width: 40,
+      height: 79,
+    },
   ]);
   const colliderTexture = useLoader(TextureLoader, "/bricks.jpg");
 
@@ -186,7 +219,7 @@ export default function Colliders() {
           throw new Error("Failed to fetch colliders");
         }
         const data = (await response.json()) as RectangleCollider[];
-        setColliders(data);
+        //setColliders(data);
       } catch (error) {
         console.error("Error fetching colliders:", error);
       }
