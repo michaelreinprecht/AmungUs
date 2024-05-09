@@ -4,6 +4,7 @@ import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { PlayerPosition } from "@/app/types";
 import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
+import { Text } from "@react-three/drei";
 
 interface PlayerCorpseProps {
   isGamePaused: boolean;
@@ -101,6 +102,17 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
               <planeGeometry args={[2 * scale, 2 * scale]} />
               <meshStandardMaterial map={colorMap} transparent={true} />
             </mesh>
+            <Text
+              position={[0, scale, 0]}
+              fontSize={0.6 * scale}
+              color="red"
+              anchorX="center"
+              anchorY="middle"
+              outlineWidth={0.01 * scale}
+              outlineColor="#000000"
+            >
+              {pos.playerName}
+            </Text>
           </group>
         ))}
     </>
