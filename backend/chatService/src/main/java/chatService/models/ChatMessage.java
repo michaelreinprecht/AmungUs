@@ -1,4 +1,4 @@
-package lobbyService.chat.models;
+package chatService.models;
 
 import lombok.Getter;
 import lombok.Setter;
