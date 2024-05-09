@@ -106,6 +106,7 @@ public class VotingController {
                 VotingKillRequest killRequest = new VotingKillRequest(playerToKill);
                 logger.info("KillRequest: {}", killRequest.getVictimName());
                 try {
+                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingKill", killRequest.getVictimName());
                     restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
