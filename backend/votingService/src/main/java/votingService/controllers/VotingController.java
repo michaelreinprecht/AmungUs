@@ -100,17 +100,23 @@ public class VotingController {
         VotingPlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
         if (senderPlayerInfo.isAlive()) { //Check if player sending message is alive
             String playerToKill = lobby.getMostVotedPlayer();
+            String url = "http://localhost:8080/api/lobby/{lobbyCode}/killVotedPlayer";
             if (playerToKill != null) {
                 //Send message to lobbyService WebSocket to kill the player
                 VotingKillRequest killRequest = new VotingKillRequest(playerToKill);
-                String url = "http://localhost:8080/api/lobby/{lobbyCode}/killVotedPlayer";
                 logger.info("KillRequest: {}", killRequest.getVictimName());
                 try {
-                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingKill", killRequest.getVictimName());
                     restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
+            }
+            //Empty string cannot be a name = not killing anyone, just updating kill timers after voting ended
+            VotingKillRequest killRequest = new VotingKillRequest("");
+            try {
+                restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
             //Remove the lobby from the votingService
             votingLobbyService.removeLobby(lobbyCode);

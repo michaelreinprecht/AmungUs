@@ -135,21 +135,28 @@ public class PlayerInfoController {
         return false;
     }
 
+    //Receiver for VotingService - kills the given player after a voting (doesn't kill anyone if victimName is empty string)
     @PostMapping("/api/lobby/{lobbyCode}/killVotedPlayer")
     public void killVotedPlayer(@PathVariable String lobbyCode, @RequestBody VotingKillRequest killRequest) throws Exception {
         logger.info("Voted out and killing player: {}", killRequest.getVictimName());
         // Get the lobby from the lobby service
 
         Lobby lobby = lobbyService.getLobby(lobbyCode);
-        PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
-        lobby.killPlayer(victim, null);
+        String victimName = killRequest.getVictimName();
+
+        if (!victimName.isEmpty()) {
+            PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
+            lobby.killPlayer(victim, null);
+        }
+
+        lobby.updateKilltimers(); //Stop killers from killing again right after voting!
         List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
         lobby.removeCorpse();
 
         // Send the updated player info to all players
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
         // Remove the corpse
-        messagingTemplate.convertAndSend("/app/" + lobbyCode + "/corpseFoundReceiver", victim.getPlayerName());
+        messagingTemplate.convertAndSend("/app/" + lobbyCode + "/corpseFoundReceiver", victimName);
     }
 
     @MessageMapping("/{lobbyCode}/teleportPlayersToSpawn")

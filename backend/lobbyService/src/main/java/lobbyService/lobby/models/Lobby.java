@@ -162,6 +162,15 @@ public class Lobby {
         }
     }
 
+    //Sets all the timer of killers to current time -> for example to stop them from killing again right after voting conducted
+    public void updateKilltimers() {
+        for (PlayerInfo playerInfo : playerInfos) {
+            if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {
+                playerInfo.setLastKillTime(Instant.now());
+            }
+        }
+    }
+
     private void updateExistingPlayer(PlayerInfo existingPlayer, PlayerInfo updatedPlayer) {
         // Update the player's position
         existingPlayer.setPlayerPositionX(updatedPlayer.getPlayerPositionX());
