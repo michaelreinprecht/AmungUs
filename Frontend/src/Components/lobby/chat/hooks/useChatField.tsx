@@ -12,14 +12,13 @@ export function useChatField(
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8080/lobbyService",
+      brokerURL: "ws://localhost:8082/chatService",
       onConnect: () => {
         if (!lobbyClientConnected) {
           lobbyClientConnected = true;
           const subscription = client.subscribe(
-            `/lobby/${lobbyCode}/messages`,
+            `/chat/${lobbyCode}/messages`,
             (_message) => {
-              console.log("Received message: ", _message.body);
               setMessages((prevMessages) => [...prevMessages, _message.body]);
             }
           );
@@ -46,7 +45,7 @@ export function useChatField(
       //Send message to websocket
 
       lobbyClient?.publish({
-        destination: `/app/${lobbyCode}/chatReceiver`,
+        destination: `/chatApp/${lobbyCode}/chatReceiver`,
         body: JSON.stringify(chatMessage),
       });
 

@@ -1,7 +1,7 @@
 import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
-import { PlayerPosition } from "@/app/types";
+import { PlayerInfo } from "@/app/types";
 import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import { Text } from "@react-three/drei";
@@ -12,8 +12,8 @@ interface PlayerCorpseProps {
   scale: number;
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
-  playerPositions: PlayerPosition[];
-  setPlayerPositions: (playerPositions: PlayerPosition[]) => void;
+  playerPositions: PlayerInfo[];
+  setPlayerPositions: (playerPositions: PlayerInfo[]) => void;
 }
 
 const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
@@ -68,21 +68,6 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
     votingClient?.publish({
       destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
       body: JSON.stringify(votingStateRequest),
-    });
-    const corpseFoundRequest = {
-      senderName: activePlayerName,
-      corpsePlayerName: corpsePlayerName,
-    };
-    lobbyClient?.publish({
-      destination: `/app/${lobbyCode}/corpseFoundReceiver`,
-      body: JSON.stringify(corpseFoundRequest),
-    });
-    const teleportToSpawnRequest = {
-      senderName: activePlayerName,
-    };
-    lobbyClient?.publish({
-      destination: `/app/${lobbyCode}/teleportPlayersToSpawn`,
-      body: JSON.stringify(teleportToSpawnRequest),
     });
   }
 

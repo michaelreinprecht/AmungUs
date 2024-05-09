@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
 import { Text } from "@react-three/drei";
-import { PlayerPosition } from "../../app/types";
+import { PlayerInfo } from "../../app/types";
 import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { getPositionOfPlayer } from "./utilityFunctions/playerPositionHandler";
@@ -12,8 +12,8 @@ interface PlayerCharacterProps {
   scale: number;
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
-  playerPositions: PlayerPosition[];
-  setPlayerPositions: (playerPositions: PlayerPosition[]) => void;
+  playerPositions: PlayerInfo[];
+  setPlayerPositions: (playerPositions: PlayerInfo[]) => void;
 }
 
 const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
