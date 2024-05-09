@@ -69,6 +69,7 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
       destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
       body: JSON.stringify(votingStateRequest),
     });
+    /*
     const corpseFoundRequest = {
       senderName: activePlayerName,
       corpsePlayerName: corpsePlayerName,
@@ -84,6 +85,7 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
       destination: `/app/${lobbyCode}/teleportPlayersToSpawn`,
       body: JSON.stringify(teleportToSpawnRequest),
     });
+    */
   }
 
   return (

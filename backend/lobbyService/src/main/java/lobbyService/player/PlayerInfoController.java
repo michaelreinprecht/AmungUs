@@ -151,12 +151,14 @@ public class PlayerInfoController {
 
         lobby.updateKilltimers(); //Stop killers from killing again right after voting!
         List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
-        lobby.removeCorpse();
+        lobby.removeCorpses();
 
+        // Teleport players to spawn after voting
+        lobby.teleportPlayersToSpawn();
+        // Remove the corpses
+        lobby.removeCorpses();
         // Send the updated player info to all players
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
-        // Remove the corpse
-        messagingTemplate.convertAndSend("/app/" + lobbyCode + "/corpseFoundReceiver", victimName);
     }
 
     @MessageMapping("/{lobbyCode}/teleportPlayersToSpawn")
@@ -167,7 +169,7 @@ public class PlayerInfoController {
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
             PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
-            if (senderPlayerInfo.isAlive()) {
+            if (senderPlayerInfo.isAlive() || senderName.isEmpty()) {
                 lobby.teleportPlayersToSpawn();
                 List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
                 messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
@@ -187,7 +189,7 @@ public class PlayerInfoController {
         if (lobby != null) {
             PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
             if (senderPlayerInfo.isAlive()) {
-                lobby.removeCorpse();
+                lobby.removeCorpses();
             }
         }
         List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
@@ -251,6 +253,4 @@ public class PlayerInfoController {
 
         return distance <= killRange;
     }
-
-
 }

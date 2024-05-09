@@ -54,9 +54,10 @@ const EmergencyButton: React.FC<EmergencyButtonProps> = ({
         votingState: true,
       };
       votingClient?.publish({
-        destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
+        destination: `/votingApp/${lobbyCode}/emergencyVotingReceiver`,
         body: JSON.stringify(votingStateRequest),
       });
+      /*
       const teleportToSpawnRequest = {
         senderName: activePlayerName,
       };
@@ -64,6 +65,7 @@ const EmergencyButton: React.FC<EmergencyButtonProps> = ({
         destination: `/app/${lobbyCode}/teleportPlayersToSpawn`,
         body: JSON.stringify(teleportToSpawnRequest),
       });
+      */
     }
   }
 

@@ -19,13 +19,18 @@ import votingService.models.VotingRequest;
 import votingService.models.VotingStateRequest;
 import votingService.services.VotingLobbyService;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
 @Controller
 public class VotingController {
     private static final Logger logger = LogManager.getLogger(VotingController.class);
+
+    private HashMap<String, Instant> lobbyEmergencyTimers;
 
     @Autowired
     VotingLobbyService votingLobbyService;
@@ -34,6 +39,7 @@ public class VotingController {
 
     public VotingController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
+        this.lobbyEmergencyTimers = new HashMap<>();
     }
 
     @MessageMapping("/{lobbyCode}/votingStateReceiver")
@@ -74,10 +80,28 @@ public class VotingController {
         }
     }
 
-    @MessageMapping("/{lobbyCode}/votingKillReceiver")
     @SendTo("/voting/{lobbyCode}/votingKill")
-    public String votingKill(@DestinationVariable String lobbyCode, String killedPlayer) throws Exception {
+    public String votingKill(String killedPlayer) throws Exception {
         return killedPlayer;
+    }
+
+    @MessageMapping("/{lobbyCode}/emergencyVotingReceiver")
+    public void emergencyVoting(@DestinationVariable String lobbyCode, VotingStateRequest request) throws Exception {
+        Instant lastEmergency = lobbyEmergencyTimers.get(lobbyCode);
+        if (lastEmergency == null) { //This is the first emergency for a lobby so no timer has been defined yet
+            messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingState", votingState(lobbyCode, request));
+        } else {
+            //Make sure at least 30 seconds have passed between the last Emergency and now
+            if (Duration.between(lastEmergency, Instant.now()).getSeconds() >= 30) {
+                messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingState", votingState(lobbyCode, request));
+            }
+        }
+    }
+
+    @SendTo("/voting/{lobbyCode}/emergencyCooldown")
+    public String emergencyCooldown(@DestinationVariable String lobbyCode) throws Exception {
+        lobbyEmergencyTimers.put(lobbyCode, Instant.now());
+        return lobbyEmergencyTimers.get(lobbyCode).toString();
     }
 
     private void startVoting(RestTemplate restTemplate, String senderName, String lobbyCode) {
@@ -106,18 +130,20 @@ public class VotingController {
                 VotingKillRequest killRequest = new VotingKillRequest(playerToKill);
                 logger.info("KillRequest: {}", killRequest.getVictimName());
                 try {
-                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingKill", killRequest.getVictimName());
+                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingKill", votingKill(killRequest.getVictimName()));
+                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/emergencyCooldown", emergencyCooldown(lobbyCode));
                     restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-            }
-            //Empty string cannot be a name = not killing anyone, just updating kill timers after voting ended
-            VotingKillRequest killRequest = new VotingKillRequest("");
-            try {
-                restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } else {
+                //Empty string cannot be a name = not killing anyone, just updating kill timers after voting ended
+                VotingKillRequest killRequest = new VotingKillRequest("");
+                try {
+                    restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
             //Remove the lobby from the votingService
             votingLobbyService.removeLobby(lobbyCode);
