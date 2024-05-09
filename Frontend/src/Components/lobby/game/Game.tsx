@@ -31,7 +31,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     isKillUIVisible,
     currentTask,
     setCurrentTask,
-    isEmergencyButtonOnCooldown,
   } = useGame(activePlayerName, lobbyCode);
 
   return (
@@ -79,7 +78,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           isGamePaused={false}
           activePlayerName={activePlayerName}
           lobbyCode={lobbyCode}
-          isEmergencyButtonOnCooldown={isEmergencyButtonOnCooldown}
         />
 
         {/* Render player corpse */}

@@ -19,7 +19,6 @@ export function useChatField(
           const subscription = client.subscribe(
             `/lobby/${lobbyCode}/messages`,
             (_message) => {
-              console.log("Received message: ", _message.body);
               setMessages((prevMessages) => [...prevMessages, _message.body]);
             }
           );

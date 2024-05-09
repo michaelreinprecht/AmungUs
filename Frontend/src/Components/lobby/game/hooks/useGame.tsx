@@ -16,8 +16,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
   const [currentTask, setCurrentTask] = useState<string>("");
   const [votingKill, setVotingKill] = useState<String>("");
-  const [isEmergencyButtonOnCooldown, setIsEmergencyButtonOnCooldown] =
-    useState<boolean>(false); // State to store the timer
   let votingClientIsConnected = false;
 
   useEffect(() => {
@@ -33,14 +31,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
 
               setIsGamePaused(votingActive); //Pause or unpause the game
               setIsVotingActive(votingActive); //Display or stop displaying votingUI
-
-              if (!votingActive) {
-                // Also add a cooldown to the emergency button before it can be pressed again
-                setIsEmergencyButtonOnCooldown(true);
-                setTimeout(() => {
-                  setIsEmergencyButtonOnCooldown(false);
-                }, emergencyButtonCooldown * 1000);
-              }
             }
           );
           votingClient.subscribe(
@@ -99,7 +89,5 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     isKillUIVisible,
     currentTask,
     setCurrentTask,
-    isEmergencyButtonOnCooldown,
-    setIsEmergencyButtonOnCooldown,
   };
 }

@@ -140,6 +140,7 @@ public class VotingController {
                 //Empty string cannot be a name = not killing anyone, just updating kill timers after voting ended
                 VotingKillRequest killRequest = new VotingKillRequest("");
                 try {
+                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/emergencyCooldown", emergencyCooldown(lobbyCode));
                     restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
