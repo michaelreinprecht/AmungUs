@@ -1,4 +1,4 @@
-import { Movement, PlayerPosition } from "@/app/types";
+import { Movement, PlayerInfo } from "@/app/types";
 import { useEffect, useState } from "react";
 import {
   createKeyDownHandler,
@@ -16,7 +16,7 @@ export function usePlayerMovement(
   isGamePaused: boolean,
   activePlayerName: string,
   scale: number,
-  playerPositions: PlayerPosition[],
+  playerPositions: PlayerInfo[],
   lobbyCode: string,
   meshRef: React.RefObject<
     THREE.Mesh<
@@ -25,7 +25,7 @@ export function usePlayerMovement(
       THREE.Object3DEventMap
     >
   >,
-  setPlayerPositions: (playerPositions: PlayerPosition[]) => void
+  setPlayerPositions: (playerPositions: PlayerInfo[]) => void
 ) {
   const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
   const [movement, setMovement] = useState<Movement>({

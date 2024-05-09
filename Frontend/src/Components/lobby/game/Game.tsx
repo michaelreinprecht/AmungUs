@@ -31,7 +31,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     isKillUIVisible,
     currentTask,
     setCurrentTask,
-    setIsKillingOnCooldown,
     isEmergencyButtonOnCooldown,
   } = useGame(activePlayerName, lobbyCode);
 
@@ -113,7 +112,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           activePlayerName={activePlayerName}
           victimName={nearestPlayer}
           lobbyCode={lobbyCode}
-          setIsKillOnCooldown={setIsKillingOnCooldown}
         />
       )}
 

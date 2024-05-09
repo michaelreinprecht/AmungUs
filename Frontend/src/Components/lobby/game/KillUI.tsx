@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
-import { killCooldown } from "@/app/globals";
 
 type KillUIProps = {
   isKillEnabled: boolean | undefined;
   activePlayerName: string;
   victimName: string;
   lobbyCode: string;
-  setIsKillOnCooldown: (isKillOnCooldown: boolean) => void;
 };
 
 export default function KillUI({
@@ -15,7 +13,6 @@ export default function KillUI({
   activePlayerName,
   victimName,
   lobbyCode,
-  setIsKillOnCooldown,
 }: KillUIProps) {
   const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
 
@@ -29,10 +26,6 @@ export default function KillUI({
         destination: `/app/${lobbyCode}/killReceiver`,
         body: JSON.stringify(requestBody),
       });
-      setIsKillOnCooldown(true);
-      setTimeout(() => {
-        setIsKillOnCooldown(false);
-      }, killCooldown * 1000);
     }
   }
 

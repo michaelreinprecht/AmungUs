@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
-import { PlayerPosition } from "../../../app/types";
+import { PlayerInfo } from "../../../app/types";
 import { calculateNearestVictim } from "../utilityFunctions/calculateNearestPlayer";
 import { usePlayerMovement } from "./usePlayerMovement";
 import { usePlayerHeartbeat } from "./usePlayerHeartbeat";
@@ -13,8 +13,8 @@ type usePlayerCharacterProps = {
   scale: number;
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
-  playerPositions: PlayerPosition[];
-  setPlayerPositions: (playerPositions: PlayerPosition[]) => void;
+  playerPositions: PlayerInfo[];
+  setPlayerPositions: (playerPositions: PlayerInfo[]) => void;
 };
 
 export function usePlayerCharacter({
