@@ -41,7 +41,7 @@ public class Lobby {
     public Lobby() {
         this.playerInfos = new ArrayList<>();
         this.isGameRunning = false; //TODO set this once the lobby is created, and allow no more players to join
-        this.isPrivate = false; //TODO set this once the lobby is created, depending on if lobby is private
+        this.isPrivate = false;
         this.playerCount = 0;
         this.killerCount = 0;
         this.executor = Executors.newSingleThreadScheduledExecutor(); // Initialize the executor
@@ -108,6 +108,21 @@ public class Lobby {
             logger.debug("Notifying empty listener");
             stopHeartbeatChecking();
             emptyListener.onLobbyEmpty(lobbyCode);
+        }
+    }
+
+    public void removePlayer(String playerName) {
+        for (PlayerInfo playerInfo : playerInfos) {
+            if (playerInfo.getPlayerName().equals(playerName)) {
+                playerInfos.remove(playerInfo);
+                playerCount--;
+                if (playerInfo.getPlayerRole().equals("killer")) {
+                    killerCount--;
+                }
+                if (playerInfos.isEmpty()) {
+                    notifyEmptyListener();
+                }
+            }
         }
     }
 

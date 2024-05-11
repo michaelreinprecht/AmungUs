@@ -56,6 +56,18 @@ public class LobbyController {
         return ResponseEntity.ok(responseBody);
     }
 
+    @PostMapping("/api/lobby/{lobbyCode}/lostHeartbeat")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> lostHeartbeat(@PathVariable String lobbyCode, String playerName) {
+        if (lobbyService.isLobbyCodeUsed(lobbyCode)) {
+            lobbyService.removePlayerFromLobby(lobbyCode, playerName);
+        }
+
+        // Return empty ok response
+        Map<String, String> responseBody = new HashMap<>();
+        return ResponseEntity.ok(responseBody);
+    }
+
 
 
     private String generateRandomCode() {

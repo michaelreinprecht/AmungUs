@@ -7,15 +7,15 @@ export function usePlayerHeartbeat(
   useEffect(() => {
     let heartbeatInterval: any;
     const lobbyClient = new Client({
-      brokerURL: "ws://localhost:8080/lobbyService",
+      brokerURL: "ws://localhost:8083/heartbeatService",
       onConnect: () => {
         lobbyClient.publish({
-          destination: `/app/${lobbyCode}/heartbeatReceiver`,
+          destination: `/heartbeatApp/${lobbyCode}/heartbeatReceiver`,
           body: activePlayerName,
         });
         heartbeatInterval = setInterval(() => {
           lobbyClient.publish({
-            destination: `/app/${lobbyCode}/heartbeatReceiver`,
+            destination: `/heartbeatApp/${lobbyCode}/heartbeatReceiver`,
             body: activePlayerName,
           });
         }, 3000);
