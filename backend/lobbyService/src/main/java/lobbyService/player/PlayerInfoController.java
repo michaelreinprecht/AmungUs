@@ -43,9 +43,6 @@ public class PlayerInfoController {
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
-            //Updating players heartbeat every time he sends a signal
-            playerInfo.setLastHeartbeat(Instant.now());
-
             logger.debug("PlayerInfo received for lobby code: {}", lobbyCode);
             logger.debug("PlayerInfo: {}", playerInfo);
             System.out.println("X: " + playerInfo.getPlayerPositionX());
@@ -103,7 +100,7 @@ public class PlayerInfoController {
             for (PlayerInfo playerInfo : lobby.getPlayerInfos()) {
                 if (playerInfo.getPlayerName().equals(playerName)) {
                     playerInfo.setLastHeartbeat(Instant.now());
-                    logger.debug("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
+                    logger.info("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
 
                     // Update the player position in the lobby or add it if it's a new player
                     lobby.updatePlayerInfo(playerInfo);
