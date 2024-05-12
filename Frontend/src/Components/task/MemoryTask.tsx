@@ -15,7 +15,7 @@ interface Card {
 function MemoryTask({ setCurrentTask }: MemoryTaskProps) {
   const [cards, setCards] = useState<Card[]>(() => {
     // Load saved state from session storage, if available
-    const savedState = sessionStorage.getItem('memoryTaskProgress');
+    const savedState = sessionStorage.getItem('MemoryTask');
     if (savedState) {
       const { cards } = JSON.parse(savedState);
       return cards;
@@ -76,13 +76,10 @@ function MemoryTask({ setCurrentTask }: MemoryTaskProps) {
     }
   };
   
-  const handleButtonClick = () => {
-    setCurrentTask("NoTask");
-  };
 
   // Save current progress to session storage
   useEffect(() => {
-    sessionStorage.setItem('memoryTaskProgress', JSON.stringify({ cards, flippedCards }));
+    sessionStorage.setItem('MemoryTask', JSON.stringify({ cards, flippedCards }));
   }, [cards, flippedCards]);
 
   return (
@@ -103,8 +100,8 @@ function MemoryTask({ setCurrentTask }: MemoryTaskProps) {
           </div>
         ))}
       </div>
-      <button onClick={handleButtonClick} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
-        Save&Exit
+      <button onClick={() => setCurrentTask("NoTask")} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
+        Save & Exit
       </button>
     </div>
   );

@@ -12,6 +12,8 @@ import TaskObject from "@/Components/task/TaskObject";
 import ColorTask from "@/Components/task/ColorTask";
 import Colliders from "./Colliders";
 import MemoryTask from "@/Components/task/MemoryTask";
+import ReactionTask from "@/Components/task/ReactionTask";
+import FindTask from "@/Components/task/FindTask";
 
 type GameProps = {
   activePlayerName: string;
@@ -32,6 +34,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     isKillUIVisible,
     currentTask,
     setCurrentTask,
+    playerTasks,
+    setPlayerTasks,
   } = useGame(activePlayerName, lobbyCode);
 
   return (
@@ -110,6 +114,22 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           setCurrentTask={setCurrentTask}
           currentTask={currentTask}
         />
+        
+        <TaskObject
+          position={[0, 35, 0]}
+          scale={5}
+          taskName="ReactionTask"
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
+
+        <TaskObject
+          position={[0, 40, 0]}
+          scale={5}
+          taskName="FindTask"
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
       </Canvas>
 
       {/* Kill UI */}
@@ -139,6 +159,14 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
 
       {currentTask === "MemoryTask" && ( 
         <MemoryTask setCurrentTask={setCurrentTask} />
+      )}
+
+      {currentTask === "ReactionTask" && (
+        <ReactionTask setCurrentTask={setCurrentTask} />
+      )}
+
+      {currentTask === "FindTask" && (
+        <FindTask setCurrentTask={setCurrentTask} />
       )}
 
       {votingKill !== "" && (

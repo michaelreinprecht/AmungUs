@@ -6,7 +6,7 @@ import {
   killRange,
 } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
-import { PlayerInfo } from "@/app/types";
+import { PlayerInfo, Task } from "@/app/types";
 import { Client } from "@stomp/stompjs";
 
 export function useGame(activePlayerName: string, lobbyCode: string) {
@@ -14,6 +14,10 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
+  const [playerTasks, setPlayerTasks] = useState<Task[]>([
+    { name: "ColorTask", completed: false },
+    { name: "MemoryTask", completed: false },
+    { name: "ReactionTask", completed: false },]);
   const [currentTask, setCurrentTask] = useState<string>("");
   const [votingKill, setVotingKill] = useState<String>("");
   let votingClientIsConnected = false;
@@ -89,5 +93,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     isKillUIVisible,
     currentTask,
     setCurrentTask,
+    playerTasks,
+    setPlayerTasks
   };
 }

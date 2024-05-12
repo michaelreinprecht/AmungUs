@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
 // Define an array of valid colors
-type Color = 'red' | 'blue' | 'green' | 'yellow' | 'orange';
+type Color = 'red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple';
 
 // The initial colors defined as an array of Color type
-const initialColors: Color[] = ['red', 'blue', 'green', 'yellow', 'orange'];
+const initialColors: Color[] = ['red', 'blue', 'green', 'yellow', 'orange', 'purple'];
 
 // Function to get CSS class based on the color
 const getColorClass = (color: Color): string => {
@@ -14,6 +14,7 @@ const getColorClass = (color: Color): string => {
     case 'green': return 'bg-green-500';
     case 'yellow': return 'bg-yellow-500';
     case 'orange': return 'bg-orange-500';
+    case 'purple': return 'bg-purple-500';
     default: return 'bg-gray-500';
   }
 }
@@ -62,10 +63,6 @@ function ColorTask({ setCurrentTask }: ColorTaskProps) {
     }
   };
 
-  const handleButtonClick = () => {
-    setCurrentTask("NoTask");
-  };
-
   useEffect(() => {
     if (Object.keys(connections).length === initialColors.length &&
         Object.values(connections).every(val => val)) {
@@ -85,7 +82,7 @@ function ColorTask({ setCurrentTask }: ColorTaskProps) {
           <div key={'start-' + index}
             draggable
             onDragStart={(e) => e.dataTransfer.setData("color", color)}
-            className={`w-24 h-12 rounded-lg flex items-center justify-center font-bold text-white cursor-pointer select-none ${getColorClass(color)}`}
+            className={`w-32 h-16 rounded-lg flex items-center justify-center font-bold text-white cursor-pointer select-none ${getColorClass(color)}`}
             style={{ opacity: connections[color] ? 0.5 : 1, margin: '0 10px' }}
           >
             {connections[color] ? "✓" : ""}
@@ -100,15 +97,15 @@ function ColorTask({ setCurrentTask }: ColorTaskProps) {
               const draggedColor = e.dataTransfer.getData("color") as Color;
               handleDrop(draggedColor, color);
             }}
-            className={`w-24 h-12 rounded-lg flex items-center justify-center font-bold text-white cursor-pointer select-none ${getColorClass(color)}`}
+            className={`w-32 h-16 rounded-lg flex items-center justify-center font-bold text-white cursor-pointer select-none ${getColorClass(color)}`}
             style={{ opacity: connections[color] ? 0.5 : 1, margin: '0 10px' }}
           >
             {connections[color] ? "✓" : ""}
           </div>
         ))}
       </div>
-      <button onClick={handleButtonClick} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
-        Save&Exit
+      <button onClick={() => setCurrentTask("NoTask")} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
+        Save & Exit
       </button>
     </div>
   );

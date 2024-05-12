@@ -1,6 +1,7 @@
 import { ThreeEvent, useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
 import { useTaskObject } from './useTaskObject';
+import { Task } from '@/app/types';
 
 type TaskObjectProps = {
     position: [number, number, number],
