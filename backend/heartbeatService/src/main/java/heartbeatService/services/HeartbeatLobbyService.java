@@ -12,14 +12,17 @@ public class HeartbeatLobbyService implements HeartbeatLobby.LobbyEmptyListener 
 
     public void createLobby(HeartbeatLobby lobby, String playerName) {
         lobby.updateHeartbeatPlayerInfo(playerName);
-        lobbies.put(lobby.getLobbyCode(), lobby);
-        lobby.startHeartbeatChecking(); //Start checking if players send a heartbeat every 10 seconds
+        if (!lobbies.containsKey(lobby.lobbyCode)) {
+            lobbies.put(lobby.getLobbyCode(), lobby);
+            lobby.startHeartbeatChecking(); //Start checking if players send a heartbeat every 10 seconds
+        }
     }
 
     public void updateLobby(String lobbyCode, String playerName) {
         HeartbeatLobby lobby = lobbies.get(lobbyCode);
         lobby.updateHeartbeatPlayerInfo(playerName);
-        lobbies.replace(lobby.getLobbyCode(), lobby);
+        //lobbies.replace(lobby.getLobbyCode(), lobby);
+        System.out.println(lobbies);
     }
 
     public boolean isLobbyCodeUsed(String lobbyCode) {

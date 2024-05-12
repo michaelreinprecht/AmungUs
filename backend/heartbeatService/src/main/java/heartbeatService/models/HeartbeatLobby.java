@@ -41,6 +41,7 @@ public class HeartbeatLobby {
         } else {
             HeartbeatPlayerInfo heartbeatPlayerInfo = heartbeatPlayerInfos.get(playerName);
             heartbeatPlayerInfo.setLastHeartbeat(Instant.now());
+            heartbeatPlayerInfos.replace(playerName, heartbeatPlayerInfo);
         }
     }
 
@@ -66,12 +67,16 @@ public class HeartbeatLobby {
                 HeartbeatPlayerInfo playerInfo = iterator.next();
                 Instant lastHeartbeat = playerInfo.getLastHeartbeat();
                 logger.info("Last heartbeat: {}", lastHeartbeat.toString());
-                if (Duration.between(lastHeartbeat, now).getSeconds() > 10) {
-                    logger.info("Player {} has lost heartbeat", playerInfo.getPlayerName());
-                    iterator.remove(); // Safely remove the heartbeatPlayerInfo from the list
-                    removePlayerFromLobbyService(playerInfo.getPlayerName());
-                    if (heartbeatPlayerInfos.isEmpty()) {
-                        notifyEmptyListener();
+                if (lastHeartbeat != null) {
+                    long duration = Duration.between(lastHeartbeat, now).getSeconds();
+                    logger.info("Heartbeat duration: {}", duration);
+                    if (duration > 10) {
+                        logger.info("Player {} has lost heartbeat", playerInfo.getPlayerName());
+                        iterator.remove(); // Safely remove the heartbeatPlayerInfo from the list
+                        //removePlayerFromLobbyService(playerInfo.getPlayerName());
+                        if (heartbeatPlayerInfos.isEmpty()) {
+                            notifyEmptyListener();
+                        }
                     }
                 }
             }
