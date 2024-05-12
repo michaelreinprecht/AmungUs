@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,6 +15,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -72,8 +76,8 @@ public class HeartbeatLobby {
                     logger.info("Heartbeat duration: {}", duration);
                     if (duration > 10) {
                         logger.info("Player {} has lost heartbeat", playerInfo.getPlayerName());
+                        removePlayerFromLobbyService(playerInfo.getPlayerName());
                         iterator.remove(); // Safely remove the heartbeatPlayerInfo from the list
-                        //removePlayerFromLobbyService(playerInfo.getPlayerName());
                         if (heartbeatPlayerInfos.isEmpty()) {
                             notifyEmptyListener();
                         }
@@ -86,10 +90,17 @@ public class HeartbeatLobby {
     }
 
     private void removePlayerFromLobbyService(String playerName) {
+        logger.info("Trying to remove player from lobby: {}", playerName);
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/api/lobby/{lobbyCode}/lostHeartbeat" ;
 
-        restTemplate.postForObject(url, playerName, ResponseEntity.class, lobbyCode);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(playerName, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class, lobbyCode);
+        logger.info(response.toString());
     }
 
     // Method to notify listener when lobby becomes empty

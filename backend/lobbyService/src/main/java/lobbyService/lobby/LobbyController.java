@@ -1,8 +1,12 @@
 package lobbyService.lobby;
 
 import lobbyService.lobby.models.Lobby;
+import lobbyService.player.models.PlayerInfo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +17,14 @@ import java.util.*;
 public class LobbyController {
     @Autowired
     private LobbyService lobbyService;
+
+    private static final Logger logger = LogManager.getLogger(LobbyController.class);
+
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public LobbyController(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     //Returns all public lobbies that are not currently full
     @GetMapping("/api/lobby/getPublicLobbies")
@@ -58,14 +70,19 @@ public class LobbyController {
 
     @PostMapping("/api/lobby/{lobbyCode}/lostHeartbeat")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> lostHeartbeat(@PathVariable String lobbyCode, String playerName) {
+    public ResponseEntity<String> lostHeartbeat(@PathVariable String lobbyCode, @RequestBody String playerName) {
+        logger.info("Removing player due to lost heartbeat.");
         if (lobbyService.isLobbyCodeUsed(lobbyCode)) {
-            lobbyService.removePlayerFromLobby(lobbyCode, playerName);
+            Lobby lobby = lobbyService.getLobby(lobbyCode);
+            lobby.removePlayer(playerName);
+            List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
+
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
         }
 
+
         // Return empty ok response
-        Map<String, String> responseBody = new HashMap<>();
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok("OK");
     }
 
 
