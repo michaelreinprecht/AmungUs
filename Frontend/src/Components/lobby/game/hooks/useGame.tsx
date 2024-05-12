@@ -6,20 +6,16 @@ import {
   killRange,
 } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
-import { PlayerPosition } from "@/app/types";
+import { PlayerInfo } from "@/app/types";
 import { Client } from "@stomp/stompjs";
 
 export function useGame(activePlayerName: string, lobbyCode: string) {
   const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
-  const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>([]);
+  const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
   const [currentTask, setCurrentTask] = useState<string>("");
   const [votingKill, setVotingKill] = useState<String>("");
-  const [isKillingOnCooldown, setIsKillingOnCooldown] =
-    useState<boolean>(false); // State to store the timer
-  const [isEmergencyButtonOnCooldown, setIsEmergencyButtonOnCooldown] =
-    useState<boolean>(false); // State to store the timer
   let votingClientIsConnected = false;
 
   useEffect(() => {
@@ -35,19 +31,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
 
               setIsGamePaused(votingActive); //Pause or unpause the game
               setIsVotingActive(votingActive); //Display or stop displaying votingUI
-
-              if (!votingActive) {
-                // Add a little bit of kill cooldown once the game is unpaused.
-                setIsKillingOnCooldown(true);
-                setTimeout(() => {
-                  setIsKillingOnCooldown(false);
-                }, killCooldown * 1000);
-                // Also add a cooldown to the emergency button before it can be pressed again
-                setIsEmergencyButtonOnCooldown(true);
-                setTimeout(() => {
-                  setIsEmergencyButtonOnCooldown(false);
-                }, emergencyButtonCooldown * 1000);
-              }
             }
           );
           votingClient.subscribe(
@@ -75,7 +58,11 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
         victim.playerPositionX,
         victim.playerPositionY
       );
-      if (!isKillingOnCooldown) {
+      const lastKillTimeString = killer.lastKillTime;
+      const lastKillTime = new Date(lastKillTimeString);
+      const timeSinceLastKill =
+        (new Date().getTime() - lastKillTime.getTime()) / 1000;
+      if (timeSinceLastKill >= killCooldown) {
         return distance <= killRange;
       } else {
         return false;
@@ -102,8 +89,5 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     isKillUIVisible,
     currentTask,
     setCurrentTask,
-    setIsKillingOnCooldown,
-    isEmergencyButtonOnCooldown,
-    setIsEmergencyButtonOnCooldown,
   };
 }

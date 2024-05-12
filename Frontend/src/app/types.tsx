@@ -1,9 +1,10 @@
-export type PlayerPosition = {
+export type PlayerInfo = {
   playerName: string;
   playerPositionX: number;
   playerPositionY: number;
   killedPlayerPositionX: number;
   killedPlayerPositionY: number;
+  lastKillTime: string;
   alive: boolean;
   corpseFound: boolean;
   playerRole: "killer" | "crewmate";

@@ -9,7 +9,7 @@ public class TeleportToSpawnRequest {
 
     private String senderName;
 
-    public TeleportToSpawnRequest(String senderName, String corpsePlayerName) {
+    public TeleportToSpawnRequest(String senderName) {
         this.senderName = senderName;
     }
 

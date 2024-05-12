@@ -1,9 +1,10 @@
 import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { usePlayerCharacter } from "./hooks/usePlayerCharacter";
-import { PlayerPosition } from "@/app/types";
+import { PlayerInfo } from "@/app/types";
 import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
+import { Text } from "@react-three/drei";
 
 interface PlayerCorpseProps {
   isGamePaused: boolean;
@@ -11,8 +12,8 @@ interface PlayerCorpseProps {
   scale: number;
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
-  playerPositions: PlayerPosition[];
-  setPlayerPositions: (playerPositions: PlayerPosition[]) => void;
+  playerPositions: PlayerInfo[];
+  setPlayerPositions: (playerPositions: PlayerInfo[]) => void;
 }
 
 const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
@@ -68,21 +69,6 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
       destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
       body: JSON.stringify(votingStateRequest),
     });
-    const corpseFoundRequest = {
-      senderName: activePlayerName,
-      corpsePlayerName: corpsePlayerName,
-    };
-    lobbyClient?.publish({
-      destination: `/app/${lobbyCode}/corpseFoundReceiver`,
-      body: JSON.stringify(corpseFoundRequest),
-    });
-    const teleportToSpawnRequest = {
-      senderName: activePlayerName,
-    };
-    lobbyClient?.publish({
-      destination: `/app/${lobbyCode}/teleportPlayersToSpawn`,
-      body: JSON.stringify(teleportToSpawnRequest),
-    });
   }
 
   return (
@@ -101,6 +87,17 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
               <planeGeometry args={[2 * scale, 2 * scale]} />
               <meshStandardMaterial map={colorMap} transparent={true} />
             </mesh>
+            <Text
+              position={[0, scale, 0]}
+              fontSize={0.6 * scale}
+              color="red"
+              anchorX="center"
+              anchorY="middle"
+              outlineWidth={0.01 * scale}
+              outlineColor="#000000"
+            >
+              {pos.playerName}
+            </Text>
           </group>
         ))}
     </>

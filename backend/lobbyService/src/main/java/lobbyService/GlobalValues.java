@@ -36,7 +36,7 @@ public class GlobalValues {
 
     private void initializeDefaultValues() {
         killRange = 20;
-        killCooldown = 15;
+        killCooldown = 20;
         initializeCollideables();
     }
 

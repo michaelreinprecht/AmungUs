@@ -12,7 +12,6 @@ interface EmergencyButtonProps {
   isGamePaused: boolean;
   activePlayerName: string;
   lobbyCode: string;
-  isEmergencyButtonOnCooldown: boolean;
 }
 
 const EmergencyButton: React.FC<EmergencyButtonProps> = ({
@@ -23,46 +22,53 @@ const EmergencyButton: React.FC<EmergencyButtonProps> = ({
   isGamePaused,
   activePlayerName,
   lobbyCode,
-  isEmergencyButtonOnCooldown,
 }) => {
   const texture = useLoader(TextureLoader, texturePath);
 
-  const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
   const [votingClient, setVotingClient] = useState<Client | undefined>();
+  const [lastEmergency, setLastEmergency] = useState<Date>();
+  let votingClientConnected = false;
 
   useEffect(() => {
-    const lClient = new Client({
-      brokerURL: "ws://localhost:8080/lobbyService",
-      onConnect: () => {
-        setLobbyClient(lClient);
-      },
-    });
-    lClient.activate();
-    const vClient = new Client({
+    const client = new Client({
       brokerURL: "ws://localhost:8081/votingService",
       onConnect: () => {
-        setVotingClient(vClient);
+        if (!votingClientConnected) {
+          votingClientConnected = true;
+          client.subscribe(
+            `/voting/${lobbyCode}/emergencyCooldown`,
+            (message) => {
+              setLastEmergency(new Date(message.body));
+            }
+          );
+          setVotingClient(client);
+        }
       },
     });
-    vClient.activate();
+    client.activate();
   }, []);
 
+  function isEmergencyButtonOnCooldown() {
+    if (!lastEmergency) {
+      return false;
+    }
+    const timeSinceLastEmergency =
+      (new Date().getTime() - lastEmergency.getTime()) / 1000;
+    if (timeSinceLastEmergency <= 30) {
+      return true;
+    }
+    return false;
+  }
+
   function handleEmergencyClick() {
-    if (!isGamePaused && !isEmergencyButtonOnCooldown) {
+    if (!isGamePaused && !isEmergencyButtonOnCooldown()) {
       const votingStateRequest = {
         senderName: activePlayerName,
         votingState: true,
       };
       votingClient?.publish({
-        destination: `/votingApp/${lobbyCode}/votingStateReceiver`,
+        destination: `/votingApp/${lobbyCode}/emergencyVotingReceiver`,
         body: JSON.stringify(votingStateRequest),
-      });
-      const teleportToSpawnRequest = {
-        senderName: activePlayerName,
-      };
-      lobbyClient?.publish({
-        destination: `/app/${lobbyCode}/teleportPlayersToSpawn`,
-        body: JSON.stringify(teleportToSpawnRequest),
       });
     }
   }
@@ -77,7 +83,7 @@ const EmergencyButton: React.FC<EmergencyButtonProps> = ({
         <meshStandardMaterial
           map={texture}
           transparent={true}
-          color={!isEmergencyButtonOnCooldown ? "white" : "gray"}
+          color={!isEmergencyButtonOnCooldown() ? "white" : "gray"}
         />
       </mesh>
 

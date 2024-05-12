@@ -1,5 +1,5 @@
 import { getLobbyByCode } from "@/Components/utilityFunctions/APIService";
-import { PlayerPosition, PlayerRole } from "../../../app/types";
+import { PlayerInfo, PlayerRole } from "../../../app/types";
 import { useThree } from "@react-three/fiber";
 
 export function getUpdatedPlayerPosition(
@@ -8,7 +8,7 @@ export function getUpdatedPlayerPosition(
   movement: any,
   bounds: any,
   scale: number,
-  playerPositions: PlayerPosition[]
+  playerPositions: PlayerInfo[]
 ) {
   const speed = 30 * delta;
   const { forward, backward, left, right } = movement;
@@ -50,7 +50,7 @@ export function getUpdatedPlayerPosition(
 }
 
 export function getPositionOfPlayer(
-  playerPositions: PlayerPosition[],
+  playerPositions: PlayerInfo[],
   playerName: string
 ) {
   const playerPosition = playerPositions.find(

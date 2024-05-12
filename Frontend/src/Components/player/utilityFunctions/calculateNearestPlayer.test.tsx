@@ -1,10 +1,10 @@
 import { it, expect } from "vitest";
-import { PlayerPosition } from "../../../app/types";
+import { PlayerInfo } from "../../../app/types";
 import { calculateNearestVictim } from "./calculateNearestPlayer";
 
 it("Can calculate nearest player", () => {
   //Arrange
-  const playerPositions: PlayerPosition[] = [
+  const playerPositions: PlayerInfo[] = [
     {
       playerName: "MyPlayer",
       playerPositionX: 20,

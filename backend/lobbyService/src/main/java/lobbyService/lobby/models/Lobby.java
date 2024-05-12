@@ -153,11 +153,20 @@ public class Lobby {
     }
 
     //Remove the corpse for all players once it's been found
-    public void removeCorpse() {
+    public void removeCorpses() {
         for (PlayerInfo playerInfo : playerInfos) {
             if (!playerInfo.isAlive()) {
                 playerInfo.setCorpseFound(true);
                 logger.info("Corpse of player {} was removed", playerInfo.getPlayerName());
+            }
+        }
+    }
+
+    //Sets all the timer of killers to current time -> for example to stop them from killing again right after voting conducted
+    public void updateKilltimers() {
+        for (PlayerInfo playerInfo : playerInfos) {
+            if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {
+                playerInfo.setLastKillTime(Instant.now());
             }
         }
     }
