@@ -11,6 +11,7 @@ import EmergencyButton from "./EmergencyButton";
 import TaskObject from "@/Components/task/TaskObject";
 import ColorTask from "@/Components/task/ColorTask";
 import Colliders from "./Colliders";
+import MemoryTask from "@/Components/task/MemoryTask";
 
 type GameProps = {
   activePlayerName: string;
@@ -101,6 +102,14 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           setCurrentTask={setCurrentTask}
           currentTask={currentTask}
         />
+        
+        <TaskObject
+          position={[0, 30, 0]}
+          scale={5}
+          taskName="MemoryTask"
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
       </Canvas>
 
       {/* Kill UI */}
@@ -126,6 +135,10 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       {/* Color task */}
       {currentTask === "ColorTask" && (
         <ColorTask setCurrentTask={setCurrentTask} />
+      )}
+
+      {currentTask === "MemoryTask" && ( 
+        <MemoryTask setCurrentTask={setCurrentTask} />
       )}
 
       {votingKill !== "" && (
