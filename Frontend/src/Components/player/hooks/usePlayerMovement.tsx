@@ -28,6 +28,7 @@ export function usePlayerMovement(
   setPlayerPositions: (playerPositions: PlayerInfo[]) => void
 ) {
   const [lobbyClient, setLobbyClient] = useState<Client | undefined>();
+  let lobbyClientConnected = false;
   const [movement, setMovement] = useState<Movement>({
     forward: false,
     backward: false,
@@ -47,19 +48,22 @@ export function usePlayerMovement(
     const client = new Client({
       brokerURL: "ws://localhost:8080/lobbyService",
       onConnect: () => {
-        client?.subscribe(`/lobby/${lobbyCode}/playerInfo`, (message) => {
-          const parsedMessage = JSON.parse(message.body);
-          setPlayerPositions(parsedMessage);
-        });
-        (async () => {
-          //Initial position update of the player
-          client?.publish({
-            destination: `/app/${lobbyCode}/playerInfoReceiver`,
-            body: JSON.stringify(
-              await getPlayerSpawnInfo(lobbyCode, activePlayerName)
-            ),
+        if (!lobbyClientConnected) {
+          lobbyClientConnected = true;
+          client?.subscribe(`/lobby/${lobbyCode}/playerInfo`, (message) => {
+            const parsedMessage = JSON.parse(message.body);
+            setPlayerPositions(parsedMessage);
           });
-        })();
+          (async () => {
+            //Initial position update of the player
+            client?.publish({
+              destination: `/app/${lobbyCode}/playerInfoReceiver`,
+              body: JSON.stringify(
+                await getPlayerSpawnInfo(lobbyCode, activePlayerName)
+              ),
+            });
+          })();
+        }
       },
     });
     client.activate();
@@ -76,7 +80,10 @@ export function usePlayerMovement(
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
 
-      // TODO: Unsubscribe from websocket on component unmount
+      // Stop lobby client connection
+      lobbyClientConnected = false;
+      lobbyClient?.unsubscribe(`/lobby/${lobbyCode}/playerInfo`);
+      lobbyClient?.deactivate();
     };
   }, []);
 

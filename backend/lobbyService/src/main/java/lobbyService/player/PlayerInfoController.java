@@ -135,7 +135,7 @@ public class PlayerInfoController {
     //Receiver for VotingService - kills the given player after a voting (doesn't kill anyone if victimName is empty string)
     @PostMapping("/api/lobby/{lobbyCode}/killVotedPlayer")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> killVotedPlayer(@PathVariable String lobbyCode, @RequestBody VotingKillRequest killRequest) throws Exception {
+    public ResponseEntity<String> killVotedPlayer(@PathVariable String lobbyCode, @RequestBody VotingKillRequest killRequest) throws Exception {
         logger.info("Voted out and killing player: {}", killRequest.getVictimName());
         // Get the lobby from the lobby service
 
@@ -159,8 +159,7 @@ public class PlayerInfoController {
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
 
         // Return empty ok response
-        Map<String, String> responseBody = new HashMap<>();
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok("OK");
     }
 
     @MessageMapping("/{lobbyCode}/teleportPlayersToSpawn")
