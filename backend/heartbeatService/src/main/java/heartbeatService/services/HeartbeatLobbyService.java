@@ -21,8 +21,6 @@ public class HeartbeatLobbyService implements HeartbeatLobby.LobbyEmptyListener 
     public void updateLobby(String lobbyCode, String playerName) {
         HeartbeatLobby lobby = lobbies.get(lobbyCode);
         lobby.updateHeartbeatPlayerInfo(playerName);
-        //lobbies.replace(lobby.getLobbyCode(), lobby);
-        System.out.println(lobbies);
     }
 
     public boolean isLobbyCodeUsed(String lobbyCode) {

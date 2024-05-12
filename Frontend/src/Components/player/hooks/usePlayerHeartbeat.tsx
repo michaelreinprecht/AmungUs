@@ -1,10 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
 export function usePlayerHeartbeat(
   lobbyCode: string,
   activePlayerName: string
 ) {
-  let heartbeatClientConnected = false;
+  const [heartbeatClientConnected, setHeartbeatClientConnected] =
+    useState(false);
+  const [heartbeatClientActivated, setHeartbeatClientActivated] =
+    useState(false);
 
   useEffect(() => {
     let heartbeatInterval: any;
@@ -12,7 +15,7 @@ export function usePlayerHeartbeat(
       brokerURL: "ws://localhost:8083/heartbeatService",
       onConnect: () => {
         if (!heartbeatClientConnected) {
-          heartbeatClientConnected = true;
+          setHeartbeatClientConnected(true);
           heartbeatInterval = setInterval(() => {
             heartbeatClient.publish({
               destination: `/heartbeatApp/${lobbyCode}/heartbeatReceiver`,
@@ -22,7 +25,11 @@ export function usePlayerHeartbeat(
         }
       },
     });
-    heartbeatClient.activate();
+
+    if (!heartbeatClientActivated) {
+      setHeartbeatClientActivated(true);
+      heartbeatClient.activate();
+    }
 
     return () => {
       clearInterval(heartbeatInterval);

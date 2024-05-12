@@ -70,7 +70,7 @@ public class HeartbeatLobby {
             while (iterator.hasNext()) {
                 HeartbeatPlayerInfo playerInfo = iterator.next();
                 Instant lastHeartbeat = playerInfo.getLastHeartbeat();
-                logger.info("Last heartbeat: {}", lastHeartbeat.toString());
+                logger.debug("Last heartbeat: {}", lastHeartbeat.toString());
                 if (lastHeartbeat != null) {
                     long duration = Duration.between(lastHeartbeat, now).getSeconds();
                     logger.info("Heartbeat duration: {}", duration);
