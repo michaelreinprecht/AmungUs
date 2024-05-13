@@ -13,6 +13,7 @@ export function useVotingUI(
   >([]);
 
   const [votingClient, setVotingClient] = useState<Client | undefined>();
+  let votingClientConnected = false;
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
@@ -28,19 +29,22 @@ export function useVotingUI(
     const client = new Client({
       brokerURL: "ws://localhost:8081/votingService",
       onConnect: () => {
-        client.subscribe(`/voting/${lobbyCode}/votingInfo`, (message) => {
-          const votingInfo = JSON.parse(message.body);
-          setVotingPlayerInfos(votingInfo);
-          console.log(votingInfo);
-        });
-        let emptyVotingRequest: VotingRequest = {
-          votingPlayerName: "",
-          votedPlayerName: "",
-        };
-        client.publish({
-          destination: `/votingApp/${lobbyCode}/votingInfoReceiver`,
-          body: JSON.stringify(emptyVotingRequest),
-        });
+        if (!votingClientConnected) {
+          votingClientConnected = true;
+          client.subscribe(`/voting/${lobbyCode}/votingInfo`, (message) => {
+            const votingInfo = JSON.parse(message.body);
+            setVotingPlayerInfos(votingInfo);
+            console.log(votingInfo);
+          });
+          let emptyVotingRequest: VotingRequest = {
+            votingPlayerName: "",
+            votedPlayerName: "",
+          };
+          client.publish({
+            destination: `/votingApp/${lobbyCode}/votingInfoReceiver`,
+            body: JSON.stringify(emptyVotingRequest),
+          });
+        }
       },
     });
     client.activate();

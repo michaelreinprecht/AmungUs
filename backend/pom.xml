@@ -12,6 +12,7 @@
         <module>lobbyService</module>
         <module>votingService</module>
         <module>chatService</module>
+        <module>heartbeatService</module>
     </modules>
 
     <properties>

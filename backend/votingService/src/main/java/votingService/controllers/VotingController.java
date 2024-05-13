@@ -5,6 +5,10 @@ import lobbyService.player.models.PlayerInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -99,7 +103,7 @@ public class VotingController {
     }
 
     @SendTo("/voting/{lobbyCode}/emergencyCooldown")
-    public String emergencyCooldown(@DestinationVariable String lobbyCode) throws Exception {
+    public String emergencyCooldown(@DestinationVariable String lobbyCode) {
         lobbyEmergencyTimers.put(lobbyCode, Instant.now());
         return lobbyEmergencyTimers.get(lobbyCode).toString();
     }
@@ -119,35 +123,38 @@ public class VotingController {
         }
     }
 
-    private void stopVoting(RestTemplate restTemplate, String senderName, String lobbyCode) {
+    private void stopVoting(RestTemplate restTemplate, String senderName, String lobbyCode) throws Exception {
         VotingLobby lobby = votingLobbyService.getLobby(lobbyCode);
         VotingPlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
         if (senderPlayerInfo.isAlive()) { //Check if player sending message is alive
             String playerToKill = lobby.getMostVotedPlayer();
-            String url = "http://localhost:8080/api/lobby/{lobbyCode}/killVotedPlayer";
             if (playerToKill != null) {
                 //Send message to lobbyService WebSocket to kill the player
                 VotingKillRequest killRequest = new VotingKillRequest(playerToKill);
                 logger.info("KillRequest: {}", killRequest.getVictimName());
-                try {
-                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingKill", votingKill(killRequest.getVictimName()));
-                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/emergencyCooldown", emergencyCooldown(lobbyCode));
-                    restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
+                messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingKill", votingKill(killRequest.getVictimName()));
+                messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/emergencyCooldown", emergencyCooldown(lobbyCode));
+                sendKillRequestToLobbyService(lobbyCode, killRequest, restTemplate);
+
             } else {
                 //Empty string cannot be a name = not killing anyone, just updating kill timers after voting ended
                 VotingKillRequest killRequest = new VotingKillRequest("");
-                try {
-                    messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/emergencyCooldown", emergencyCooldown(lobbyCode));
-                    restTemplate.postForObject(url, killRequest, Void.class, lobbyCode);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
+                messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/emergencyCooldown", emergencyCooldown(lobbyCode));
+                sendKillRequestToLobbyService(lobbyCode, killRequest, restTemplate);
             }
             //Remove the lobby from the votingService
             votingLobbyService.removeLobby(lobbyCode);
         }
+    }
+
+    private void sendKillRequestToLobbyService(String lobbyCode, VotingKillRequest killRequest, RestTemplate restTemplate) {
+        String url = "http://localhost:8080/api/lobby/{lobbyCode}/killVotedPlayer";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<VotingKillRequest> requestEntity = new HttpEntity<>(killRequest, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class, lobbyCode);
+        logger.info(response.toString());
     }
 }

@@ -1,4 +1,4 @@
-package chatService.config;
+package heartbeatService.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -12,14 +12,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.enableSimpleBroker("/chat");
-		config.setApplicationDestinationPrefixes("/chatApp");
+		config.enableSimpleBroker("/heartbeat");
+		config.setApplicationDestinationPrefixes("/heartbeatApp");
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/chatService").setAllowedOrigins("*");
-		registry.addEndpoint("/chatService/{lobbyCode}").setAllowedOrigins("*");
+		registry.addEndpoint("/heartbeatService").setAllowedOrigins("*");
+		registry.addEndpoint("/heartbeatService/{lobbyCode}").setAllowedOrigins("*");
 	}
 }
 
