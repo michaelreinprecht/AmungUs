@@ -1,12 +1,12 @@
-package lobbyService;
+package heartbeatService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MessagingStompWebsocketApplication {
+public class HeartbeatServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MessagingStompWebsocketApplication.class, args);
+		SpringApplication.run(HeartbeatServiceApplication.class, args);
 	}
 }

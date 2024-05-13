@@ -10,6 +10,7 @@ import lobbyService.player.models.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -19,9 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 public class PlayerInfoController {
@@ -43,9 +42,6 @@ public class PlayerInfoController {
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
-            //Updating players heartbeat every time he sends a signal
-            playerInfo.setLastHeartbeat(Instant.now());
-
             logger.debug("PlayerInfo received for lobby code: {}", lobbyCode);
             logger.debug("PlayerInfo: {}", playerInfo);
             System.out.println("X: " + playerInfo.getPlayerPositionX());
@@ -92,6 +88,7 @@ public class PlayerInfoController {
         return false;
     }
 
+    /*
     @MessageMapping("/{lobbyCode}/heartbeatReceiver")
     @SendTo("/lobby/{lobbyCode}/heartbeat")
     public boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
@@ -103,7 +100,7 @@ public class PlayerInfoController {
             for (PlayerInfo playerInfo : lobby.getPlayerInfos()) {
                 if (playerInfo.getPlayerName().equals(playerName)) {
                     playerInfo.setLastHeartbeat(Instant.now());
-                    logger.debug("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
+                    logger.info("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
 
                     // Update the player position in the lobby or add it if it's a new player
                     lobby.updatePlayerInfo(playerInfo);
@@ -112,7 +109,7 @@ public class PlayerInfoController {
             }
         }
         return false;
-    }
+    }*/
 
     @MessageMapping("/{lobbyCode}/killReceiver")
     @SendTo("/lobby/{lobbyCode}/kills")
@@ -137,7 +134,8 @@ public class PlayerInfoController {
 
     //Receiver for VotingService - kills the given player after a voting (doesn't kill anyone if victimName is empty string)
     @PostMapping("/api/lobby/{lobbyCode}/killVotedPlayer")
-    public void killVotedPlayer(@PathVariable String lobbyCode, @RequestBody VotingKillRequest killRequest) throws Exception {
+    @ResponseBody
+    public ResponseEntity<String> killVotedPlayer(@PathVariable String lobbyCode, @RequestBody VotingKillRequest killRequest) throws Exception {
         logger.info("Voted out and killing player: {}", killRequest.getVictimName());
         // Get the lobby from the lobby service
 
@@ -159,6 +157,9 @@ public class PlayerInfoController {
         lobby.removeCorpses();
         // Send the updated player info to all players
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
+
+        // Return empty ok response
+        return ResponseEntity.ok("OK");
     }
 
     @MessageMapping("/{lobbyCode}/teleportPlayersToSpawn")
@@ -198,7 +199,7 @@ public class PlayerInfoController {
     }
 
 
-
+    //TODO: Should be able to remove this -> test if its really not needed
     @MessageMapping("/{lobbyCode}/isVotingReceiver")
     @SendTo("/lobby/{lobbyCode}/isVoting")
     public boolean setIsVoting(@DestinationVariable String lobbyCode, boolean isVoting) throws Exception {

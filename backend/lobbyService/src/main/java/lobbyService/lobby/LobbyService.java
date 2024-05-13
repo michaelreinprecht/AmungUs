@@ -20,17 +20,12 @@ public class LobbyService implements Lobby.LobbyEmptyListener {
             lobby.setMaxKillerCount(maxKillerCount);
             lobby.setPrivate(isPrivate);
             // Start player heartbeat
-            lobby.startHeartbeatChecking();
+            //TODO: move this to heartbeat Service: lobby.startHeartbeatChecking();
             //Set LobbyService as listener for empty Lobby events
             lobby.setEmptyListener(this);
             // Initialize other properties of the lobby as needed
             lobbies.put(lobbyCode, lobby);
         }
-    }
-
-    //TODO: use this method once all players have left a lobby!
-    public void removeLobby(String lobbyCode) {
-        lobbies.remove(lobbyCode);
     }
 
     public Lobby getLobby(String lobbyCode) {
@@ -52,5 +47,10 @@ public class LobbyService implements Lobby.LobbyEmptyListener {
 
     public boolean isLobbyCodeUsed(String lobbyCode) {
         return lobbies.containsKey(lobbyCode);
+    }
+
+    public void removePlayerFromLobby(String lobbyCode, String playerName) {
+        Lobby lobby = lobbies.get(lobbyCode);
+        lobby.removePlayer(playerName);
     }
 }

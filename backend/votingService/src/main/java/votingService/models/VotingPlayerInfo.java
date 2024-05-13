@@ -17,7 +17,7 @@ import java.util.Set;
 @ToString
 public class VotingPlayerInfo {
 
-    private static final Logger logger = LogManager.getLogger(VotingLobby.class);
+    private static final Logger logger = LogManager.getLogger(VotingPlayerInfo.class);
 
     private String playerName; //How do I get this ...?
     private boolean alive;
