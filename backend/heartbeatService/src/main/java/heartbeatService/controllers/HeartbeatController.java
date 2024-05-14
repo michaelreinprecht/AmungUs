@@ -19,7 +19,7 @@ public class HeartbeatController {
 
 	@MessageMapping("/{lobbyCode}/heartbeatReceiver")
 	@SendTo("/lobby/{lobbyCode}/heartbeat")
-	public synchronized boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
+	public boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
 		logger.debug("Received heartbeat request for lobby code: {}", lobbyCode);
 		// Get the lobby from the lobby service
 
