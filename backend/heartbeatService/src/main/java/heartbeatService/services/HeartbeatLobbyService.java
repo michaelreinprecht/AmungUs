@@ -10,7 +10,7 @@ import java.util.Map;
 public class HeartbeatLobbyService implements HeartbeatLobby.LobbyEmptyListener {
     private Map<String, HeartbeatLobby> lobbies = new HashMap<>();
 
-    public void createLobby(HeartbeatLobby lobby, String playerName) {
+    public synchronized void createLobby(HeartbeatLobby lobby, String playerName) {
         lobby.updateHeartbeatPlayerInfo(playerName);
         if (!lobbies.containsKey(lobby.lobbyCode)) {
             lobbies.put(lobby.getLobbyCode(), lobby);

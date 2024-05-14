@@ -59,6 +59,7 @@ public class Lobby {
         }
         // If the player doesn't exist in the lobby, add them
         if (!playerExists) {
+            logger.info("Trying to call addPlayerToLobby");
             addPlayerToLobby(playerInfo);
         }
     }
@@ -196,16 +197,26 @@ public class Lobby {
         logger.debug("ExistingPlayer{}", existingPlayer);
     }
 
-    private void addPlayerToLobby(PlayerInfo playerInfo) {
-        //Set default values for playerInfo
-        playerInfo.setToDefault();
+    private synchronized void addPlayerToLobby(PlayerInfo playerInfo) {
+        boolean playerExists = false;
+        for (PlayerInfo existingPlayer : playerInfos) {
+            if (existingPlayer.getPlayerName().equals(playerInfo.getPlayerName())) {
+                playerExists = true;
+                break;
+            }
+        }
+        if (!playerExists) {
+            logger.info("Actually adding player to lobby.");
+            //Set default values for playerInfo
+            playerInfo.setToDefault();
 
-        //Increase player count and add player to playerInfos list
-        playerCount++;
-        playerInfos.add(playerInfo);
-        //If the new player got killer role, increase killerCount by 1
-        if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {
-            killerCount++;
+            //Increase player count and add player to playerInfos list
+            playerCount++;
+            playerInfos.add(playerInfo);
+            //If the new player got killer role, increase killerCount by 1
+            if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {
+                killerCount++;
+            }
         }
     }
 }
