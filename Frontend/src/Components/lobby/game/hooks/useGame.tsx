@@ -19,6 +19,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   let votingClientIsConnected = false;
 
   useEffect(() => {
+    console.log("Use effect called in useGame"); //TODO: Remove after testing is done
     const votingClient = new Client({
       brokerURL: "ws://localhost:8081/votingService",
       onConnect: () => {

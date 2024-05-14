@@ -33,6 +33,11 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     setCurrentTask,
   } = useGame(activePlayerName, lobbyCode);
 
+  //TODO: Remove after testing is done
+  useEffect(() => {
+    console.log("Use effect called in Game.tsx");
+  }, []);
+
   return (
     <div ref={canvasRef} className="w-screen h-screen">
       <Canvas
