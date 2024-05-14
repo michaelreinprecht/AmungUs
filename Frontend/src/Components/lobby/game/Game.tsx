@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "../../player/PlayerCharacter";
@@ -87,15 +87,10 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
 
         {/* Render player corpse */}
         <PlayerCorpse
-          isGamePaused={isGamePaused}
           activePlayerName={activePlayerName}
           scale={5}
           lobbyCode={lobbyCode}
-          onNearestPlayerChange={(playerName: string) =>
-            setNearestPlayer(playerName)
-          }
           playerPositions={playerPositions}
-          setPlayerPositions={setPlayerPositions}
         />
 
         {/* Render task objects */}
