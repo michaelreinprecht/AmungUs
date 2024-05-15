@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import { usePickNameScene } from "./hooks/usePickNameScene";
 import { Theme, Container, Flex } from "@radix-ui/themes";
 import * as Avatar from "@radix-ui/react-avatar";
-//import "./PickNameScene.css";
+import { CSSProperties } from "react";
 
 interface PickNameSceneProps {
   setActivePlayerName: (newActivePlayerName: string) => void;
@@ -10,10 +10,16 @@ interface PickNameSceneProps {
   lobbyCode: string;
 }
 
+const pixelArtStyle: CSSProperties = {
+  imageRendering: 'pixelated',
+  width: '96px', 
+  height: '128px', 
+};
+
 const characterOptions = [
   {
     id: "character-1",
-    name: "Characgter 1",
+    name: "Character 1",
     avatarSrc: "/character-1-move-1.png",
   },
   {
@@ -60,9 +66,10 @@ export default function PickNameScene({
             <img src="/amongus-logo.png" alt="Bildbeschreibung" />
             <Avatar.Root className="AvatarRoot">
               <Avatar.Image
-                className="AvatarImage pixel-art mx-auto w-24 h-32"
+                className="AvatarImage pixel-art mx-auto"
                 src={selectedCharacter.avatarSrc}
                 alt={selectedCharacter.name}
+                style={pixelArtStyle}
               />
               <Avatar.Fallback className="AvatarFallback" delayMs={600}>
                 {selectedCharacter.name.charAt(0).toUpperCase()}
@@ -89,11 +96,11 @@ export default function PickNameScene({
               }}
               className="form-control w-full p-2 border border-gray-300 rounded"
             >
-              <option value="/character-1">Character 1</option>
-              <option value="/character-2">Character 2</option>
-              <option value="/character-3">Character 3</option>
-              <option value="/character-4">Character 4</option>
-              <option value="/character-5">Character 5</option>
+              {characterOptions.map((character) => (
+                <option key={character.id} value={character.id}>
+                  {character.name}
+                </option>
+              ))}
             </select>
             <input
               name="playerName"
