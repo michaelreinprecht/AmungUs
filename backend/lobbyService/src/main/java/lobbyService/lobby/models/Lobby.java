@@ -187,6 +187,37 @@ public class Lobby {
         }
     }
 
+    //Checks if one of the multiple possible win conditions occured and returns the winner based on that condition
+    //Returns empty string if there is no winners yet
+    public String checkForWinner() {
+        int remainingPlayerCount = 0;
+        for (PlayerInfo playerInfo : playerInfos) {
+            if (!Objects.equals(playerInfo.getPlayerRole(), "killer") && playerInfo.isAlive()) {
+                remainingPlayerCount++;
+            }
+        }
+
+        int remainingKillerCount = 0;
+        for (PlayerInfo playerInfo : playerInfos) {
+            if (Objects.equals(playerInfo.getPlayerRole(), "killer") && playerInfo.isAlive()) {
+                remainingKillerCount++;
+            }
+        }
+
+        //The crewmates have successfully identified and voted out all the killers, therefore making them the winner!
+        if (remainingKillerCount == 0) {
+            return "Crewmates";
+        }
+        //If there are as many players remaining alive, as there are killers times two, the killers win, because in the
+        //next round they can just kill enough people to make the game unwinnable for the crewmates (I think).
+        if (remainingPlayerCount <= remainingKillerCount) {
+            return "Killers";
+        }
+        //TODO: Check if crewmates finished all tasks
+        //TODO: Check if sabotaging caused game loss ...?
+        return "";
+    }
+
     private void updateExistingPlayer(PlayerInfo existingPlayer, PlayerInfo updatedPlayer) {
         // Update the player's position
         existingPlayer.setPlayerPositionX(updatedPlayer.getPlayerPositionX());
@@ -206,7 +237,6 @@ public class Lobby {
             }
         }
         if (!playerExists) {
-            logger.info("Actually adding player to lobby.");
             //Set default values for playerInfo
             playerInfo.setToDefault();
 

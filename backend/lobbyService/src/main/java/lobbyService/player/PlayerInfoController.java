@@ -88,29 +88,6 @@ public class PlayerInfoController {
         return false;
     }
 
-    /*
-    @MessageMapping("/{lobbyCode}/heartbeatReceiver")
-    @SendTo("/lobby/{lobbyCode}/heartbeat")
-    public boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
-        logger.debug("Received heartbeat request for lobby code: {}", lobbyCode);
-        // Get the lobby from the lobby service
-        Lobby lobby = lobbyService.getLobby(lobbyCode);
-        if (lobby != null) {
-            //Updating players heartbeat every time he sends a signal,
-            for (PlayerInfo playerInfo : lobby.getPlayerInfos()) {
-                if (playerInfo.getPlayerName().equals(playerName)) {
-                    playerInfo.setLastHeartbeat(Instant.now());
-                    logger.info("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
-
-                    // Update the player position in the lobby or add it if it's a new player
-                    lobby.updatePlayerInfo(playerInfo);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }*/
-
     @MessageMapping("/{lobbyCode}/killReceiver")
     @SendTo("/lobby/{lobbyCode}/kills")
     public boolean killPlayer(@DestinationVariable String lobbyCode, KillRequest killRequest) throws Exception {
@@ -127,9 +104,19 @@ public class PlayerInfoController {
             List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
             // Send the updated player info to all players
             messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
             return true;
         }
         return false;
+    }
+
+    @SendTo("/lobby/{lobbyCode}/gameOver")
+    public String checkForGameOver(@DestinationVariable String lobbyCode) throws Exception {
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        String winner = lobby.checkForWinner();
+
+        logger.info("Winners: {}, for lobby: {}", winner, lobbyCode);
+        return winner;
     }
 
     //Receiver for VotingService - kills the given player after a voting (doesn't kill anyone if victimName is empty string)
@@ -145,6 +132,7 @@ public class PlayerInfoController {
         if (!victimName.isEmpty()) {
             PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
             lobby.killPlayer(victim, null);
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
         }
 
         lobby.updateKilltimers(); //Stop killers from killing again right after voting!

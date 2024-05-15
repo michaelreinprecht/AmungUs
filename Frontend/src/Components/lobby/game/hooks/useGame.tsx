@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
-import {
-  emergencyButtonCooldown,
-  killCooldown,
-  killRange,
-} from "@/app/globals";
+import { killCooldown, killRange } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 import { PlayerInfo, Task } from "@/app/types";
 import { Client } from "@stomp/stompjs";
@@ -17,13 +13,14 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [playerTasks, setPlayerTasks] = useState<Task[]>([
     { name: "ColorTask", completed: false },
     { name: "MemoryTask", completed: false },
-    { name: "ReactionTask", completed: false },]);
+    { name: "ReactionTask", completed: false },
+  ]);
   const [currentTask, setCurrentTask] = useState<string>("");
-  const [votingKill, setVotingKill] = useState<String>("");
+  const [votingKill, setVotingKill] = useState<string>("");
+  const [winner, setWinner] = useState<string>("");
   let votingClientIsConnected = false;
 
   useEffect(() => {
-    console.log("Use effect called in useGame"); //TODO: Remove after testing is done
     const votingClient = new Client({
       brokerURL: "ws://localhost:8081/votingService",
       onConnect: () => {
@@ -51,6 +48,16 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
       },
     });
     votingClient.activate();
+
+    const lobbyClient = new Client({
+      brokerURL: "ws://localhost:8080/lobbyService",
+      onConnect: () => {
+        lobbyClient.subscribe(`/lobby/${lobbyCode}/gameOver`, (message) => {
+          setWinner(message.body);
+        });
+      },
+    });
+    lobbyClient.activate();
   }, []);
 
   function isKillEnabled() {
@@ -95,6 +102,8 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     currentTask,
     setCurrentTask,
     playerTasks,
-    setPlayerTasks
+    setPlayerTasks,
+    winner,
+    setWinner,
   };
 }
