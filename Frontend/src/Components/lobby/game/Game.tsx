@@ -14,6 +14,8 @@ import Colliders from "./Colliders";
 import MemoryTask from "@/Components/task/MemoryTask";
 import ReactionTask from "@/Components/task/ReactionTask";
 import FindTask from "@/Components/task/FindTask";
+import VotingKillUI from "./VotingKillUI";
+import GameOverUI from "./GameOverUI";
 
 type GameProps = {
   activePlayerName: string;
@@ -25,6 +27,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const {
     votingKill,
     isGamePaused,
+    setIsGamePaused,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
@@ -36,6 +39,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     setCurrentTask,
     playerTasks,
     setPlayerTasks,
+    winners,
+    setWinners,
   } = useGame(activePlayerName, lobbyCode);
 
   //TODO: Remove after testing is done
@@ -106,7 +111,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           setCurrentTask={setCurrentTask}
           currentTask={currentTask}
         />
-        
+
         <TaskObject
           position={[0, 30, 0]}
           scale={5}
@@ -114,7 +119,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           setCurrentTask={setCurrentTask}
           currentTask={currentTask}
         />
-        
+
         <TaskObject
           position={[0, 35, 0]}
           scale={5}
@@ -157,7 +162,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         <ColorTask setCurrentTask={setCurrentTask} />
       )}
 
-      {currentTask === "MemoryTask" && ( 
+      {currentTask === "MemoryTask" && (
         <MemoryTask setCurrentTask={setCurrentTask} />
       )}
 
@@ -169,11 +174,13 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         <FindTask setCurrentTask={setCurrentTask} />
       )}
 
-      {votingKill !== "" && (
-        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl text-red-600 font-bold">
-          Player {votingKill} was voted out!
-        </div>
-      )}
+      <VotingKillUI votingKill={votingKill} />
+
+      <GameOverUI
+        winners={winners}
+        setWinners={setWinners}
+        setIsGamePaused={setIsGamePaused}
+      />
     </div>
   );
 }

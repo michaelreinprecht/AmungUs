@@ -88,29 +88,6 @@ public class PlayerInfoController {
         return false;
     }
 
-    /*
-    @MessageMapping("/{lobbyCode}/heartbeatReceiver")
-    @SendTo("/lobby/{lobbyCode}/heartbeat")
-    public boolean heartbeats(@DestinationVariable String lobbyCode, String playerName) throws Exception {
-        logger.debug("Received heartbeat request for lobby code: {}", lobbyCode);
-        // Get the lobby from the lobby service
-        Lobby lobby = lobbyService.getLobby(lobbyCode);
-        if (lobby != null) {
-            //Updating players heartbeat every time he sends a signal,
-            for (PlayerInfo playerInfo : lobby.getPlayerInfos()) {
-                if (playerInfo.getPlayerName().equals(playerName)) {
-                    playerInfo.setLastHeartbeat(Instant.now());
-                    logger.info("Heartbeat received for player: {}", playerName + " in lobby: " + lobbyCode);
-
-                    // Update the player position in the lobby or add it if it's a new player
-                    lobby.updatePlayerInfo(playerInfo);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }*/
-
     @MessageMapping("/{lobbyCode}/killReceiver")
     @SendTo("/lobby/{lobbyCode}/kills")
     public boolean killPlayer(@DestinationVariable String lobbyCode, KillRequest killRequest) throws Exception {
@@ -126,10 +103,27 @@ public class PlayerInfoController {
             lobby.killPlayer(victim, killer);
             List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
             // Send the updated player info to all players
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
             messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
             return true;
         }
         return false;
+    }
+
+    //Returns a list of strings, the first string will indicate which team one, the other strings are the team members (e.g. all crewmates)
+    @SendTo("/lobby/{lobbyCode}/gameOver")
+    public GameOverInfo checkForGameOver(@DestinationVariable String lobbyCode) throws Exception {
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+
+        String winner = lobby.checkForWinner();
+        List<PlayerInfo> teamMembers = lobby.getAllTeamMembers(winner);
+        GameOverInfo gameOverInfo = new GameOverInfo(winner, teamMembers);
+        if (!Objects.equals(winner, "")) {
+            lobby.resetLobby();
+        }
+
+        logger.info("Winners: {}, for lobby: {}", gameOverInfo.toString(), lobbyCode);
+        return gameOverInfo;
     }
 
     //Receiver for VotingService - kills the given player after a voting (doesn't kill anyone if victimName is empty string)
@@ -155,6 +149,7 @@ public class PlayerInfoController {
         lobby.teleportPlayersToSpawn();
         // Remove the corpses
         lobby.removeCorpses();
+        messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
         // Send the updated player info to all players
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
 
@@ -198,17 +193,6 @@ public class PlayerInfoController {
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
     }
 
-
-    //TODO: Should be able to remove this -> test if its really not needed
-    @MessageMapping("/{lobbyCode}/isVotingReceiver")
-    @SendTo("/lobby/{lobbyCode}/isVoting")
-    public boolean setIsVoting(@DestinationVariable String lobbyCode, boolean isVoting) throws Exception {
-        logger.info("IsVoting state changed to: {}, for lobby: {}", isVoting, lobbyCode);
-
-        Lobby lobby = lobbyService.getLobby(lobbyCode);
-        lobby.setVoting(isVoting);
-        return lobby.isVoting();
-    }
 
     @GetMapping("/api/lobby/{lobbyCode}/playerNames")
     @ResponseBody
