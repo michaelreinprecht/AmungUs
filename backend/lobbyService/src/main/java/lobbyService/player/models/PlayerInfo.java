@@ -27,5 +27,6 @@ public class PlayerInfo {
     public void setToDefault() {
         alive = true;
         corpseFound = false;
+        lastKillTime = null;
     }
 }

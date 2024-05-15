@@ -41,6 +41,11 @@ export function usePlayerCharacter({
 
   usePlayerHeartbeat(lobbyCode, activePlayerName);
 
+  //TODO: Remove after testing is done
+  useEffect(() => {
+    console.log("Use effect called in usePlayerCharacter");
+  }, []);
+
   useEffect(() => {
     // Calculate nearest player and call onNearestPlayerChange once playerPositions change
     const nearestPlayer = calculateNearestVictim(

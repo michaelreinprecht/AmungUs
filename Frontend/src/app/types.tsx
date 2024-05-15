@@ -41,4 +41,9 @@ export type PlayerRole = "killer" | "crewmate";
 export type Task = {
   name: string;
   completed: boolean;
-}
+};
+
+export type GameOverInfo = {
+  winner: string;
+  teamMembers: PlayerInfo[];
+};
