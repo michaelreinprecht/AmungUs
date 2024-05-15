@@ -1,20 +1,55 @@
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { usePickNameScene } from "./hooks/usePickNameScene";
 import { Theme, Container, Flex } from "@radix-ui/themes";
 import * as Avatar from "@radix-ui/react-avatar";
+//import "./PickNameScene.css";
 
 interface PickNameSceneProps {
   setActivePlayerName: (newActivePlayerName: string) => void;
+  setActivePlayerCharacter: (newActivePlayerCharacter: string) => void;
   lobbyCode: string;
 }
 
+const characterOptions = [
+  {
+    id: "character-1",
+    name: "Characgter 1",
+    avatarSrc: "/character-1-move-1.png",
+  },
+  {
+    id: "character-2",
+    name: "Character 2",
+    avatarSrc: "/character-2-move-1.png",
+  },
+  {
+    id: "character-3",
+    name: "Character 3",
+    avatarSrc: "/character-3-move-1.png",
+  },
+  {
+    id: "character-4",
+    name: "Character 4",
+    avatarSrc: "/character-4-move-1.png",
+  },
+  {
+    id: "character-5",
+    name: "Character 5",
+    avatarSrc: "/character-5-move-1.png",
+  },
+];
+
 export default function PickNameScene({
   setActivePlayerName,
+  setActivePlayerCharacter,
   lobbyCode,
 }: PickNameSceneProps) {
   const { errorMessage, onSubmit } = usePickNameScene(
     lobbyCode,
-    setActivePlayerName
+    setActivePlayerName,
+    setActivePlayerCharacter
+  );
+  const [selectedCharacter, setSelectedCharacter] = useState(
+    characterOptions[0]
   );
 
   return (
@@ -25,12 +60,12 @@ export default function PickNameScene({
             <img src="/amongus-logo.png" alt="Bildbeschreibung" />
             <Avatar.Root className="AvatarRoot">
               <Avatar.Image
-                className="AvatarImage w-1/3 mx-auto"
-                src="/character-logo.png"
-                alt="AmungUs Logo"
+                className="AvatarImage pixel-art mx-auto w-24 h-32"
+                src={selectedCharacter.avatarSrc}
+                alt={selectedCharacter.name}
               />
               <Avatar.Fallback className="AvatarFallback" delayMs={600}>
-                CT
+                {selectedCharacter.name.charAt(0).toUpperCase()}
               </Avatar.Fallback>
             </Avatar.Root>
           </div>
@@ -39,6 +74,27 @@ export default function PickNameScene({
             onSubmit={onSubmit}
             className="flex flex-col items-center gap-2 pb-4"
           >
+            <select
+              name="playerCharacter"
+              value={selectedCharacter.id}
+              onChange={(e) => {
+                const newCharacter = characterOptions.find(
+                  (option) => option.id === e.target.value
+                );
+                if (newCharacter) {
+                  setSelectedCharacter(newCharacter);
+                } else {
+                  console.error("Selected character not found!");
+                }
+              }}
+              className="form-control w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="/character-1">Character 1</option>
+              <option value="/character-2">Character 2</option>
+              <option value="/character-3">Character 3</option>
+              <option value="/character-4">Character 4</option>
+              <option value="/character-5">Character 5</option>
+            </select>
             <input
               name="playerName"
               type="text"

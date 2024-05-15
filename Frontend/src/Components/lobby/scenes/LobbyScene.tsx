@@ -8,6 +8,7 @@ type LobbyProps = {
 
 function LobbyScene({ lobbyCode }: LobbyProps) {
   const [activePlayerName, setActivePlayerName] = useState("");
+  const [activePlayerCharacter, setActivePlayerCharacter] = useState("");
 
   //TODO: Remove after testing is done
   useEffect(() => {
@@ -21,6 +22,7 @@ function LobbyScene({ lobbyCode }: LobbyProps) {
           <h1>Lobby Code: {lobbyCode}</h1>
           <PickNameScene
             setActivePlayerName={setActivePlayerName}
+            setActivePlayerCharacter={setActivePlayerCharacter}
             lobbyCode={lobbyCode}
           />
         </>
@@ -28,7 +30,11 @@ function LobbyScene({ lobbyCode }: LobbyProps) {
 
       {activePlayerName !== "" && (
         <>
-          <Game activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
+          <Game
+            activePlayerName={activePlayerName}
+            activePlayerCharacter={activePlayerCharacter}
+            lobbyCode={lobbyCode}
+          />
         </>
       )}
     </>

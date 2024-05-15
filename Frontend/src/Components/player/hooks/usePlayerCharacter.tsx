@@ -10,6 +10,7 @@ type usePlayerCharacterProps = {
   camera: THREE.Camera;
   isGamePaused: boolean;
   activePlayerName: string;
+  activePlayerCharacter: string;
   scale: number;
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
@@ -21,6 +22,7 @@ export function usePlayerCharacter({
   camera,
   isGamePaused,
   activePlayerName,
+  activePlayerCharacter,
   scale,
   lobbyCode,
   onNearestPlayerChange,
@@ -32,6 +34,7 @@ export function usePlayerCharacter({
   usePlayerMovement(
     isGamePaused,
     activePlayerName,
+    activePlayerCharacter,
     scale,
     playerPositions,
     lobbyCode,

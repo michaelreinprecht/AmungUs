@@ -4,10 +4,12 @@ import { Text } from "@react-three/drei";
 import { PlayerInfo } from "../../app/types";
 import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
+import { getPositionOfPlayer } from "./utilityFunctions/playerPositionHandler";
 
 interface PlayerCharacterProps {
   isGamePaused: boolean;
   activePlayerName: string;
+  activePlayerCharacter: string;
   scale: number;
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
@@ -18,6 +20,7 @@ interface PlayerCharacterProps {
 const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   isGamePaused,
   activePlayerName,
+  activePlayerCharacter,
   scale,
   lobbyCode,
   onNearestPlayerChange,
@@ -30,13 +33,22 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     camera,
     isGamePaused,
     activePlayerName,
+    activePlayerCharacter,
     scale,
     lobbyCode,
     onNearestPlayerChange,
     playerPositions,
     setPlayerPositions,
   });
-  const colorMapPlayer = useLoader(TextureLoader, "/rick.png");
+  const currentPlayer = getPositionOfPlayer(playerPositions, activePlayerName);
+  let colorMapPlayer = useLoader(TextureLoader, "/rick.png");
+
+  if (currentPlayer) {
+    colorMapPlayer = useLoader(
+      TextureLoader,
+      currentPlayer.playerCharacter + "-move-1.png"
+    );
+  }
   const colorMapGhost = useLoader(TextureLoader, "/ghost.png");
 
   return (

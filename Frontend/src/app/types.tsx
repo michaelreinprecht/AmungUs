@@ -1,5 +1,6 @@
 export type PlayerInfo = {
   playerName: string;
+  playerCharacter: string;
   playerPositionX: number;
   playerPositionY: number;
   killedPlayerPositionX: number;

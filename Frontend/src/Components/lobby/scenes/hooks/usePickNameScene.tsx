@@ -3,10 +3,12 @@ import { FormEvent, useState } from "react";
 
 export function usePickNameScene(
   lobbyCode: string,
-  setActivePlayerName: (newActivePlayerName: string) => void
+  setActivePlayerName: (newActivePlayerName: string) => void,
+  setActivePlayerCharacter: (newActivePlayerName: string) => void
 ) {
   const [errorMessage, setErrorMessage] = useState("");
   let playerNames = [""];
+  let playerCharacters = [""];
   let isLobbyFull = false;
 
   async function fetchPlayerNames() {
@@ -27,6 +29,24 @@ export function usePickNameScene(
     }
   }
 
+  async function fetchPlayerCharacters() {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/lobby/${lobbyCode}/playerCharacters`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch player characters");
+      }
+      const data = await response.json();
+      playerCharacters = data;
+    } catch (error) {
+      alert(
+        "Unable to fetch player characters, please make sure you are connected to the internet or try again later."
+      );
+      throw error;
+    }
+  }
+
   async function checkForFullLobby() {
     try {
       const lobbyData = await getLobbyByCode(lobbyCode);
@@ -37,8 +57,13 @@ export function usePickNameScene(
     }
   }
 
-  async function checkIfNameIsTaken(playerName: string) {
+  async function checkIfInputAvailable(
+    playerName: string,
+    playerCharacter: string
+  ) {
     await fetchPlayerNames();
+    await fetchPlayerCharacters();
+
     await checkForFullLobby();
     if (isLobbyFull) {
       //Set error if lobby is full
@@ -46,8 +71,10 @@ export function usePickNameScene(
     } else if (playerNames.includes(playerName)) {
       //Set error if playername is taken
       setErrorMessage("Name already taken");
+    } else if (playerCharacters.includes(playerCharacter)) {
+      setErrorMessage("Character already taken");
     } else {
-      //Set active player name if everything is fine
+      setActivePlayerCharacter(playerCharacter);
       setActivePlayerName(playerName);
     }
   }
@@ -56,8 +83,9 @@ export function usePickNameScene(
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const newPlayerName = data.get("playerName") as string;
-    await checkIfNameIsTaken(newPlayerName);
+    const playerName = data.get("playerName") as string;
+    const selectedCharacter = data.get("playerCharacter") as string;
+    await checkIfInputAvailable(playerName, selectedCharacter);
   }
 
   return {
