@@ -14,6 +14,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import lobbyService.player.models.VotingKillRequest;
@@ -35,6 +38,8 @@ public class VotingController {
     private static final Logger logger = LogManager.getLogger(VotingController.class);
 
     private HashMap<String, Instant> lobbyEmergencyTimers;
+
+    private final int emergencyTimerDuration = 30;
 
     @Autowired
     VotingLobbyService votingLobbyService;
@@ -96,7 +101,7 @@ public class VotingController {
             messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingState", votingState(lobbyCode, request));
         } else {
             //Make sure at least 30 seconds have passed between the last Emergency and now
-            if (Duration.between(lastEmergency, Instant.now()).getSeconds() >= 30) {
+            if (Duration.between(lastEmergency, Instant.now()).getSeconds() >= emergencyTimerDuration) {
                 messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/votingState", votingState(lobbyCode, request));
             }
         }
@@ -106,6 +111,18 @@ public class VotingController {
     public String emergencyCooldown(@DestinationVariable String lobbyCode) {
         lobbyEmergencyTimers.put(lobbyCode, Instant.now());
         return lobbyEmergencyTimers.get(lobbyCode).toString();
+    }
+
+    @PostMapping("/api/voting/{lobbyCode}/resetEmergencyCooldown")
+    @ResponseBody
+    public ResponseEntity<String> resetEmergencyCooldown(@PathVariable String lobbyCode) {
+        logger.info("Setting emergency cooldown for lobby: {}", lobbyCode);
+        lobbyEmergencyTimers.put(lobbyCode, Instant.now().minusSeconds(emergencyTimerDuration));
+
+        messagingTemplate.convertAndSend("/voting/" + lobbyCode + "/emergencyCooldown", lobbyEmergencyTimers.get(lobbyCode));
+
+        // Return empty ok response
+        return ResponseEntity.ok("OK");
     }
 
     private void startVoting(RestTemplate restTemplate, String senderName, String lobbyCode) {

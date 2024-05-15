@@ -27,6 +27,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
   const {
     votingKill,
     isGamePaused,
+    setIsGamePaused,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
@@ -38,8 +39,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     setCurrentTask,
     playerTasks,
     setPlayerTasks,
-    winner,
-    setWinner,
+    winners,
+    setWinners,
   } = useGame(activePlayerName, lobbyCode);
 
   //TODO: Remove after testing is done
@@ -175,7 +176,11 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
 
       <VotingKillUI votingKill={votingKill} />
 
-      <GameOverUI winner={winner} setWinner={setWinner} />
+      <GameOverUI
+        winners={winners}
+        setWinners={setWinners}
+        setIsGamePaused={setIsGamePaused}
+      />
     </div>
   );
 }

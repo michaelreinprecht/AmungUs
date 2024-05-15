@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
 import { killCooldown, killRange } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
-import { PlayerInfo, Task } from "@/app/types";
+import { GameOverInfo, PlayerInfo, Task } from "@/app/types";
 import { Client } from "@stomp/stompjs";
+import { parse } from "path";
 
 export function useGame(activePlayerName: string, lobbyCode: string) {
   const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
@@ -17,7 +18,10 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   ]);
   const [currentTask, setCurrentTask] = useState<string>("");
   const [votingKill, setVotingKill] = useState<string>("");
-  const [winner, setWinner] = useState<string>("");
+  const [winners, setWinners] = useState<GameOverInfo>({
+    winner: "",
+    teamMembers: [],
+  });
   let votingClientIsConnected = false;
 
   useEffect(() => {
@@ -52,9 +56,15 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     const lobbyClient = new Client({
       brokerURL: "ws://localhost:8080/lobbyService",
       onConnect: () => {
-        lobbyClient.subscribe(`/lobby/${lobbyCode}/gameOver`, (message) => {
-          setWinner(message.body);
-        });
+        lobbyClient.subscribe(
+          `/lobby/${lobbyCode}/gameOver`,
+          (message: any) => {
+            const parsedWinners = JSON.parse(message.body) as GameOverInfo;
+            if (message.body.winner !== "") {
+              setWinners(parsedWinners);
+            }
+          }
+        );
       },
     });
     lobbyClient.activate();
@@ -92,6 +102,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   return {
     votingKill,
     isGamePaused,
+    setIsGamePaused,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
@@ -103,7 +114,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     setCurrentTask,
     playerTasks,
     setPlayerTasks,
-    winner,
-    setWinner,
+    winners,
+    setWinners,
   };
 }

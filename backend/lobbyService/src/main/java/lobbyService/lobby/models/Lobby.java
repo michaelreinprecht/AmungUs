@@ -6,13 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -189,6 +188,7 @@ public class Lobby {
 
     //Checks if one of the multiple possible win conditions occured and returns the winner based on that condition
     //Returns empty string if there is no winners yet
+    //Also resets lobby if game is over.
     public String checkForWinner() {
         int remainingPlayerCount = 0;
         for (PlayerInfo playerInfo : playerInfos) {
@@ -206,16 +206,39 @@ public class Lobby {
 
         //The crewmates have successfully identified and voted out all the killers, therefore making them the winner!
         if (remainingKillerCount == 0) {
-            return "Crewmates";
+            return "crewmate";
         }
         //If there are as many players remaining alive, as there are killers times two, the killers win, because in the
         //next round they can just kill enough people to make the game unwinnable for the crewmates (I think).
         if (remainingPlayerCount <= remainingKillerCount) {
-            return "Killers";
+            return "killer";
         }
         //TODO: Check if crewmates finished all tasks
         //TODO: Check if sabotaging caused game loss ...?
         return "";
+    }
+
+    public List<PlayerInfo> getAllTeamMembers(String team) {
+        if (!Objects.equals(team, "")) {
+            List<PlayerInfo> members = new ArrayList<>();
+            for (PlayerInfo playerInfo : playerInfos) {
+                if (Objects.equals(playerInfo.getPlayerRole(), team)) {
+                    members.add(playerInfo);
+                }
+            }
+            return members;
+        }
+        return new ArrayList<>();
+    }
+
+    //Resets the current lobby, all player will be alive again, teleported to spawn and assigned new random roles
+    public void resetLobby() {
+        for (PlayerInfo playerInfo : playerInfos) {
+            playerInfo.setToDefault();
+        }
+        resetEmergencyTimer();
+        shufflePlayerRoles();
+        teleportPlayersToSpawn();
     }
 
     private void updateExistingPlayer(PlayerInfo existingPlayer, PlayerInfo updatedPlayer) {
@@ -246,6 +269,28 @@ public class Lobby {
             //If the new player got killer role, increase killerCount by 1
             if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {
                 killerCount++;
+            }
+        }
+    }
+
+    //Uses a restTemplate to send a PostRequest to the votingService in order to reset the emergencyTimer
+    private void resetEmergencyTimer() {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8081/api/voting/{lobbyCode}/resetEmergencyCooldown" ;
+        ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class, lobbyCode);
+        logger.info(response.toString());
+    }
+
+    //If a lobby is reset the roles of the players will be newly assigned.
+    private void shufflePlayerRoles() {
+        Collections.shuffle(playerInfos); //Randomly shuffle the list
+        int killersAssigned = 0;
+        for (PlayerInfo player : playerInfos) {
+            if (killersAssigned < maxKillerCount) {
+                player.setPlayerRole("killer");
+                killersAssigned++;
+            } else {
+                player.setPlayerRole("crewmate");
             }
         }
     }

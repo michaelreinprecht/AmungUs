@@ -103,20 +103,27 @@ public class PlayerInfoController {
             lobby.killPlayer(victim, killer);
             List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
             // Send the updated player info to all players
-            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
             messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
             return true;
         }
         return false;
     }
 
+    //Returns a list of strings, the first string will indicate which team one, the other strings are the team members (e.g. all crewmates)
     @SendTo("/lobby/{lobbyCode}/gameOver")
-    public String checkForGameOver(@DestinationVariable String lobbyCode) throws Exception {
+    public GameOverInfo checkForGameOver(@DestinationVariable String lobbyCode) throws Exception {
         Lobby lobby = lobbyService.getLobby(lobbyCode);
-        String winner = lobby.checkForWinner();
 
-        logger.info("Winners: {}, for lobby: {}", winner, lobbyCode);
-        return winner;
+        String winner = lobby.checkForWinner();
+        List<PlayerInfo> teamMembers = lobby.getAllTeamMembers(winner);
+        GameOverInfo gameOverInfo = new GameOverInfo(winner, teamMembers);
+        if (!Objects.equals(winner, "")) {
+            lobby.resetLobby();
+        }
+
+        logger.info("Winners: {}, for lobby: {}", gameOverInfo.toString(), lobbyCode);
+        return gameOverInfo;
     }
 
     //Receiver for VotingService - kills the given player after a voting (doesn't kill anyone if victimName is empty string)
@@ -132,7 +139,6 @@ public class PlayerInfoController {
         if (!victimName.isEmpty()) {
             PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
             lobby.killPlayer(victim, null);
-            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
         }
 
         lobby.updateKilltimers(); //Stop killers from killing again right after voting!
@@ -143,6 +149,7 @@ public class PlayerInfoController {
         lobby.teleportPlayersToSpawn();
         // Remove the corpses
         lobby.removeCorpses();
+        messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
         // Send the updated player info to all players
         messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
 
