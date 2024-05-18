@@ -13,6 +13,7 @@ export type PlayerInfo = {
 
 export type VotingPlayerInfo = {
   playerName: string;
+  playerCharacter:string;
   alive: boolean;
   votes: Set<string>;
   voteCount: number;

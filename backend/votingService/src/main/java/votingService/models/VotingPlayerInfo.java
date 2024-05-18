@@ -20,6 +20,7 @@ public class VotingPlayerInfo {
     private static final Logger logger = LogManager.getLogger(VotingPlayerInfo.class);
 
     private String playerName; //How do I get this ...?
+    private String playerCharacter;
     private boolean alive;
     private Set<String> votes;
     private int voteCount;
@@ -28,6 +29,7 @@ public class VotingPlayerInfo {
 
     public VotingPlayerInfo(PlayerInfo playerInfo) {
         this.playerName = playerInfo.getPlayerName();
+        this.playerCharacter = playerInfo.getPlayerCharacter();
         this.alive = playerInfo.isAlive();
         this.votes = new HashSet<>();
         this.voteCount = 0;

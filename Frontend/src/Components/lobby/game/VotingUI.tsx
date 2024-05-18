@@ -6,16 +6,19 @@ import { VotingPlayerInfo } from "@/app/types";
 type VotingUIProps = {
   lobbyCode: string;
   activePlayerName: string;
+  activePlayerCharacter: string;
 };
 
 export default function VotingUI({
   lobbyCode,
   activePlayerName,
+  activePlayerCharacter
 }: VotingUIProps) {
   const { timer, stopVoting, votingPlayerInfos, updateVote } = useVotingUI(
     votingTimer, //Using global value
     lobbyCode,
-    activePlayerName
+    activePlayerName,
+    activePlayerCharacter
   );
 
   return (
@@ -35,9 +38,12 @@ export default function VotingUI({
               disabled={!playerInfo.alive}
             >
               <img
-                src="/character-logo.png"
-                alt={`${playerInfo.playerName} avatar`}
+                src={`/${playerInfo.playerCharacter}-move-1.png`}
+                alt={`${activePlayerCharacter}-move-1.png`}
                 className="w-full h-full object-cover rounded-full"
+                style={{
+                  imageRendering: 'pixelated'
+                }}
               />
             </button>
             <div className="text-gray-300 text-sm">Votes: {playerInfo.voteCount}</div>
