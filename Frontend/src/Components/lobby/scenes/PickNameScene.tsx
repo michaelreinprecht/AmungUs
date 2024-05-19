@@ -42,6 +42,31 @@ const characterOptions = [
     name: "Character 5",
     avatarSrc: "/character-5-move-1.png",
   },
+  {
+    id: "character-6",
+    name: "Character 6",
+    avatarSrc: "/character-6-move-1.png",
+  },
+  {
+    id: "character-7",
+    name: "Character 7",
+    avatarSrc: "/character-7-move-1.png",
+  },
+  {
+    id: "character-8",
+    name: "Character 8",
+    avatarSrc: "/character-8-move-1.png",
+  },
+  {
+    id: "character-9",
+    name: "Character 9",
+    avatarSrc: "/character-9-move-1.png",
+  },
+  {
+    id: "character-10",
+    name: "Character 10",
+    avatarSrc: "/character-10-move-1.png",
+  },
 ];
 
 export default function PickNameScene({

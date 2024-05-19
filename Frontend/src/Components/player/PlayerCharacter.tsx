@@ -55,6 +55,11 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     "character-3": loadTexture("/character-3-move-1.png"),
     "character-4": loadTexture("/character-4-move-1.png"),
     "character-5": loadTexture("/character-5-move-1.png"),
+    "character-6": loadTexture("/character-6-move-1.png"),
+    "character-7": loadTexture("/character-7-move-1.png"),
+    "character-8": loadTexture("/character-8-move-1.png"),
+    "character-9": loadTexture("/character-9-move-1.png"),
+    "character-10": loadTexture("/character-10-move-1.png"),
     "ghost": loadTexture("/ghost.png"),
   };
 
