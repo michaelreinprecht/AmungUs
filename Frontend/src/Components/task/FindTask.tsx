@@ -1,3 +1,4 @@
+import { Task } from '@/app/types';
 import React, { useState, useEffect } from 'react';
 
 const iconOptions = ['💀', '☠️', '👻', '👁️', '🌪️', '🤖']; // New icon options
@@ -5,14 +6,16 @@ const iconOptions = ['💀', '☠️', '👻', '👁️', '🌪️', '🤖']; //
 type Icon = '💀' | '☠️' | '👻' | '👁️' | '🌪️' | '🤖';
 
 interface FindTaskProps {
-    setCurrentTask: React.Dispatch<React.SetStateAction<string>>;
+  setCurrentTask: React.Dispatch<React.SetStateAction<Task>>;
+  setCurrentPlayerTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  currentTask: Task;
 }
 
-function FindTask({ setCurrentTask }: FindTaskProps) {
+function FindTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: FindTaskProps) {
   const totalIcons = 64; // Total number of icons (8x8 grid)
   const gridSize = Math.floor(Math.sqrt(totalIcons)); // Grid size adjusted for a square
   const [icons, setIcons] = useState<Icon[]>(() => {
-    const savedIcons = sessionStorage.getItem('FindTask');
+    const savedIcons = sessionStorage.getItem(`FindTask-${currentTask.id}`);
     return savedIcons ? JSON.parse(savedIcons) : generateIcons();
   });
   const [skullsCount, setSkullsCount] = useState<number>(0);
@@ -26,9 +29,10 @@ function FindTask({ setCurrentTask }: FindTaskProps) {
     });
     setSkullsCount(count);
     if (count === 0) {
-      setCurrentTask("Done");
+      setCurrentPlayerTasks(prev => prev.map((task, i) => i === currentTask.id ? { ...task, completed: true } : task));
+      setCurrentTask({id: 0, name: "NoTask", completed: false });
     }
-    sessionStorage.setItem('FindTask', JSON.stringify(icons));
+    sessionStorage.setItem(`FindTask-${currentTask.id}`, JSON.stringify(icons));
   }, [icons, setCurrentTask]);
 
   function generateIcons(): Icon[] {
@@ -71,7 +75,7 @@ function FindTask({ setCurrentTask }: FindTaskProps) {
       <div className="text-white text-center mt-4">
         💀 left: {skullsCount}
       </div>
-      <button onClick={() => setCurrentTask("NoTask")} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
+      <button onClick={() => setCurrentTask({id: 0, name: "NoTask", completed: false })} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
         Save & Exit
       </button>
     </div>

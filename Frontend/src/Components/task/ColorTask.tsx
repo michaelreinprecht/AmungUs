@@ -1,3 +1,4 @@
+import { Task } from '@/app/types';
 import React, { useEffect, useState } from 'react';
 
 // Define an array of valid colors
@@ -29,19 +30,23 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 interface ColorTaskProps {
-  setCurrentTask: React.Dispatch<React.SetStateAction<string>>;
+  setCurrentTask: React.Dispatch<React.SetStateAction<Task>>;
+  setCurrentPlayerTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  currentTask: Task;
 }
 
-function ColorTask({ setCurrentTask }: ColorTaskProps) {
+function ColorTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: ColorTaskProps) {
+  const taskKeyPrefix = `colorTask-${currentTask.id}`;
+
   const getInitialState = (key: string) => {
     const savedState = sessionStorage.getItem(key);
     return savedState ? JSON.parse(savedState) : shuffleArray([...initialColors]);
   };
 
-  const [startColors, setStartColors] = useState<Color[]>(() => getInitialState('startColors'));
-  const [endColors, setEndColors] = useState<Color[]>(() => getInitialState('endColors'));
+  const [startColors, setStartColors] = useState<Color[]>(() => getInitialState(`${taskKeyPrefix}-startColors`));
+  const [endColors, setEndColors] = useState<Color[]>(() => getInitialState(`${taskKeyPrefix}-endColors`));
   const [connections, setConnections] = useState<Record<Color, boolean>>(() => {
-    const savedConnections = sessionStorage.getItem('colorTaskConnections');
+    const savedConnections = sessionStorage.getItem(`${taskKeyPrefix}-connections`);
     return savedConnections ? JSON.parse(savedConnections) : initialColors.reduce((acc, color) => {
       acc[color] = false;
       return acc;
@@ -49,10 +54,10 @@ function ColorTask({ setCurrentTask }: ColorTaskProps) {
   });
 
   useEffect(() => {
-    sessionStorage.setItem('startColors', JSON.stringify(startColors));
-    sessionStorage.setItem('endColors', JSON.stringify(endColors));
-    sessionStorage.setItem('colorTaskConnections', JSON.stringify(connections));
-  }, [startColors, endColors, connections]);
+    sessionStorage.setItem(`${taskKeyPrefix}-startColors`, JSON.stringify(startColors));
+    sessionStorage.setItem(`${taskKeyPrefix}-endColors`, JSON.stringify(endColors));
+    sessionStorage.setItem(`${taskKeyPrefix}-connections`, JSON.stringify(connections));
+  }, [startColors, endColors, connections, taskKeyPrefix]);
 
   const handleDrop = (startColor: Color, endColor: Color) => {
     if (startColor === endColor) {
@@ -67,7 +72,8 @@ function ColorTask({ setCurrentTask }: ColorTaskProps) {
     if (Object.keys(connections).length === initialColors.length &&
         Object.values(connections).every(val => val)) {
       console.log('Task Completed!');
-      setCurrentTask("Done");
+      setCurrentPlayerTasks(prev => prev.map((task, i) => i === currentTask.id ? { ...task, completed: true } : task));
+      setCurrentTask({id: 0, name: "NoTask", completed: false });
     }
   }, [connections, setCurrentTask]);
 
@@ -104,7 +110,7 @@ function ColorTask({ setCurrentTask }: ColorTaskProps) {
           </div>
         ))}
       </div>
-      <button onClick={() => setCurrentTask("NoTask")} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
+      <button onClick={() => setCurrentTask({id: 0, name: "NoTask", completed: false })} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
         Save & Exit
       </button>
     </div>

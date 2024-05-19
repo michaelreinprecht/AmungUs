@@ -11,17 +11,20 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
-  const [playerTasks, setPlayerTasks] = useState<Task[]>([
-    { name: "ColorTask", completed: false },
-    { name: "MemoryTask", completed: false },
-    { name: "ReactionTask", completed: false },
-  ]);
-  const [currentTask, setCurrentTask] = useState<string>("");
+  const [currentTask, setCurrentTask] = useState<Task>({ id: 0, name: "", completed: false });
   const [votingKill, setVotingKill] = useState<string>("");
   const [winners, setWinners] = useState<GameOverInfo>({
     winner: "",
     teamMembers: [],
   });
+  const possibleTasks = [    
+    {  id: 1, name: "ColorTask", completed: false },
+    {  id: 2, name: "MemoryTask", completed: false },
+    {  id: 3, name: "ReactionTask", completed: false },
+    {  id: 4, name: "FindTask", completed: false }]
+
+  const [currentPlayerTasks, setCurrentPlayerTasks] = useState<Task[]>([]);
+
   let votingClientIsConnected = false;
 
   useEffect(() => {
@@ -99,6 +102,27 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     );
   }
 
+  function getRandomTask(tasks: Task[]) {
+    const randomIndex = Math.floor(Math.random() * tasks.length);
+    return tasks[randomIndex];
+  }
+
+  useEffect(() => {
+    const initialTasks = [];
+    for (let i = 0; i < 6; i++) {
+      let randomTask = getRandomTask(possibleTasks);
+      // Ensure the task is unique by creating a deep copy
+      randomTask = JSON.parse(JSON.stringify(randomTask));
+      // Assigning the id to match the index
+      randomTask.id = i; // Adding 1 to avoid id starting from 0
+      initialTasks.push(randomTask);
+    }
+    setCurrentPlayerTasks(initialTasks);
+  }, []);
+  
+  
+  
+
   return {
     votingKill,
     isGamePaused,
@@ -112,8 +136,8 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     isKillUIVisible,
     currentTask,
     setCurrentTask,
-    playerTasks,
-    setPlayerTasks,
+    currentPlayerTasks,
+    setCurrentPlayerTasks,
     winners,
     setWinners,
   };

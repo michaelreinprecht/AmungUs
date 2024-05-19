@@ -39,6 +39,7 @@ export type RectangleCollider = {
 export type PlayerRole = "killer" | "crewmate";
 
 export type Task = {
+  id: number;
   name: string;
   completed: boolean;
 };
