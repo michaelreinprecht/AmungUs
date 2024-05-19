@@ -28,6 +28,8 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     votingKill,
     isGamePaused,
     setIsGamePaused,
+    isGameOver,
+    setIsGameOver,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
@@ -42,11 +44,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     winners,
     setWinners,
   } = useGame(activePlayerName, lobbyCode);
-
-  //TODO: Remove after testing is done
-  useEffect(() => {
-    console.log("Use effect called in Game.tsx");
-  }, []);
 
   return (
     <div ref={canvasRef} className="w-screen h-screen">
@@ -75,6 +72,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         {/* Render player character */}
         <PlayerCharacter
           isGamePaused={isGamePaused}
+          isGameOver={isGameOver}
           activePlayerName={activePlayerName}
           scale={5}
           lobbyCode={lobbyCode}
@@ -179,7 +177,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       <GameOverUI
         winners={winners}
         setWinners={setWinners}
-        setIsGamePaused={setIsGamePaused}
+        setIsGameOver={setIsGameOver}
       />
     </div>
   );

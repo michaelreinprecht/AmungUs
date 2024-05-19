@@ -9,6 +9,7 @@ import { getPositionOfPlayer } from "../utilityFunctions/playerPositionHandler";
 type usePlayerCharacterProps = {
   camera: THREE.Camera;
   isGamePaused: boolean;
+  isGameOver: boolean;
   activePlayerName: string;
   scale: number;
   lobbyCode: string;
@@ -20,6 +21,7 @@ type usePlayerCharacterProps = {
 export function usePlayerCharacter({
   camera,
   isGamePaused,
+  isGameOver,
   activePlayerName,
   scale,
   lobbyCode,
@@ -31,6 +33,7 @@ export function usePlayerCharacter({
 
   usePlayerMovement(
     isGamePaused,
+    isGameOver,
     activePlayerName,
     scale,
     playerPositions,
@@ -40,11 +43,6 @@ export function usePlayerCharacter({
   );
 
   usePlayerHeartbeat(lobbyCode, activePlayerName);
-
-  //TODO: Remove after testing is done
-  useEffect(() => {
-    console.log("Use effect called in usePlayerCharacter");
-  }, []);
 
   useEffect(() => {
     // Calculate nearest player and call onNearestPlayerChange once playerPositions change

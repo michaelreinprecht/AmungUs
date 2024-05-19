@@ -7,6 +7,7 @@ import { TextureLoader } from "three";
 
 interface PlayerCharacterProps {
   isGamePaused: boolean;
+  isGameOver: boolean;
   activePlayerName: string;
   scale: number;
   lobbyCode: string;
@@ -17,6 +18,7 @@ interface PlayerCharacterProps {
 
 const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   isGamePaused,
+  isGameOver,
   activePlayerName,
   scale,
   lobbyCode,
@@ -29,6 +31,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   const { meshRef } = usePlayerCharacter({
     camera,
     isGamePaused,
+    isGameOver,
     activePlayerName,
     scale,
     lobbyCode,
