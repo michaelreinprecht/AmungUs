@@ -12,6 +12,7 @@ import java.time.Instant;
 @ToString
 public class PlayerInfo {
     private String playerName;
+    private String playerCharacter;
     private float playerPositionX;
     private float playerPositionY;
     private float killedPlayerPositionX;

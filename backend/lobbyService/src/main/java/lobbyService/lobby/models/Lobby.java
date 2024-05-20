@@ -265,6 +265,7 @@ public class Lobby {
 
             //Increase player count and add player to playerInfos list
             playerCount++;
+
             playerInfos.add(playerInfo);
             //If the new player got killer role, increase killerCount by 1
             if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {

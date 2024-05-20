@@ -4,10 +4,10 @@ import { killCooldown, killRange } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 import { GameOverInfo, PlayerInfo, Task } from "@/app/types";
 import { Client } from "@stomp/stompjs";
-import { parse } from "path";
 
 export function useGame(activePlayerName: string, lobbyCode: string) {
   const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
@@ -127,6 +127,8 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     votingKill,
     isGamePaused,
     setIsGamePaused,
+    isGameOver,
+    setIsGameOver,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,

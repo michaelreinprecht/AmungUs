@@ -20,15 +20,22 @@ import TaskList from '@/Components/task/TaskList';
 
 type GameProps = {
   activePlayerName: string;
+  activePlayerCharacter: string;
   lobbyCode: string;
 };
 
-export default function Game({ activePlayerName, lobbyCode }: GameProps) {
+export default function Game({
+  activePlayerName,
+  activePlayerCharacter,
+  lobbyCode,
+}: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const {
     votingKill,
     isGamePaused,
     setIsGamePaused,
+    isGameOver,
+    setIsGameOver,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
@@ -43,11 +50,6 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
     winners,
     setWinners,
   } = useGame(activePlayerName, lobbyCode);
-
-  //TODO: Remove after testing is done
-  useEffect(() => {
-    console.log('Use effect called in Game.tsx');
-  }, []);
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">
@@ -76,7 +78,9 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
         {/* Render player character */}
         <PlayerCharacter
           isGamePaused={isGamePaused}
+          isGameOver={isGameOver}
           activePlayerName={activePlayerName}
+          activePlayerCharacter={activePlayerCharacter}
           scale={5}
           lobbyCode={lobbyCode}
           onNearestPlayerChange={(playerName: string) => setNearestPlayer(playerName)}
@@ -126,7 +130,13 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
       )}
 
       {/* Voting UI */}
-      {isVotingActive && <VotingUI lobbyCode={lobbyCode} activePlayerName={activePlayerName} />}
+      {isVotingActive && (
+        <VotingUI
+          lobbyCode={lobbyCode}
+          activePlayerName={activePlayerName}
+          activePlayerCharacter={activePlayerCharacter}
+        />
+      )}
 
       {/* Render MessageForm and MessageList only if connected */}
       {isVotingActive && <ChatWindow activePlayerName={activePlayerName} lobbyCode={lobbyCode} />}
@@ -139,12 +149,16 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
 
       <VotingKillUI votingKill={votingKill} />
 
-      <GameOverUI winners={winners} setWinners={setWinners} setIsGamePaused={setIsGamePaused} />
+      <GameOverUI
+        winners={winners}
+        setWinners={setWinners}
+        setIsGameOver={setIsGameOver}
+      />
 
-      {/* Task List UI */}
-      <div className="task-list-ui absolute top-0 left-0 p-4 bg-gray-800 text-white">
-        <TaskList tasks={currentPlayerTasks} />
-      </div>
+        {/* Task List UI */}
+        <div className="task-list-ui absolute top-0 left-0 p-4 bg-gray-800 text-white">
+            <TaskList tasks={currentPlayerTasks} />
+        </div>
     </div>
   );
 }

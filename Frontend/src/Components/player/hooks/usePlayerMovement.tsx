@@ -14,7 +14,9 @@ import { Client } from "@stomp/stompjs";
 
 export function usePlayerMovement(
   isGamePaused: boolean,
+  isGameOver: boolean,
   activePlayerName: string,
+  activePlayerCharacter: string,
   scale: number,
   playerPositions: PlayerInfo[],
   lobbyCode: string,
@@ -59,7 +61,11 @@ export function usePlayerMovement(
             client?.publish({
               destination: `/app/${lobbyCode}/playerInfoReceiver`,
               body: JSON.stringify(
-                await getPlayerSpawnInfo(lobbyCode, activePlayerName)
+                await getPlayerSpawnInfo(
+                  lobbyCode,
+                  activePlayerName,
+                  activePlayerCharacter
+                )
               ),
             });
           })();
@@ -88,7 +94,7 @@ export function usePlayerMovement(
   }, []);
 
   useFrame((_, delta) => {
-    if (!isGamePaused) {
+    if (!isGamePaused && !isGameOver) {
       if (meshRef.current) {
         if (
           movement.forward ||
