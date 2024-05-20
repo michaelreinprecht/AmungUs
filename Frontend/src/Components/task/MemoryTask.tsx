@@ -1,9 +1,12 @@
+import { Task } from '@/app/types';
 import React, { useState, useEffect } from 'react';
 
 const symbols = ['🌟', '🍀', '🌈', '🦄', '🎈', '🎉', '🎁']; // Array of symbols for cards
 
 interface MemoryTaskProps {
-  setCurrentTask: React.Dispatch<React.SetStateAction<string>>;
+  setCurrentTask: React.Dispatch<React.SetStateAction<Task>>;
+  setCurrentPlayerTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  currentTask: Task;
 }
 
 interface Card {
@@ -12,10 +15,10 @@ interface Card {
   flipped: boolean;
 }
 
-function MemoryTask({ setCurrentTask }: MemoryTaskProps) {
+function MemoryTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: MemoryTaskProps) {
   const [cards, setCards] = useState<Card[]>(() => {
     // Load saved state from session storage, if available
-    const savedState = sessionStorage.getItem('MemoryTask');
+    const savedState = sessionStorage.getItem(`MemoryTask-${currentTask.id}`);
     if (savedState) {
       const { cards } = JSON.parse(savedState);
       return cards;
@@ -31,8 +34,8 @@ function MemoryTask({ setCurrentTask }: MemoryTaskProps) {
     // Check if all cards are flipped
     const allFlipped = cards.every(card => card.flipped);
     if (allFlipped) {
-      // Set current task to "Done" if all cards are correctly matched
-      setCurrentTask("Done");
+      setCurrentPlayerTasks(prev => prev.map((task, i) => i === currentTask.id ? { ...task, completed: true } : task));
+      setCurrentTask({id: 0, name: "NoTask", completed: false });
     }
   }, [cards, setCurrentTask]);
 
@@ -79,8 +82,8 @@ function MemoryTask({ setCurrentTask }: MemoryTaskProps) {
 
   // Save current progress to session storage
   useEffect(() => {
-    sessionStorage.setItem('MemoryTask', JSON.stringify({ cards, flippedCards }));
-  }, [cards, flippedCards]);
+    sessionStorage.setItem(`MemoryTask-${currentTask.id}`, JSON.stringify({ cards, flippedCards }));
+  }, [cards, flippedCards, currentTask.id]);
 
   return (
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-600 w-3/4 h-3/4 flex flex-col justify-center items-center p-4">
@@ -92,7 +95,7 @@ function MemoryTask({ setCurrentTask }: MemoryTaskProps) {
         {cards.map(card => (
           <div
             key={card.id}
-            className={`m-2 w-40 h-40 bg-blue-200 flex justify-center items-center rounded cursor-pointer text-4xl ${card.flipped ? 'pointer-events-none' : ''}`}
+            className={`m-2 w-36 h-36 bg-blue-200 flex justify-center items-center rounded cursor-pointer text-4xl ${card.flipped ? 'pointer-events-none' : ''}`}
             onClick={() => handleCardClick(card.id)}
             style={{ backgroundColor: card.flipped ? 'white' : 'blue' }}
           >
@@ -100,7 +103,7 @@ function MemoryTask({ setCurrentTask }: MemoryTaskProps) {
           </div>
         ))}
       </div>
-      <button onClick={() => setCurrentTask("NoTask")} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
+      <button onClick={() => setCurrentTask({id: 0, name: "NoTask", completed: false })} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
         Save & Exit
       </button>
     </div>
