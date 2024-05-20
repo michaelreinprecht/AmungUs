@@ -5,12 +5,14 @@ type GameOverUIProps = {
   winners: GameOverInfo;
   setWinners: (winner: GameOverInfo) => void;
   setIsGameOver: (isGameOver: boolean) => void;
+  activePlayerCharacter: string;
 };
 
 export default function GameOverUI({
   winners,
   setWinners,
   setIsGameOver,
+  activePlayerCharacter: string,
 }: GameOverUIProps) {
   useEffect(() => {
     if (winners.winner !== "") {
@@ -42,11 +44,13 @@ export default function GameOverUI({
               <ul className="mt-4 flex justify-center items-center space-x-6">
                 {winners.teamMembers.map((teamMember, index) => (
                   <li key={index} className="flex flex-col items-center">
-                    <img
-                      src={`/playericon.png`}
-                      alt={teamMember.playerName}
-                      className="w-40 h-40 rounded-full"
-                    />
+     <img
+                  src={`/${teamMember.playerCharacter}-move-1.png`}
+                  className="w-full h-full object-cover rounded-full"
+                  style={{
+                    imageRendering: 'pixelated'
+                  }}
+                />
                     <span>{teamMember.playerName}</span>
                   </li>
                 ))}
