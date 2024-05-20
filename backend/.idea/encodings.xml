@@ -9,6 +9,8 @@
     <file url="file://$PROJECT_DIR$/lobbyService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/taskService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/taskService/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/votingService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/votingService/src/main/resources" charset="UTF-8" />
   </component>
