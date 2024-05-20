@@ -14,6 +14,7 @@ import { Client } from "@stomp/stompjs";
 
 export function usePlayerMovement(
   isGamePaused: boolean,
+  isGameOver: boolean,
   activePlayerName: string,
   activePlayerCharacter: string,
   scale: number,
@@ -93,8 +94,7 @@ export function usePlayerMovement(
   }, []);
 
   useFrame((_, delta) => {
-    console.log("PlayerPositions: " + playerPositions);
-    if (!isGamePaused) {
+    if (!isGamePaused && !isGameOver) {
       if (meshRef.current) {
         if (
           movement.forward ||

@@ -8,6 +8,7 @@ import { getPositionOfPlayer } from "./utilityFunctions/playerPositionHandler";
 
 interface PlayerCharacterProps {
   isGamePaused: boolean;
+  isGameOver: boolean;
   activePlayerName: string;
   activePlayerCharacter: string;
   scale: number;
@@ -19,6 +20,7 @@ interface PlayerCharacterProps {
 
 const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   isGamePaused,
+  isGameOver,
   activePlayerName,
   activePlayerCharacter,
   scale,
@@ -32,6 +34,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   const { meshRef } = usePlayerCharacter({
     camera,
     isGamePaused,
+    isGameOver,
     activePlayerName,
     activePlayerCharacter,
     scale,
