@@ -153,7 +153,11 @@ export default function Game({
 
       {/* Voting UI */}
       {isVotingActive && (
-        <VotingUI lobbyCode={lobbyCode} activePlayerName={activePlayerName} />
+        <VotingUI
+          lobbyCode={lobbyCode}
+          activePlayerName={activePlayerName}
+          activePlayerCharacter={activePlayerCharacter}
+        />
       )}
 
       {/* Render MessageForm and MessageList only if connected */}
