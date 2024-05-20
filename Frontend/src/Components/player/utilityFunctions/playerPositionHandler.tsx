@@ -61,7 +61,8 @@ export function getPositionOfPlayer(
 
 export async function getPlayerSpawnInfo(
   lobbyCode: string,
-  activePlayerName: string
+  activePlayerName: string,
+  activePlayerCharacter: string
 ) {
   const lobbyData = await getLobbyByCode(lobbyCode);
   console.log("MaxKillerCount: " + lobbyData.maxKillerCount);
@@ -85,6 +86,7 @@ export async function getPlayerSpawnInfo(
 
   const spawnInfo = {
     playerName: activePlayerName,
+    playerCharacter: activePlayerCharacter,
     playerPositionX: (Math.random() - 0.5) * 20 + 27,
     playerPositionY: (Math.random() - 0.5) * 20 + 100,
     killedPlayerPositionX: null,

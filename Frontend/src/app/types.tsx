@@ -1,5 +1,6 @@
 export type PlayerInfo = {
   playerName: string;
+  playerCharacter: string;
   playerPositionX: number;
   playerPositionY: number;
   killedPlayerPositionX: number;
@@ -12,6 +13,7 @@ export type PlayerInfo = {
 
 export type VotingPlayerInfo = {
   playerName: string;
+  playerCharacter:string;
   alive: boolean;
   votes: Set<string>;
   voteCount: number;

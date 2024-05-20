@@ -5,7 +5,8 @@ import { VotingPlayerInfo, VotingRequest } from "@/app/types";
 export function useVotingUI(
   initialTimer: number,
   lobbyCode: string,
-  activePlayerName: string
+  activePlayerName: string,
+  activePlayerCharacter: string
 ) {
   const [timer, setTimer] = useState(initialTimer);
   const [votingPlayerInfos, setVotingPlayerInfos] = useState<
@@ -63,6 +64,7 @@ export function useVotingUI(
       const votingRequest = {
         votingPlayerName: activePlayerName,
         votedPlayerName: votedPlayerName,
+        votingPlayerCharacter: activePlayerCharacter,
       };
       votingClient.publish({
         destination: `/votingApp/${lobbyCode}/votingInfoReceiver`,

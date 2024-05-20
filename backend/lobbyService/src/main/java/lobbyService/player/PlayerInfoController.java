@@ -211,6 +211,23 @@ public class PlayerInfoController {
         }
     }
 
+    @GetMapping("/api/lobby/{lobbyCode}/playerCharacters")
+    @ResponseBody
+    public List<String> getPlayerCharacters(@PathVariable String lobbyCode) {
+        // Handle HTTP GET request for fetching player names
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        if (lobby != null) {
+            List<PlayerInfo> playerInfos = lobby.getPlayerInfos();
+            List<String> playerCharacters = new ArrayList<>();
+            for (PlayerInfo position : playerInfos) {
+                playerCharacters.add(position.getPlayerCharacter());
+            }
+            return playerCharacters;
+        } else {
+            return null;
+        }
+    }
+
     private boolean isKillAllowed(PlayerInfo killer, PlayerInfo victim) {
         if (Objects.equals(killer.getPlayerRole(), "killer")) { //Check if player is really killer!
             if (!Objects.equals(victim.getPlayerRole(), "killer")) { //Make sure killers cannot kill other killers!

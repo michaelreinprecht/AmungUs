@@ -19,10 +19,15 @@ import GameOverUI from "./GameOverUI";
 
 type GameProps = {
   activePlayerName: string;
+  activePlayerCharacter: string;
   lobbyCode: string;
 };
 
-export default function Game({ activePlayerName, lobbyCode }: GameProps) {
+export default function Game({
+  activePlayerName,
+  activePlayerCharacter,
+  lobbyCode,
+}: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const {
     votingKill,
@@ -74,6 +79,7 @@ export default function Game({ activePlayerName, lobbyCode }: GameProps) {
           isGamePaused={isGamePaused}
           isGameOver={isGameOver}
           activePlayerName={activePlayerName}
+          activePlayerCharacter={activePlayerCharacter}
           scale={5}
           lobbyCode={lobbyCode}
           onNearestPlayerChange={(playerName: string) =>

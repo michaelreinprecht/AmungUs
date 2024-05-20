@@ -11,6 +11,7 @@ type usePlayerCharacterProps = {
   isGamePaused: boolean;
   isGameOver: boolean;
   activePlayerName: string;
+  activePlayerCharacter: string;
   scale: number;
   lobbyCode: string;
   onNearestPlayerChange: (playerName: string) => void;
@@ -23,6 +24,7 @@ export function usePlayerCharacter({
   isGamePaused,
   isGameOver,
   activePlayerName,
+  activePlayerCharacter,
   scale,
   lobbyCode,
   onNearestPlayerChange,
@@ -35,6 +37,7 @@ export function usePlayerCharacter({
     isGamePaused,
     isGameOver,
     activePlayerName,
+    activePlayerCharacter,
     scale,
     playerPositions,
     lobbyCode,
