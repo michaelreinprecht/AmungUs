@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="7745cfab-6e79-4fce-ba0f-7a9f402dfe82" name="Changes" comment="" />
+    <list default="true" id="7745cfab-6e79-4fce-ba0f-7a9f402dfe82" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/lobby/scenes/LobbyScene.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/lobby/scenes/LobbyScene.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/lobby/scenes/PickNameScene.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/lobby/scenes/PickNameScene.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/menu/hooks/useCreateLobbyScene.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/menu/hooks/useCreateLobbyScene.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/menu/scenes/CreateLobbyScene.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/menu/scenes/CreateLobbyScene.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/app/globals.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/globals.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,12 +54,14 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "character-branch",
+    "git-widget-placeholder": "game-logic",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Zechs/AmungUs/backend",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "C:\\Users\\admin\\AmungUs\\Frontend\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>

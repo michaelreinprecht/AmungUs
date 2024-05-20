@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { characterOptions } from "@/app/globals";
 
 export default function useCreateLobbyScene() {
+  const [playerName, setPlayerName] = useState("");
+  const [playerCharacter, setPlayerCharacter] = useState(
+    characterOptions[0].id
+  );
   const [maxPlayerCount, setMaxPlayerCount] = useState(5);
   const [maxKillerCount, setMaxKillerCount] = useState(1);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -31,7 +36,9 @@ export default function useCreateLobbyScene() {
 
       const data = await response.json();
       // Lobby created successfully
-      router.push(`/lobby/${data.lobbyCode}`);
+      router.push(
+        `/lobby/${data.lobbyCode}?initialPlayerName=${playerName}&initialPlayerCharacter=${playerCharacter}`
+      );
     } catch (error) {
       console.error("Error creating lobby:", error);
     }
@@ -41,9 +48,13 @@ export default function useCreateLobbyScene() {
     maxKillerCount,
     maxPlayerCount,
     isPrivate,
+    playerName,
+    playerCharacter,
     setMaxPlayerCount,
     setMaxKillerCount,
     setIsPrivate,
+    setPlayerName,
+    setPlayerCharacter,
     createLobby,
   };
 }

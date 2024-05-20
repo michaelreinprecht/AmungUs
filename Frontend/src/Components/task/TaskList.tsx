@@ -1,5 +1,5 @@
-import React from 'react';
-import { Task } from '@/app/types';
+import React from "react";
+import { Task } from "@/app/types";
 
 type TaskListProps = {
   tasks: Task[];
@@ -7,7 +7,7 @@ type TaskListProps = {
 
 const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
   return (
-    <div className="task-list">
+    <div className="task-list top-2 left-2">
       <h3>Current Tasks</h3>
       <ul>
         {tasks.map((task, index) => (

@@ -4,15 +4,35 @@ import Game from "../game/Game";
 
 type LobbyProps = {
   lobbyCode: string;
+  initialPlayerName?: string;
+  initialPlayerCharacter?: string;
 };
 
-function LobbyScene({ lobbyCode }: LobbyProps) {
-  const [activePlayerName, setActivePlayerName] = useState("");
-  const [activePlayerCharacter, setActivePlayerCharacter] = useState("");
+function LobbyScene({
+  lobbyCode,
+  initialPlayerName,
+  initialPlayerCharacter,
+}: LobbyProps) {
+  const [activePlayerName, setActivePlayerName] = useState(
+    initialPlayerName || ""
+  );
+  const [activePlayerCharacter, setActivePlayerCharacter] = useState(
+    initialPlayerCharacter || ""
+  );
 
-  //TODO: Remove after testing is done
   useEffect(() => {
-    console.log("Use effect called in LobbyScene.tsx");
+    // Check and set initial values if they are not already set
+    if (!activePlayerName && typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const playerName = urlParams.get("initialPlayerName");
+      if (playerName) setActivePlayerName(playerName);
+    }
+
+    if (!activePlayerCharacter && typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const playerCharacter = urlParams.get("initialPlayerCharacter");
+      if (playerCharacter) setActivePlayerCharacter(playerCharacter);
+    }
   }, []);
 
   return (

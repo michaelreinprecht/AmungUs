@@ -1,14 +1,19 @@
 import React from "react";
 import useCreateLobbyScene from "@/Components/menu/hooks/useCreateLobbyScene";
+import { characterOptions } from "@/app/globals";
 
 export default function CreateLobbyScene() {
   const {
     maxPlayerCount,
     maxKillerCount,
     isPrivate,
+    playerName,
+    playerCharacter,
     setMaxPlayerCount,
     setMaxKillerCount,
     setIsPrivate,
+    setPlayerName,
+    setPlayerCharacter,
     createLobby,
   } = useCreateLobbyScene();
 
@@ -17,6 +22,44 @@ export default function CreateLobbyScene() {
       <div className="mx-auto bg-gray-900 p-6 rounded-lg shadow-lg w-1/4">
         <h1 className="text-3xl font-bold text-white mb-4">Create Lobby</h1>
         <form onSubmit={createLobby}>
+          <div className="mb-4">
+            <label
+              htmlFor="playerName"
+              className="block text-sm font-medium text-white"
+            >
+              Player Name:
+            </label>
+            <input
+              type="text"
+              id="playerName"
+              name="playerName"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="playerCharacter"
+              className="block text-sm font-medium text-white"
+            >
+              Player Character:
+            </label>
+            <select
+              id="playerCharacter"
+              name="playerCharacter"
+              value={playerCharacter}
+              onChange={(e) => setPlayerCharacter(e.target.value)}
+              className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white"
+            >
+              {characterOptions.map((character) => (
+                <option key={character.id} value={character.id}>
+                  {character.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="mb-4">
             <label
               htmlFor="maxPlayerCount"
@@ -69,6 +112,7 @@ export default function CreateLobbyScene() {
               Private Lobby
             </label>
           </div>
+
           <button
             type="submit"
             className="bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
