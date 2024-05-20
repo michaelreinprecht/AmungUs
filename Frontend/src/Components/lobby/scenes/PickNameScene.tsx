@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { usePickNameScene } from "./hooks/usePickNameScene";
 import { Theme, Container, Flex } from "@radix-ui/themes";
 import * as Avatar from "@radix-ui/react-avatar";
@@ -79,9 +79,37 @@ export default function PickNameScene({
     setActivePlayerName,
     setActivePlayerCharacter
   );
-  const [selectedCharacter, setSelectedCharacter] = useState(
-    characterOptions[0]
-  );
+  const [selectedCharacter, setSelectedCharacter] = useState(characterOptions[0]);
+  const [disabledCharacterIds, setDisabledCharacterIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/lobby/${lobbyCode}/playerCharacters`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setDisabledCharacterIds(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchData();
+  }, [lobbyCode]); 
+
+  useEffect(() => {
+    if (disabledCharacterIds.includes(selectedCharacter.id)) {
+      const firstAvailableCharacter = characterOptions.find(
+        (character) => !disabledCharacterIds.includes(character.id)
+      );
+      if (firstAvailableCharacter) {
+        setSelectedCharacter(firstAvailableCharacter);
+      }
+    }
+  }, [disabledCharacterIds]);
 
   return (
     <>
@@ -122,7 +150,11 @@ export default function PickNameScene({
               className="form-control w-full p-2 border border-gray-300 rounded"
             >
               {characterOptions.map((character) => (
-                <option key={character.id} value={character.id}>
+                <option
+                  key={character.id}
+                  value={character.id}
+                  disabled={disabledCharacterIds.includes(character.id)}
+                >
                   {character.name}
                 </option>
               ))}
