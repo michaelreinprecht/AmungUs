@@ -9,6 +9,7 @@ import { getPositionOfPlayer } from "./utilityFunctions/playerPositionHandler";
 interface PlayerCharacterProps {
   isGamePaused: boolean;
   isGameOver: boolean;
+  isGameStarted: boolean;
   activePlayerName: string;
   activePlayerCharacter: string;
   scale: number;
@@ -21,6 +22,7 @@ interface PlayerCharacterProps {
 const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   isGamePaused,
   isGameOver,
+  isGameStarted,
   activePlayerName,
   activePlayerCharacter,
   scale,
@@ -35,6 +37,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     camera,
     isGamePaused,
     isGameOver,
+    isGameStarted,
     activePlayerName,
     activePlayerCharacter,
     scale,
@@ -63,7 +66,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     "character-8": loadTexture("/character-8-move-1.png"),
     "character-9": loadTexture("/character-9-move-1.png"),
     "character-10": loadTexture("/character-10-move-1.png"),
-    "ghost": loadTexture("/ghost.png"),
+    ghost: loadTexture("/ghost.png"),
   };
 
   return (
@@ -83,7 +86,11 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
             <mesh ref={activePlayerName === pos.playerName ? meshRef : null}>
               <planeGeometry args={[2 * scale, 2 * scale]} />
               <meshStandardMaterial
-                map={pos.alive ? textureMap[pos.playerCharacter] : textureMap["ghost"]}
+                map={
+                  pos.alive
+                    ? textureMap[pos.playerCharacter]
+                    : textureMap["ghost"]
+                }
                 transparent={true}
               />
             </mesh>

@@ -120,10 +120,30 @@ public class PlayerInfoController {
         GameOverInfo gameOverInfo = new GameOverInfo(winner, teamMembers);
         if (!Objects.equals(winner, "")) {
             lobby.resetLobby();
+            lobby.setGameStarted(false);
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameStarted", sendGameStarted(lobbyCode));
         }
 
         logger.info("Winners: {}, for lobby: {}", gameOverInfo.toString(), lobbyCode);
         return gameOverInfo;
+    }
+
+    @MessageMapping("/{lobbyCode}/gameStartedReceiver")
+    public void receiveGameStarted(@DestinationVariable String lobbyCode, PlayerInfo playerInfo) throws Exception {
+        logger.info("Received game started for lobby code: {}", lobbyCode);
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+
+        if (playerInfo != null && playerInfo.isHost()) {
+            lobby.setGameStarted(true);
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameStarted", sendGameStarted(lobbyCode));
+        }
+    }
+
+    //Returns a list of strings, the first string will indicate which team one, the other strings are the team members (e.g. all crewmates)
+    @SendTo("/lobby/{lobbyCode}/gameStarted")
+    public boolean sendGameStarted(@DestinationVariable String lobbyCode) throws Exception {
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        return lobby.isGameStarted();
     }
 
     //Receiver for VotingService - kills the given player after a voting (doesn't kill anyone if victimName is empty string)

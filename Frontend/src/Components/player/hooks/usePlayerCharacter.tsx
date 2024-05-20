@@ -10,6 +10,7 @@ type usePlayerCharacterProps = {
   camera: THREE.Camera;
   isGamePaused: boolean;
   isGameOver: boolean;
+  isGameStarted: boolean;
   activePlayerName: string;
   activePlayerCharacter: string;
   scale: number;
@@ -23,6 +24,7 @@ export function usePlayerCharacter({
   camera,
   isGamePaused,
   isGameOver,
+  isGameStarted,
   activePlayerName,
   activePlayerCharacter,
   scale,
@@ -36,6 +38,7 @@ export function usePlayerCharacter({
   usePlayerMovement(
     isGamePaused,
     isGameOver,
+    isGameStarted,
     activePlayerName,
     activePlayerCharacter,
     scale,

@@ -8,12 +8,13 @@ export type PlayerInfo = {
   lastKillTime: string;
   alive: boolean;
   corpseFound: boolean;
+  isHost: boolean;
   playerRole: "killer" | "crewmate";
 };
 
 export type VotingPlayerInfo = {
   playerName: string;
-  playerCharacter:string;
+  playerCharacter: string;
   alive: boolean;
   votes: Set<string>;
   voteCount: number;

@@ -24,7 +24,7 @@ public class Lobby {
 
     private String lobbyCode;
     private List<PlayerInfo> playerInfos;
-    private boolean isGameRunning;
+    private boolean isGameStarted;
     private boolean isVoting;
     private int playerCount;
     private int maxPlayerCount;
@@ -39,7 +39,7 @@ public class Lobby {
 
     public Lobby() {
         this.playerInfos = new ArrayList<>();
-        this.isGameRunning = false; //TODO set this once the lobby is created, and allow no more players to join
+        this.isGameStarted = false;
         this.isPrivate = false;
         this.playerCount = 0;
         this.killerCount = 0;
@@ -265,6 +265,12 @@ public class Lobby {
 
             //Increase player count and add player to playerInfos list
             playerCount++;
+
+            //If this is the first player joining, this player is the host.
+            if (playerInfos.isEmpty()) {
+                logger.info("Set new host for a lobby.");
+                playerInfo.setHost(true);
+            }
 
             playerInfos.add(playerInfo);
             //If the new player got killer role, increase killerCount by 1

@@ -6,11 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="7745cfab-6e79-4fce-ba0f-7a9f402dfe82" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/lobby/scenes/LobbyScene.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/lobby/scenes/LobbyScene.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/lobby/scenes/PickNameScene.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/lobby/scenes/PickNameScene.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/menu/hooks/useCreateLobbyScene.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/menu/hooks/useCreateLobbyScene.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/menu/scenes/CreateLobbyScene.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/menu/scenes/CreateLobbyScene.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/app/globals.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/globals.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/lobby/game/Game.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/lobby/game/Game.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/lobby/game/hooks/useGame.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/lobby/game/hooks/useGame.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/player/PlayerCharacter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/player/PlayerCharacter.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/player/hooks/usePlayerCharacter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/player/hooks/usePlayerCharacter.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/player/hooks/usePlayerMovement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/player/hooks/usePlayerMovement.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/app/types.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/types.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/lobby/models/Lobby.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/lobby/models/Lobby.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/player/PlayerInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/player/PlayerInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/player/models/PlayerInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/player/models/PlayerInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

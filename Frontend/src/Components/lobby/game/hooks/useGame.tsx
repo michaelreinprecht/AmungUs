@@ -8,20 +8,26 @@ import { Client } from "@stomp/stompjs";
 export function useGame(activePlayerName: string, lobbyCode: string) {
   const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
-  const [currentTask, setCurrentTask] = useState<Task>({ id: 0, name: "", completed: false });
+  const [currentTask, setCurrentTask] = useState<Task>({
+    id: 0,
+    name: "",
+    completed: false,
+  });
   const [votingKill, setVotingKill] = useState<string>("");
   const [winners, setWinners] = useState<GameOverInfo>({
     winner: "",
     teamMembers: [],
   });
-  const possibleTasks = [    
-    {  id: 1, name: "ColorTask", completed: false },
-    {  id: 2, name: "MemoryTask", completed: false },
-    {  id: 3, name: "ReactionTask", completed: false },
-    {  id: 4, name: "FindTask", completed: false }]
+  const possibleTasks = [
+    { id: 1, name: "ColorTask", completed: false },
+    { id: 2, name: "MemoryTask", completed: false },
+    { id: 3, name: "ReactionTask", completed: false },
+    { id: 4, name: "FindTask", completed: false },
+  ];
 
   const [currentPlayerTasks, setCurrentPlayerTasks] = useState<Task[]>([]);
 
@@ -65,6 +71,17 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
             const parsedWinners = JSON.parse(message.body) as GameOverInfo;
             if (message.body.winner !== "") {
               setWinners(parsedWinners);
+            }
+          }
+        );
+        lobbyClient.subscribe(
+          `/lobby/${lobbyCode}/gameStarted`,
+          (message: any) => {
+            const parsedGameStarted = JSON.parse(message.body) as boolean;
+            if (parsedGameStarted) {
+              setIsGameStarted(true);
+            } else {
+              setIsGameStarted(false);
             }
           }
         );
@@ -119,9 +136,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     }
     setCurrentPlayerTasks(initialTasks);
   }, []);
-  
-  
-  
 
   return {
     votingKill,
@@ -129,6 +143,8 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     setIsGamePaused,
     isGameOver,
     setIsGameOver,
+    isGameStarted,
+    setIsGameStarted,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,

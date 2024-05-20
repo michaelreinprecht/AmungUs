@@ -18,6 +18,8 @@ import VotingKillUI from "./VotingKillUI";
 import GameOverUI from "./GameOverUI";
 import TaskList from "@/Components/task/TaskList";
 import LobbyCodeUI from "./LobbyCodeUI";
+import StartGameUI from "./StartGameUI";
+import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
 
 type GameProps = {
   activePlayerName: string;
@@ -37,6 +39,8 @@ export default function Game({
     setIsGamePaused,
     isGameOver,
     setIsGameOver,
+    isGameStarted,
+    setIsGameStarted,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
@@ -51,6 +55,11 @@ export default function Game({
     winners,
     setWinners,
   } = useGame(activePlayerName, lobbyCode);
+
+  const currentPlayerInfo = getPositionOfPlayer(
+    playerPositions,
+    activePlayerName
+  );
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">
@@ -80,6 +89,7 @@ export default function Game({
         <PlayerCharacter
           isGamePaused={isGamePaused}
           isGameOver={isGameOver}
+          isGameStarted={isGameStarted}
           activePlayerName={activePlayerName}
           activePlayerCharacter={activePlayerCharacter}
           scale={5}
@@ -178,6 +188,12 @@ export default function Game({
 
       <VotingKillUI votingKill={votingKill} />
 
+      <StartGameUI
+        currentPlayer={currentPlayerInfo}
+        lobbyCode={lobbyCode}
+        isGameStarted={isGameStarted}
+      />
+
       <GameOverUI
         winners={winners}
         setWinners={setWinners}
@@ -191,6 +207,8 @@ export default function Game({
 
       {/* Display current lobby code */}
       <LobbyCodeUI lobbyCode={lobbyCode} />
+
+      {/* Start game button - only visible to host at start of game */}
     </div>
   );
 }
