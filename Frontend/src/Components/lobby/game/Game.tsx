@@ -1,22 +1,22 @@
-import React, { useEffect, useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
-import Background from './Background';
-import PlayerCharacter from '../../player/PlayerCharacter';
-import KillUI from './KillUI';
-import PlayerCorpse from '@/Components/player/PlayerCorpse';
-import VotingUI from './VotingUI';
-import ChatWindow from '../chat/ChatWindow';
-import { useGame } from './hooks/useGame';
-import EmergencyButton from './EmergencyButton';
-import TaskObject from '@/Components/task/TaskObject';
-import ColorTask from '@/Components/task/ColorTask';
-import Colliders from './Colliders';
-import MemoryTask from '@/Components/task/MemoryTask';
-import ReactionTask from '@/Components/task/ReactionTask';
-import FindTask from '@/Components/task/FindTask';
-import VotingKillUI from './VotingKillUI';
-import GameOverUI from './GameOverUI';
-import TaskList from '@/Components/task/TaskList';
+import React, { useEffect, useRef } from "react";
+import { Canvas } from "@react-three/fiber";
+import Background from "./Background";
+import PlayerCharacter from "../../player/PlayerCharacter";
+import KillUI from "./KillUI";
+import PlayerCorpse from "@/Components/player/PlayerCorpse";
+import VotingUI from "./VotingUI";
+import ChatWindow from "../chat/ChatWindow";
+import { useGame } from "./hooks/useGame";
+import EmergencyButton from "./EmergencyButton";
+import TaskObject from "@/Components/task/TaskObject";
+import ColorTask from "@/Components/task/ColorTask";
+import Colliders from "./Colliders";
+import MemoryTask from "@/Components/task/MemoryTask";
+import ReactionTask from "@/Components/task/ReactionTask";
+import FindTask from "@/Components/task/FindTask";
+import VotingKillUI from "./VotingKillUI";
+import GameOverUI from "./GameOverUI";
+import TaskList from "@/Components/task/TaskList";
 
 type GameProps = {
   activePlayerName: string;
@@ -67,7 +67,7 @@ export default function Game({
         gl={{ antialias: false }}
         onContextMenu={(e) => e.preventDefault()}
       >
-        <color attach="background" args={['#000000']} />
+        <color attach="background" args={["#000000"]} />
         {/* Ambient light and directional light */}
         <ambientLight intensity={0.1} />
         <directionalLight position={[0, 0, 5]} />
@@ -83,7 +83,9 @@ export default function Game({
           activePlayerCharacter={activePlayerCharacter}
           scale={5}
           lobbyCode={lobbyCode}
-          onNearestPlayerChange={(playerName: string) => setNearestPlayer(playerName)}
+          onNearestPlayerChange={(playerName: string) =>
+            setNearestPlayer(playerName)
+          }
           playerPositions={playerPositions}
           setPlayerPositions={setPlayerPositions}
         />
@@ -139,26 +141,53 @@ export default function Game({
       )}
 
       {/* Render MessageForm and MessageList only if connected */}
-      {isVotingActive && <ChatWindow activePlayerName={activePlayerName} lobbyCode={lobbyCode} />}
+      {isVotingActive && (
+        <ChatWindow activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
+      )}
 
       {/* Tasks */}
-      {currentTask.name === 'ColorTask' && <ColorTask setCurrentTask={setCurrentTask} setCurrentPlayerTasks={setCurrentPlayerTasks} currentTask={currentTask}/>}
-      {currentTask.name === 'MemoryTask' && <MemoryTask setCurrentTask={setCurrentTask} setCurrentPlayerTasks={setCurrentPlayerTasks} currentTask={currentTask}/>}
-      {currentTask.name === 'ReactionTask' && <ReactionTask setCurrentTask={setCurrentTask} setCurrentPlayerTasks={setCurrentPlayerTasks} currentTask={currentTask} />}
-      {currentTask.name === 'FindTask' && <FindTask setCurrentTask={setCurrentTask} setCurrentPlayerTasks={setCurrentPlayerTasks} currentTask={currentTask} />}
+      {currentTask.name === "ColorTask" && (
+        <ColorTask
+          setCurrentTask={setCurrentTask}
+          setCurrentPlayerTasks={setCurrentPlayerTasks}
+          currentTask={currentTask}
+        />
+      )}
+      {currentTask.name === "MemoryTask" && (
+        <MemoryTask
+          setCurrentTask={setCurrentTask}
+          setCurrentPlayerTasks={setCurrentPlayerTasks}
+          currentTask={currentTask}
+        />
+      )}
+      {currentTask.name === "ReactionTask" && (
+        <ReactionTask
+          setCurrentTask={setCurrentTask}
+          setCurrentPlayerTasks={setCurrentPlayerTasks}
+          currentTask={currentTask}
+        />
+      )}
+      {currentTask.name === "FindTask" && (
+        <FindTask
+          setCurrentTask={setCurrentTask}
+          setCurrentPlayerTasks={setCurrentPlayerTasks}
+          currentTask={currentTask}
+        />
+      )}
 
       <VotingKillUI votingKill={votingKill} />
 
       <GameOverUI
+        activePlayerCharacter={activePlayerCharacter}
         winners={winners}
         setWinners={setWinners}
         setIsGameOver={setIsGameOver}
       />
 
-        {/* Task List UI */}
-        <div className="task-list-ui absolute top-0 left-0 p-4 bg-gray-800 text-white">
-            <TaskList tasks={currentPlayerTasks} />
-        </div>
+      {/* Task List UI */}
+      <div className="task-list-ui absolute top-0 left-0 p-4 bg-gray-800 text-white">
+        <TaskList tasks={currentPlayerTasks} />
+      </div>
     </div>
   );
 }
