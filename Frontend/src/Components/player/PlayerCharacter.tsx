@@ -84,7 +84,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
             position={[pos.playerPositionX, pos.playerPositionY, 0]}
           >
             <mesh ref={activePlayerName === pos.playerName ? meshRef : null}>
-              <planeGeometry args={[2 * scale, 2 * scale]} />
+              <planeGeometry args={[1.5 * scale, 1.5 * scale]} />
               <meshStandardMaterial
                 map={
                   pos.alive

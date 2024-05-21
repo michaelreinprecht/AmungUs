@@ -61,8 +61,8 @@ public class PlayerInfoController {
     private boolean isColliding(PlayerInfo playerInfo) {
         double playerX = playerInfo.getPlayerPositionX();
         double playerY = playerInfo.getPlayerPositionY();
-        double playerHalfWidth = 7 / 2.0; // Half of the player's width
-        double playerHalfHeight = 7 / 2.0; // Half of the player's height
+        double playerHalfWidth = 6 / 2.0; // Half of the player's width
+        double playerHalfHeight = 6 / 2.0; // Half of the player's height
 
         List<Collideable> colliders = GlobalValues.getInstance().getCollideables();
         for (Collideable collider : colliders) {

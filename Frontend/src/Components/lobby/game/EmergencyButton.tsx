@@ -79,7 +79,7 @@ const EmergencyButton: React.FC<EmergencyButtonProps> = ({
       onClick={handleEmergencyClick}
     >
       <mesh>
-        <planeGeometry args={[2 * scale, 2 * scale]} />
+        <planeGeometry args={[1.2 * scale, 1.2 * scale]} />
         <meshStandardMaterial
           map={texture}
           transparent={true}

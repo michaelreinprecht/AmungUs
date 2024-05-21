@@ -59,6 +59,7 @@ export default function Game({
     playerPositions,
     activePlayerName
   );
+  const scale = 5;
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">
@@ -91,7 +92,7 @@ export default function Game({
           isGameStarted={isGameStarted}
           activePlayerName={activePlayerName}
           activePlayerCharacter={activePlayerCharacter}
-          scale={5}
+          scale={scale}
           lobbyCode={lobbyCode}
           onNearestPlayerChange={(playerName: string) =>
             setNearestPlayer(playerName)
@@ -104,7 +105,7 @@ export default function Game({
           position={{ x: 26, y: 74, z: 0 }}
           texturePath="/EmergencyButton.png"
           label=""
-          scale={3}
+          scale={scale}
           isGamePaused={false}
           activePlayerName={activePlayerName}
           lobbyCode={lobbyCode}
@@ -113,7 +114,7 @@ export default function Game({
         {/* Render player corpse */}
         <PlayerCorpse
           activePlayerName={activePlayerName}
-          scale={5}
+          scale={scale}
           lobbyCode={lobbyCode}
           playerPositions={playerPositions}
         />
@@ -123,7 +124,7 @@ export default function Game({
           <TaskObject
             key={index}
             position={[0, 25 + index * 5, 0]}
-            scale={5}
+            scale={scale}
             task={task}
             setCurrentTask={setCurrentTask}
             currentTask={currentTask}
