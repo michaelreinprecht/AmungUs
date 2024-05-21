@@ -32,6 +32,7 @@ export function useCreateCharacterScene(
       },
     });
     client.activate();
+    
   }, []);
 
   async function fetchPlayerNames() {

@@ -45,6 +45,8 @@ export type Task = {
   id: number;
   name: string;
   completed: boolean;
+  playerName: string;
+  lobbyCode: string;
 };
 
 export type GameOverInfo = {

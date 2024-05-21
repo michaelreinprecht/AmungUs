@@ -53,6 +53,8 @@ export default function Game({
     setCurrentPlayerTasks,
     winners,
     setWinners,
+    updateTask,
+    allPlayerTasks,
   } = useGame(activePlayerName, lobbyCode);
 
   const currentPlayerInfo = getPositionOfPlayer(
@@ -162,6 +164,7 @@ export default function Game({
           setCurrentTask={setCurrentTask}
           setCurrentPlayerTasks={setCurrentPlayerTasks}
           currentTask={currentTask}
+          updateTask={updateTask}
         />
       )}
       {currentTask.name === "MemoryTask" && (
@@ -169,6 +172,7 @@ export default function Game({
           setCurrentTask={setCurrentTask}
           setCurrentPlayerTasks={setCurrentPlayerTasks}
           currentTask={currentTask}
+          updateTask={updateTask}
         />
       )}
       {currentTask.name === "ReactionTask" && (
@@ -176,6 +180,7 @@ export default function Game({
           setCurrentTask={setCurrentTask}
           setCurrentPlayerTasks={setCurrentPlayerTasks}
           currentTask={currentTask}
+          updateTask={updateTask}
         />
       )}
       {currentTask.name === "FindTask" && (
@@ -183,6 +188,7 @@ export default function Game({
           setCurrentTask={setCurrentTask}
           setCurrentPlayerTasks={setCurrentPlayerTasks}
           currentTask={currentTask}
+          updateTask={updateTask}
         />
       )}
 
@@ -204,7 +210,7 @@ export default function Game({
 
       {/* Task List UI */}
       <div className="task-list-ui absolute top-2 left-2 p-4 bg-gray-800 text-white">
-        <TaskList tasks={currentPlayerTasks} />
+        <TaskList currentPlayerTasks={currentPlayerTasks} allPlayerTasks={allPlayerTasks} />
       </div>
 
       {/* Display current lobby code */}

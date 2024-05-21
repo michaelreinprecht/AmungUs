@@ -33,6 +33,16 @@ export default function StartGameUI({
         destination: `/app/${lobbyCode}/gameStartedReceiver`,
         body: JSON.stringify(currentPlayer),
       });
+      const taskClient = new Client({
+        brokerURL: "ws://localhost:8084/taskService",
+        onConnect: () => {
+          taskClient.publish({
+            destination: `/taskApp/getTasks/${lobbyCode}`,
+            body: lobbyCode,
+          });
+        }
+      })
+      taskClient.activate();
     }
   }
 

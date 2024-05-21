@@ -7,6 +7,7 @@ interface MemoryTaskProps {
   setCurrentTask: React.Dispatch<React.SetStateAction<Task>>;
   setCurrentPlayerTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   currentTask: Task;
+  updateTask: (updatedTask: Task) => void;
 }
 
 interface Card {
@@ -15,7 +16,7 @@ interface Card {
   flipped: boolean;
 }
 
-function MemoryTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: MemoryTaskProps) {
+function MemoryTask({ setCurrentTask, setCurrentPlayerTasks, currentTask, updateTask }: MemoryTaskProps) {
   const [cards, setCards] = useState<Card[]>(() => {
     // Load saved state from session storage, if available
     const savedState = sessionStorage.getItem(`MemoryTask-${currentTask.id}`);
@@ -35,7 +36,8 @@ function MemoryTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: Memo
     const allFlipped = cards.every(card => card.flipped);
     if (allFlipped) {
       setCurrentPlayerTasks(prev => prev.map((task, i) => i === currentTask.id ? { ...task, completed: true } : task));
-      setCurrentTask({id: 0, name: "NoTask", completed: false });
+      updateTask(currentTask);
+      setCurrentTask({id: 0, name: "NoTask", completed: false, playerName: "", lobbyCode: ""});
     }
   }, [cards, setCurrentTask]);
 
@@ -103,7 +105,7 @@ function MemoryTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: Memo
           </div>
         ))}
       </div>
-      <button onClick={() => setCurrentTask({id: 0, name: "NoTask", completed: false })} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
+      <button onClick={() => setCurrentTask({id: 0, name: "NoTask", completed: false, playerName: "", lobbyCode: ""})} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
         Save & Exit
       </button>
     </div>

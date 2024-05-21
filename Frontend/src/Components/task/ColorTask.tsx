@@ -1,5 +1,6 @@
 import { Task } from '@/app/types';
 import React, { useEffect, useState } from 'react';
+import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 // Define an array of valid colors
 type Color = 'red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple';
@@ -33,9 +34,10 @@ interface ColorTaskProps {
   setCurrentTask: React.Dispatch<React.SetStateAction<Task>>;
   setCurrentPlayerTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   currentTask: Task;
+  updateTask: (updatedTask: Task) => void;
 }
 
-function ColorTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: ColorTaskProps) {
+function ColorTask({ setCurrentTask, setCurrentPlayerTasks, currentTask, updateTask }: ColorTaskProps) {
   const taskKeyPrefix = `colorTask-${currentTask.id}`;
 
   const getInitialState = (key: string) => {
@@ -73,7 +75,8 @@ function ColorTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: Color
         Object.values(connections).every(val => val)) {
       console.log('Task Completed!');
       setCurrentPlayerTasks(prev => prev.map((task, i) => i === currentTask.id ? { ...task, completed: true } : task));
-      setCurrentTask({id: 0, name: "NoTask", completed: false });
+      updateTask(currentTask);
+      setCurrentTask({id: 0, name: "NoTask", completed: false, playerName: "", lobbyCode: ""});
     }
   }, [connections, setCurrentTask]);
 
@@ -110,7 +113,7 @@ function ColorTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: Color
           </div>
         ))}
       </div>
-      <button onClick={() => setCurrentTask({id: 0, name: "NoTask", completed: false })} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
+      <button onClick={() => setCurrentTask({id: 0, name: "NoTask", completed: false, playerName: "", lobbyCode: "" })} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
         Save & Exit
       </button>
     </div>

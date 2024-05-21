@@ -11,19 +11,20 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
-  const [currentTask, setCurrentTask] = useState<Task>({ id: 0, name: "", completed: false });
+  const [currentTask, setCurrentTask] = useState<Task>({ id: 0, name: "", completed: false, playerName: "", lobbyCode: "" });
   const [votingKill, setVotingKill] = useState<string>("");
   const [winners, setWinners] = useState<GameOverInfo>({
     winner: "",
     teamMembers: [],
   });
   const possibleTasks = [
-    { id: 1, name: "ColorTask", completed: false },
-    { id: 2, name: "MemoryTask", completed: false },
-    { id: 3, name: "ReactionTask", completed: false },
-    { id: 4, name: "FindTask", completed: false },
+    { id: 1, name: "ColorTask", completed: false, playerName: "", lobbyCode: "" },
+    { id: 2, name: "MemoryTask", completed: false, playerName: "", lobbyCode: "" },
+    { id: 3, name: "ReactionTask", completed: false, playerName: "", lobbyCode: "" },
+    { id: 4, name: "FindTask", completed: false, playerName: "", lobbyCode: "" },
   ];
   const [currentPlayerTasks, setCurrentPlayerTasks] = useState<Task[]>([]);
+  const [allPlayerTasks, setAllPlayerTasks] = useState<Task[]>([]);
   let votingClientIsConnected = false;
 
   useEffect(() => {
@@ -74,7 +75,12 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
       brokerURL: "ws://localhost:8084/taskService",
       onConnect: () => {
         console.log("Connected to taskService");
-
+         // Subscribe to getTasks endpoint
+         taskClient.subscribe(`/task/getTasks/${lobbyCode}`, (message) => {
+          const tasks = JSON.parse(message.body) as Task[];
+          console.log("Tasks received: ", tasks);
+          setAllPlayerTasks(tasks);
+        });
         // Create initial tasks and send them to the backend
         const initialTasks: Task[] = [];
         for (let i = 0; i < 6; i++) {
@@ -83,30 +89,17 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
           randomTask = JSON.parse(JSON.stringify(randomTask));
           // Assigning the id to match the index
           randomTask.id = i;
-
-
+          randomTask.playerName = activePlayerName;
+          randomTask.lobbyCode = lobbyCode;
           // Send the task to the backend
-          const message = {
-            id: randomTask.id,
-            name: randomTask.name,
-            completed: randomTask.completed,
-            playerName: activePlayerName,
-            lobbyCode: lobbyCode,
-          };
-
           taskClient.publish({
             destination: `/taskApp/saveTasks/${lobbyCode}`,
-            body: JSON.stringify(message),
+            body: JSON.stringify(randomTask),
           });
-
           initialTasks.push(randomTask);
         }
         setCurrentPlayerTasks(initialTasks);
-
       },
-      debug: (str) => {
-        console.log(new Date(), str);
-      }
     });
     taskClient.activate();
 
@@ -147,6 +140,20 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     return tasks[randomIndex];
   }
 
+  function updateTask(updatedTask: Task) {
+    console.log("allPlayerTasks: ", allPlayerTasks);
+    const taskClient = new Client({
+      brokerURL: "ws://localhost:8084/taskService",
+      onConnect: () => {
+        taskClient.publish({
+          destination: `/taskApp/completeTask/${lobbyCode}`,
+          body: JSON.stringify(updatedTask),
+        });
+      }
+    });
+    taskClient.activate();
+  }
+
   return {
     votingKill,
     isGamePaused,
@@ -165,5 +172,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     setCurrentPlayerTasks,
     winners,
     setWinners,
+    updateTask,
+    allPlayerTasks,
   };
 }

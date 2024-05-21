@@ -5,9 +5,10 @@ interface ReactionTaskProps {
   setCurrentTask: React.Dispatch<React.SetStateAction<Task>>;
   setCurrentPlayerTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   currentTask: Task;
+  updateTask: (updatedTask: Task) => void;
 }
 
-function ReactionTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: ReactionTaskProps) {
+function ReactionTask({ setCurrentTask, setCurrentPlayerTasks, currentTask, updateTask }: ReactionTaskProps) {
   const [showIcon, setShowIcon] = useState(false);
   const [clickCount, setClickCount] = useState(() => {
     const savedCount = sessionStorage.getItem(`reactionTaskClickCount-${currentTask.id}`);
@@ -54,7 +55,8 @@ function ReactionTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: Re
   useEffect(() => {
     if (clickCount >= 7) {
       setCurrentPlayerTasks(prev => prev.map((task, i) => i === currentTask.id ? { ...task, completed: true } : task));
-      setCurrentTask({id: 0, name: "NoTask", completed: false });
+      updateTask(currentTask);
+      setCurrentTask({id: 0, name: "NoTask", completed: false, playerName: "", lobbyCode: ""});
     }
   }, [clickCount, setCurrentTask]);
 
@@ -78,7 +80,7 @@ function ReactionTask({ setCurrentTask, setCurrentPlayerTasks, currentTask }: Re
       <div className="text-white text-center mt-4">
         Click count: {clickCount}
       </div>
-      <button onClick={() => setCurrentTask({id: 0, name: "NoTask", completed: false })} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
+      <button onClick={() => setCurrentTask({id: 0, name: "NoTask", completed: false, playerName: "", lobbyCode: ""})} className="mt-4 px-4 py-2 rounded bg-blue-500 text-white font-bold">
         Save & Exit
       </button>
     </div>
