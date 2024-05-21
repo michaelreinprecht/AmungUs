@@ -42,10 +42,8 @@ public class PlayerInfoController {
         // Get the lobby from the lobby service
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         if (lobby != null) {
-            logger.debug("PlayerInfo received for lobby code: {}", lobbyCode);
-            logger.debug("PlayerInfo: {}", playerInfo);
-            System.out.println("X: " + playerInfo.getPlayerPositionX());
-            System.out.println("Y: " + playerInfo.getPlayerPositionY());
+            logger.info("PlayerInfo received for lobby code: {}", lobbyCode);
+            logger.info("PlayerInfo: {}", playerInfo);
 
             // Update the player position in the lobby or add it if it's a new player
             if (!isColliding(playerInfo)) {

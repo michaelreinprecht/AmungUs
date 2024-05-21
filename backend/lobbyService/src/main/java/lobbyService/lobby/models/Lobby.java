@@ -78,6 +78,10 @@ public class Lobby {
                 if (playerInfos.isEmpty()) {
                     notifyEmptyListener();
                 }
+                //If playerInfo that was removed was the host and lobby is still running, assign a new host.
+                else if (playerInfo.isHost()) {
+                    assignNewHost();
+                }
             }
         }
     }
@@ -216,19 +220,19 @@ public class Lobby {
             }
         }
         if (!playerExists) {
+            //Set timestamp for when player joined the lobby -> used to track who's going to become next host
+            playerInfo.setJoinedLobbyAt(Instant.now());
             //Set default values for playerInfo
             playerInfo.setToDefault();
-
             //Increase player count and add player to playerInfos list
             playerCount++;
-
             //If this is the first player joining, this player is the host.
             if (playerInfos.isEmpty()) {
                 logger.info("Set new host for a lobby.");
                 playerInfo.setHost(true);
             }
-
             playerInfos.add(playerInfo);
+
             //If the new player got killer role, increase killerCount by 1
             if (Objects.equals(playerInfo.getPlayerRole(), "killer")) {
                 killerCount++;
@@ -257,5 +261,13 @@ public class Lobby {
                 player.setPlayerRole("crewmate");
             }
         }
+    }
+
+    private void assignNewHost() {
+        playerInfos.sort(Comparator.comparing(PlayerInfo::getJoinedLobbyAt));
+        PlayerInfo newHost = playerInfos.get(0);
+        newHost.setHost(true);
+
+        logger.info("New host assigned: {} in lobby: {}", newHost.getPlayerName(), lobbyCode);
     }
 }

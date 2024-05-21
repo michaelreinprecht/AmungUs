@@ -27,6 +27,8 @@ public class PlayerInfo {
 
     @JsonIgnore
     private Instant lastHeartbeat;
+    @JsonIgnore
+    private Instant joinedLobbyAt;
 
     public void setToDefault() {
         alive = true;
