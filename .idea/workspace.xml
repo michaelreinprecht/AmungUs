@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7745cfab-6e79-4fce-ba0f-7a9f402dfe82" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/lobby/game/Game.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/lobby/game/Game.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/lobby/game/hooks/useGame.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/lobby/game/hooks/useGame.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/player/PlayerCharacter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/player/PlayerCharacter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/player/hooks/usePlayerCharacter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/player/hooks/usePlayerCharacter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/Components/player/hooks/usePlayerMovement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/Components/player/hooks/usePlayerMovement.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/app/types.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/types.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/lobby/models/Lobby.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/lobby/models/Lobby.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/player/PlayerInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/player/PlayerInfoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/player/models/PlayerInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/lobbyService/src/main/java/lobbyService/player/models/PlayerInfo.java" afterDir="false" />
-    </list>
+    <list default="true" id="7745cfab-6e79-4fce-ba0f-7a9f402dfe82" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,22 +42,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "game-logic",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Zechs/AmungUs/backend",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "C:\\Users\\admin\\AmungUs\\Frontend\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;game-logic&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Zechs/AmungUs/backend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\admin\\AmungUs\\Frontend\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -88,7 +77,17 @@
       <workItem from="1714894641892" duration="46000" />
       <workItem from="1715232969445" duration="43000" />
       <workItem from="1715771087648" duration="115000" />
+      <workItem from="1716276456877" duration="679000" />
     </task>
+    <task id="LOCAL-00001" summary="Added missing activePlayerCharacter value to GameOverUI">
+      <option name="closed" value="true" />
+      <created>1716276741901</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1716276741901</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -104,5 +103,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added missing activePlayerCharacter value to GameOverUI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added missing activePlayerCharacter value to GameOverUI" />
   </component>
 </project>

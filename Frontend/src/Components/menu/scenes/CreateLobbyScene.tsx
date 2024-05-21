@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import useCreateLobbyScene from "@/Components/menu/hooks/useCreateLobbyScene";
 import { characterOptions } from "@/app/globals";
+import * as Avatar from "@radix-ui/react-avatar";
+import { Theme, Container } from "@radix-ui/themes";
+
+const pixelArtStyle = {
+  imageRendering: "pixelated",
+  width: "96px",
+  height: "128px",
+};
 
 export default function CreateLobbyScene() {
   const {
@@ -17,110 +25,138 @@ export default function CreateLobbyScene() {
     createLobby,
   } = useCreateLobbyScene();
 
-  return (
-    <div className="w-screen h-screen bg-gray-800 flex items-center justify-center">
-      <div className="mx-auto bg-gray-900 p-6 rounded-lg shadow-lg w-1/4">
-        <h1 className="text-3xl font-bold text-white mb-4">Create Lobby</h1>
-        <form onSubmit={createLobby}>
-          <div className="mb-4">
-            <label
-              htmlFor="playerName"
-              className="block text-sm font-medium text-white"
-            >
-              Player Name:
-            </label>
-            <input
-              type="text"
-              id="playerName"
-              name="playerName"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="playerCharacter"
-              className="block text-sm font-medium text-white"
-            >
-              Player Character:
-            </label>
-            <select
-              id="playerCharacter"
-              name="playerCharacter"
-              value={playerCharacter}
-              onChange={(e) => setPlayerCharacter(e.target.value)}
-              className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white"
-            >
-              {characterOptions.map((character) => (
-                <option key={character.id} value={character.id}>
-                  {character.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="maxPlayerCount"
-              className="block text-sm font-medium text-white"
-            >
-              Max Player Count:
-            </label>
-            <input
-              type="number"
-              id="maxPlayerCount"
-              name="maxPlayerCount"
-              min={5}
-              max={10}
-              value={maxPlayerCount}
-              onChange={(e) => setMaxPlayerCount(parseInt(e.target.value))}
-              className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="maxKillerCount"
-              className="block text-sm font-medium text-white"
-            >
-              Killer Count:
-            </label>
-            <input
-              type="number"
-              id="maxKillerCount"
-              name="maxKillerCount"
-              min={1}
-              max={Math.floor(maxPlayerCount / 3)}
-              value={maxKillerCount}
-              onChange={(e) => setMaxKillerCount(parseInt(e.target.value))}
-              className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="checkbox"
-              id="isPrivate"
-              name="isPrivate"
-              checked={isPrivate}
-              onChange={(e) => setIsPrivate(e.target.checked)}
-              className="mr-2"
-            />
-            <label
-              htmlFor="isPrivate"
-              className="text-sm font-medium text-white"
-            >
-              Private Lobby
-            </label>
-          </div>
+  const [selectedCharacter, setSelectedCharacter] = useState(
+    characterOptions.find((character) => character.id === playerCharacter) ||
+      characterOptions[0]
+  );
 
-          <button
-            type="submit"
-            className="bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Create Lobby
-          </button>
-        </form>
-      </div>
-    </div>
+  useEffect(() => {
+    const character = characterOptions.find(
+      (character) => character.id === playerCharacter
+    );
+    if (character) {
+      setSelectedCharacter(character);
+    }
+  }, [playerCharacter]);
+
+  return (
+    <Theme appearance="dark">
+      <Container className="bg-gray-800 flex items-center justify-center min-h-screen">
+        <div className="mx-auto bg-gray-900 p-6 rounded-lg shadow-lg w-1/2">
+          <h1 className="text-3xl font-bold text-white mb-4">Create Lobby</h1>
+          <form onSubmit={createLobby}>
+            <div className="mb-4">
+              <label
+                htmlFor="playerName"
+                className="block text-sm font-medium text-white"
+              >
+                Player Name:
+              </label>
+              <input
+                type="text"
+                id="playerName"
+                name="playerName"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="playerCharacter"
+                className="block text-sm font-medium text-white"
+              >
+                Player Character:
+              </label>
+              <select
+                id="playerCharacter"
+                name="playerCharacter"
+                value={playerCharacter}
+                onChange={(e) => setPlayerCharacter(e.target.value)}
+                className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white"
+              >
+                {characterOptions.map((character) => (
+                  <option key={character.id} value={character.id}>
+                    {character.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4 flex justify-center">
+              <Avatar.Root className="AvatarRoot">
+                <Avatar.Image
+                  className="AvatarImage"
+                  src={selectedCharacter.avatarSrc}
+                  alt={selectedCharacter.name}
+                  style={{ ...pixelArtStyle, imageRendering: "pixelated" }}
+                />
+                <Avatar.Fallback className="AvatarFallback" delayMs={600}>
+                  {selectedCharacter.name.charAt(0).toUpperCase()}
+                </Avatar.Fallback>
+              </Avatar.Root>
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="maxPlayerCount"
+                className="block text-sm font-medium text-white"
+              >
+                Max Player Count:
+              </label>
+              <input
+                type="number"
+                id="maxPlayerCount"
+                name="maxPlayerCount"
+                min={5}
+                max={10}
+                value={maxPlayerCount}
+                onChange={(e) => setMaxPlayerCount(parseInt(e.target.value))}
+                className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="maxKillerCount"
+                className="block text-sm font-medium text-white"
+              >
+                Killer Count:
+              </label>
+              <input
+                type="number"
+                id="maxKillerCount"
+                name="maxKillerCount"
+                min={1}
+                max={Math.floor(maxPlayerCount / 3)}
+                value={maxKillerCount}
+                onChange={(e) => setMaxKillerCount(parseInt(e.target.value))}
+                className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white"
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="checkbox"
+                id="isPrivate"
+                name="isPrivate"
+                checked={isPrivate}
+                onChange={(e) => setIsPrivate(e.target.checked)}
+                className="mr-2"
+              />
+              <label
+                htmlFor="isPrivate"
+                className="text-sm font-medium text-white"
+              >
+                Private Lobby
+              </label>
+            </div>
+            <button
+              type="submit"
+              className="bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              Create Lobby
+            </button>
+          </form>
+        </div>
+      </Container>
+    </Theme>
   );
 }

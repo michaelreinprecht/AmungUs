@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { usePickNameScene } from "./hooks/usePickNameScene";
+import { useCreateCharacterScene } from "./hooks/useCreateCharacterScene";
 import { Theme, Container, Flex } from "@radix-ui/themes";
 import * as Avatar from "@radix-ui/react-avatar";
 import { CSSProperties } from "react";
@@ -19,27 +19,33 @@ const pixelArtStyle: CSSProperties = {
   height: "128px",
 };
 
-export default function PickNameScene({
+export default function CreateCharacterScene({
   setActivePlayerName,
   setActivePlayerCharacter,
   lobbyCode,
   isGameStarted,
   setIsGameStarted,
 }: PickNameSceneProps) {
-  const { errorMessage, onSubmit } = usePickNameScene(
+  const { errorMessage, onSubmit } = useCreateCharacterScene(
     lobbyCode,
     isGameStarted,
     setActivePlayerName,
     setActivePlayerCharacter,
     setIsGameStarted
   );
-  const [selectedCharacter, setSelectedCharacter] = useState(characterOptions[0]);
-  const [disabledCharacterIds, setDisabledCharacterIds] = useState<string[]>([]);
+  const [selectedCharacter, setSelectedCharacter] = useState(
+    characterOptions[0]
+  );
+  const [disabledCharacterIds, setDisabledCharacterIds] = useState<string[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/lobby/${lobbyCode}/playerCharacters`);
+        const response = await fetch(
+          `http://localhost:8080/api/lobby/${lobbyCode}/playerCharacters`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -52,7 +58,7 @@ export default function PickNameScene({
     };
 
     fetchData();
-  }, [lobbyCode]); 
+  }, [lobbyCode]);
 
   useEffect(() => {
     if (disabledCharacterIds.includes(selectedCharacter.id)) {

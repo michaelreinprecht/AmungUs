@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PickNameScene from "./PickNameScene";
+import CreateCharacterScene from "./CreateCharacterScene";
 import Game from "../game/Game";
 import { Client } from "@stomp/stompjs";
 
@@ -42,7 +42,7 @@ function LobbyScene({
       {activePlayerName === "" && (
         <>
           <h1>Lobby Code: {lobbyCode}</h1>
-          <PickNameScene
+          <CreateCharacterScene
             setActivePlayerName={setActivePlayerName}
             setActivePlayerCharacter={setActivePlayerCharacter}
             lobbyCode={lobbyCode}

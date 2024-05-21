@@ -3,7 +3,7 @@ import { PlayerInfo } from "@/app/types";
 import { Client } from "@stomp/stompjs";
 import { FormEvent, useEffect, useState } from "react";
 
-export function usePickNameScene(
+export function useCreateCharacterScene(
   lobbyCode: string,
   isGameStarted: boolean,
   setActivePlayerName: (newActivePlayerName: string) => void,
