@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import PickNameScene from "./PickNameScene";
 import Game from "../game/Game";
+import { Client } from "@stomp/stompjs";
 
 type LobbyProps = {
   lobbyCode: string;
@@ -19,6 +20,7 @@ function LobbyScene({
   const [activePlayerCharacter, setActivePlayerCharacter] = useState(
     initialPlayerCharacter || ""
   );
+  const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
 
   useEffect(() => {
     // Check and set initial values if they are not already set
@@ -44,6 +46,8 @@ function LobbyScene({
             setActivePlayerName={setActivePlayerName}
             setActivePlayerCharacter={setActivePlayerCharacter}
             lobbyCode={lobbyCode}
+            isGameStarted={isGameStarted}
+            setIsGameStarted={setIsGameStarted}
           />
         </>
       )}
@@ -54,6 +58,7 @@ function LobbyScene({
             activePlayerName={activePlayerName}
             activePlayerCharacter={activePlayerCharacter}
             lobbyCode={lobbyCode}
+            isGameStarted={isGameStarted}
           />
         </>
       )}

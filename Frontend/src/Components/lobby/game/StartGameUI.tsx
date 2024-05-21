@@ -28,7 +28,6 @@ export default function StartGameUI({
   }, []);
 
   function sendStartGame() {
-    console.log("Button works?");
     if (lobbyClient && currentPlayer) {
       lobbyClient.publish({
         destination: `/app/${lobbyCode}/gameStartedReceiver`,

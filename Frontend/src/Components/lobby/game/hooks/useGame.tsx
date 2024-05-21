@@ -8,7 +8,6 @@ import { Client } from "@stomp/stompjs";
 export function useGame(activePlayerName: string, lobbyCode: string) {
   const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
-  const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
@@ -28,9 +27,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     { id: 3, name: "ReactionTask", completed: false },
     { id: 4, name: "FindTask", completed: false },
   ];
-
   const [currentPlayerTasks, setCurrentPlayerTasks] = useState<Task[]>([]);
-
   let votingClientIsConnected = false;
 
   useEffect(() => {
@@ -71,17 +68,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
             const parsedWinners = JSON.parse(message.body) as GameOverInfo;
             if (message.body.winner !== "") {
               setWinners(parsedWinners);
-            }
-          }
-        );
-        lobbyClient.subscribe(
-          `/lobby/${lobbyCode}/gameStarted`,
-          (message: any) => {
-            const parsedGameStarted = JSON.parse(message.body) as boolean;
-            if (parsedGameStarted) {
-              setIsGameStarted(true);
-            } else {
-              setIsGameStarted(false);
             }
           }
         );
@@ -143,8 +129,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     setIsGamePaused,
     isGameOver,
     setIsGameOver,
-    isGameStarted,
-    setIsGameStarted,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,

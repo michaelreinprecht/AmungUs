@@ -1,15 +1,38 @@
 import { getLobbyByCode } from "@/Components/utilityFunctions/APIService";
-import { FormEvent, useState } from "react";
+import { PlayerInfo } from "@/app/types";
+import { Client } from "@stomp/stompjs";
+import { FormEvent, useEffect, useState } from "react";
 
 export function usePickNameScene(
   lobbyCode: string,
+  isGameStarted: boolean,
   setActivePlayerName: (newActivePlayerName: string) => void,
-  setActivePlayerCharacter: (newActivePlayerName: string) => void
+  setActivePlayerCharacter: (newActivePlayerName: string) => void,
+  setIsGameStarted: (isGameStarted: boolean) => void
 ) {
   const [errorMessage, setErrorMessage] = useState("");
   let playerNames = [""];
   let playerCharacters = [""];
   let isLobbyFull = false;
+  const [lobbyClient, setLobbyClient] = useState<Client>();
+
+  useEffect(() => {
+    const client = new Client({
+      brokerURL: "ws://localhost:8080/lobbyService",
+      onConnect: () => {
+        client.subscribe(`/lobby/${lobbyCode}/gameStarted`, (message: any) => {
+          const parsedGameStarted = JSON.parse(message.body) as boolean;
+          if (parsedGameStarted) {
+            setIsGameStarted(true);
+          } else {
+            setIsGameStarted(false);
+          }
+        });
+        setLobbyClient(client);
+      },
+    });
+    client.activate();
+  }, []);
 
   async function fetchPlayerNames() {
     try {
@@ -65,7 +88,9 @@ export function usePickNameScene(
     await fetchPlayerCharacters();
 
     await checkForFullLobby();
-    if (isLobbyFull) {
+    if (isGameStarted) {
+      setErrorMessage("Game has already started");
+    } else if (isLobbyFull) {
       //Set error if lobby is full
       setErrorMessage("Lobby is full");
     } else if (playerNames.includes(playerName)) {
@@ -81,11 +106,25 @@ export function usePickNameScene(
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    getIsGameStarted();
     const form = event.currentTarget;
     const data = new FormData(form);
     const playerName = data.get("playerName") as string;
     const selectedCharacter = data.get("playerCharacter") as string;
     await checkIfInputAvailable(playerName, selectedCharacter);
+  }
+
+  function getIsGameStarted() {
+    if (lobbyClient) {
+      let emptyPlayerInfo = {
+        playerName: "",
+        playerCharacter: "",
+      };
+      lobbyClient.publish({
+        destination: `/app/${lobbyCode}/gameStartedReceiver`,
+        body: JSON.stringify(emptyPlayerInfo),
+      });
+    }
   }
 
   return {

@@ -130,11 +130,18 @@ public class PlayerInfoController {
 
     @MessageMapping("/{lobbyCode}/gameStartedReceiver")
     public void receiveGameStarted(@DestinationVariable String lobbyCode, PlayerInfo playerInfo) throws Exception {
-        logger.info("Received game started for lobby code: {}", lobbyCode);
+        logger.debug("Received game started for lobby code: {}", lobbyCode);
         Lobby lobby = lobbyService.getLobby(lobbyCode);
 
+        //If the player calling this endpoint is host -> we will actually start the game
+        //And return the fact that the game is started to the new players
         if (playerInfo != null && playerInfo.isHost()) {
             lobby.setGameStarted(true);
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameStarted", sendGameStarted(lobbyCode));
+        }
+        //If the player calling the endpoint is no host (or is null) -> do not start the game
+        //But just return the current game state to the subscribers.
+        else {
             messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameStarted", sendGameStarted(lobbyCode));
         }
     }

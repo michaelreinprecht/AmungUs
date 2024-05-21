@@ -58,7 +58,6 @@ public class Lobby {
         }
         // If the player doesn't exist in the lobby, add them
         if (!playerExists) {
-            logger.info("Trying to call addPlayerToLobby");
             addPlayerToLobby(playerInfo);
         }
     }

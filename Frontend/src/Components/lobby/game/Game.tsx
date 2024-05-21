@@ -25,12 +25,14 @@ type GameProps = {
   activePlayerName: string;
   activePlayerCharacter: string;
   lobbyCode: string;
+  isGameStarted: boolean;
 };
 
 export default function Game({
   activePlayerName,
   activePlayerCharacter,
   lobbyCode,
+  isGameStarted,
 }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const {
@@ -39,8 +41,6 @@ export default function Game({
     setIsGamePaused,
     isGameOver,
     setIsGameOver,
-    isGameStarted,
-    setIsGameStarted,
     nearestPlayer,
     setNearestPlayer,
     playerPositions,
@@ -188,6 +188,7 @@ export default function Game({
 
       <VotingKillUI votingKill={votingKill} />
 
+      {/* StartGameUI - only visible when game isn't started yet */}
       <StartGameUI
         currentPlayer={currentPlayerInfo}
         lobbyCode={lobbyCode}
@@ -207,8 +208,6 @@ export default function Game({
 
       {/* Display current lobby code */}
       <LobbyCodeUI lobbyCode={lobbyCode} />
-
-      {/* Start game button - only visible to host at start of game */}
     </div>
   );
 }

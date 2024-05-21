@@ -9,6 +9,8 @@ interface PickNameSceneProps {
   setActivePlayerName: (newActivePlayerName: string) => void;
   setActivePlayerCharacter: (newActivePlayerCharacter: string) => void;
   lobbyCode: string;
+  isGameStarted: boolean;
+  setIsGameStarted: (isGameStarted: boolean) => void;
 }
 
 const pixelArtStyle: CSSProperties = {
@@ -21,11 +23,15 @@ export default function PickNameScene({
   setActivePlayerName,
   setActivePlayerCharacter,
   lobbyCode,
+  isGameStarted,
+  setIsGameStarted,
 }: PickNameSceneProps) {
   const { errorMessage, onSubmit } = usePickNameScene(
     lobbyCode,
+    isGameStarted,
     setActivePlayerName,
-    setActivePlayerCharacter
+    setActivePlayerCharacter,
+    setIsGameStarted
   );
   const [selectedCharacter, setSelectedCharacter] = useState(
     characterOptions[0]
