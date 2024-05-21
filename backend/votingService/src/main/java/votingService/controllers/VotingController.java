@@ -130,13 +130,18 @@ public class VotingController {
 
         Lobby lobby = restTemplate.getForObject(url, Lobby.class);
         if (lobby != null) {
-            PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
-            if (senderPlayerInfo.isAlive()) { //Check if player sending message is alive
-                logger.info("Starting voting for lobby: {}", lobby.getLobbyCode());
-                votingLobbyService.createLobby(lobby);
+            if (lobby.isGameStarted()) {
+                PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
+                if (senderPlayerInfo.isAlive()) { //Check if player sending message is alive
+                    logger.info("Starting voting for lobby: {}", lobby.getLobbyCode());
+                    votingLobbyService.createLobby(lobby);
+                }
+            }
+            else {
+                logger.debug("Attempt to create a voting for a lobby that isn't started.");
             }
         } else {
-            logger.debug("Attempted to create a voting for a non existing lobby.");
+            logger.debug("Attempt to create a voting for a non existing lobby.");
         }
     }
 

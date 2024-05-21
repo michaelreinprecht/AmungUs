@@ -95,17 +95,19 @@ public class PlayerInfoController {
         logger.info("Kill attempted by: {}", killRequest.getKillerName());
         logger.info("Attempting to kill: {}", killRequest.getVictimName());
         // Get the lobby from the lobby service
-
         Lobby lobby = lobbyService.getLobby(lobbyCode);
-        PlayerInfo killer = lobby.getPlayerInfoForName(killRequest.getKillerName());
-        PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
-        if (isKillAllowed(killer, victim)) {
-            lobby.killPlayer(victim, killer);
-            List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
-            // Send the updated player info to all players
-            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
-            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
-            return true;
+
+        if (lobby.isGameStarted()) { //Unable to kill if game is not yet started.
+            PlayerInfo killer = lobby.getPlayerInfoForName(killRequest.getKillerName());
+            PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
+            if (isKillAllowed(killer, victim)) {
+                lobby.killPlayer(victim, killer);
+                List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
+                // Send the updated player info to all players
+                messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
+                messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
+                return true;
+            }
         }
         return false;
     }
@@ -161,29 +163,31 @@ public class PlayerInfoController {
         // Get the lobby from the lobby service
 
         Lobby lobby = lobbyService.getLobby(lobbyCode);
-        String victimName = killRequest.getVictimName();
+        if (lobby.isGameStarted()) {
+            String victimName = killRequest.getVictimName();
 
-        if (!victimName.isEmpty()) {
-            PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
-            lobby.killPlayer(victim, null);
+            if (!victimName.isEmpty()) {
+                PlayerInfo victim = lobby.getPlayerInfoForName(killRequest.getVictimName());
+                lobby.killPlayer(victim, null);
+            }
+
+            lobby.updateKilltimers(); //Stop killers from killing again right after voting!
+            List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
+            lobby.removeCorpses();
+
+            // Teleport players to spawn after voting
+            lobby.teleportPlayersToSpawn();
+            // Remove the corpses
+            lobby.removeCorpses();
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
+            // Send the updated player info to all players
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
         }
-
-        lobby.updateKilltimers(); //Stop killers from killing again right after voting!
-        List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
-        lobby.removeCorpses();
-
-        // Teleport players to spawn after voting
-        lobby.teleportPlayersToSpawn();
-        // Remove the corpses
-        lobby.removeCorpses();
-        messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
-        // Send the updated player info to all players
-        messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
-
         // Return empty ok response
         return ResponseEntity.ok("OK");
     }
 
+    /* TODO pretty sure we can remove this, just gonna leave it here a little longer in case it causes problems
     @MessageMapping("/{lobbyCode}/teleportPlayersToSpawn")
     public void teleportPlayersToSpawn(@DestinationVariable String lobbyCode, TeleportToSpawnRequest request) throws Exception {
         String senderName = request.getSenderName();
@@ -200,6 +204,7 @@ public class PlayerInfoController {
         }
     }
 
+
     @MessageMapping("/{lobbyCode}/corpseFoundReceiver")
     public void corpseFound(@DestinationVariable String lobbyCode, CorpseFoundRequest request) throws Exception {
         String senderName = request.getSenderName();
@@ -214,12 +219,12 @@ public class PlayerInfoController {
             if (senderPlayerInfo.isAlive()) {
                 lobby.removeCorpses();
             }
+            List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
+            // Send the updated player info to all players
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
         }
-        List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
-        // Send the updated player info to all players
-        messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
     }
-
+*/
 
     @GetMapping("/api/lobby/{lobbyCode}/playerNames")
     @ResponseBody

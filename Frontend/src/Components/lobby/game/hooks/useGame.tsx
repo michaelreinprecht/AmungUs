@@ -126,7 +126,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   return {
     votingKill,
     isGamePaused,
-    setIsGamePaused,
     isGameOver,
     setIsGameOver,
     nearestPlayer,

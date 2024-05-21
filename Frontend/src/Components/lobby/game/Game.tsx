@@ -38,7 +38,6 @@ export default function Game({
   const {
     votingKill,
     isGamePaused,
-    setIsGamePaused,
     isGameOver,
     setIsGameOver,
     nearestPlayer,

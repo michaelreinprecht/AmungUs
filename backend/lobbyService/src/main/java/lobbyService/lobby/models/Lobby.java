@@ -252,6 +252,7 @@ public class Lobby {
             if (killersAssigned < maxKillerCount) {
                 player.setPlayerRole("killer");
                 killersAssigned++;
+                killerCount=killersAssigned;
             } else {
                 player.setPlayerRole("crewmate");
             }
