@@ -9,12 +9,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
@@ -33,8 +29,6 @@ public class Lobby {
     private boolean isPrivate;
 
     @JsonIgnore
-    private transient ScheduledExecutorService executor; // Scheduled executor service for heartbeat checking task
-    @JsonIgnore
     private transient LobbyEmptyListener emptyListener; // Listener for empty lobby notification
 
     public Lobby() {
@@ -43,69 +37,32 @@ public class Lobby {
         this.isPrivate = false;
         this.playerCount = 0;
         this.killerCount = 0;
-        this.executor = Executors.newSingleThreadScheduledExecutor(); // Initialize the executor
     }
 
     public void updatePlayerInfo(PlayerInfo playerInfo) {
         // Check if the player already exists in the lobby
         boolean playerExists = false;
-        for (PlayerInfo existingPlayer : playerInfos) {
-            if (existingPlayer.getPlayerName().equals(playerInfo.getPlayerName())) {
-                updateExistingPlayer(existingPlayer, playerInfo);
-                playerExists = true;
-                break;
+            for (PlayerInfo existingPlayer : playerInfos) {
+                if (existingPlayer.getPlayerName().equals(playerInfo.getPlayerName())) {
+                    if (isGameStarted) { //Only allow updates if game is started
+                        updateExistingPlayer(existingPlayer, playerInfo);
+                    }
+                    playerExists = true;
+                    break;
+                }
             }
-        }
-        // If the player doesn't exist in the lobby, add them
-        if (!playerExists) {
+        // If the player doesn't exist in the lobby and the game is not yet started, add them
+        if (!playerExists && !isGameStarted) {
             addPlayerToLobby(playerInfo);
         }
     }
 
-    public void startHeartbeatChecking() {
-        if (executor.isShutdown()) {
-            executor = Executors.newSingleThreadScheduledExecutor(); // Reinitialize the executor if it's shutdown
-        }
-        executor.scheduleAtFixedRate(this::checkPlayerHeartbeats, 0, 10, TimeUnit.SECONDS); // Run every 10 seconds
-    }
 
-    // Method to stop periodic checking of player heartbeats -> called once lobby is removed
-    public void stopHeartbeatChecking() {
-        executor.shutdown();
-    }
-
-    // Method to periodically check player heartbeats and remove inactive players from the lobby
-    private void checkPlayerHeartbeats() {
-        try {
-            logger.debug("Checking player heartbeats for lobby: {}", lobbyCode);
-            Instant now = Instant.now();
-            Iterator<PlayerInfo> iterator = playerInfos.iterator();
-            while (iterator.hasNext()) {
-                PlayerInfo playerInfo = iterator.next();
-                Instant lastHeartbeat = playerInfo.getLastHeartbeat();
-                logger.debug("Last heartbeat: {}", lastHeartbeat.toString());
-                if (lastHeartbeat != null && Duration.between(lastHeartbeat, now).getSeconds() > 10) {
-                    logger.info("Player {} has lost heartbeat", playerInfo.getPlayerName());
-                    playerCount--;
-                    if (playerInfo.getPlayerRole().equals("killer")) {
-                        killerCount--;
-                    }
-                    iterator.remove(); // Safely remove the playerInfo from the list
-                    if (playerInfos.isEmpty()) {
-                        notifyEmptyListener();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.info("Error checking player heartbeats: {}", e.getMessage());
-        }
-    }
 
     // Method to notify listener when lobby becomes empty
     private void notifyEmptyListener() {
         if (emptyListener != null) {
             logger.debug("Notifying empty listener");
-            stopHeartbeatChecking();
             emptyListener.onLobbyEmpty(lobbyCode);
         }
     }
