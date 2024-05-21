@@ -7,6 +7,7 @@ import PlayerCorpse from '@/Components/player/PlayerCorpse';
 import VotingUI from './VotingUI';
 import ChatWindow from '../chat/ChatWindow';
 import { useGame } from './hooks/useGame';
+import { usePlayerMovement } from '@/Components/player/hooks/usePlayerMovement';  
 import EmergencyButton from './EmergencyButton';
 import TaskObject from '@/Components/task/TaskObject';
 import ColorTask from '@/Components/task/ColorTask';
@@ -50,6 +51,7 @@ export default function Game({
     winners,
     setWinners,
   } = useGame(activePlayerName, lobbyCode);
+
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">

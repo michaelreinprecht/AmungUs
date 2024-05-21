@@ -1,5 +1,5 @@
 import { Movement, PlayerInfo } from "@/app/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createKeyDownHandler,
   createKeyUpHandler,
@@ -38,6 +38,9 @@ export function usePlayerMovement(
     right: false,
   });
 
+
+  
+
   // Bounds that match the background
   const bounds = {
     minX: -236, // Minimum x-coordinate
@@ -45,6 +48,34 @@ export function usePlayerMovement(
     minY: -136, // Minimum y-coordinate
     maxY: 136, // Maximum y-coordinate
   };
+
+  const [currentFrame, setCurrentFrame] = useState(1);
+  const [isMoving, setIsMoving] = useState(false);
+  const accumulatedTimeRef = useRef(0);
+  const frameInterval = 0.5; 
+
+
+  const updateTexture = () => {
+    if (isMoving == true) {
+      setCurrentFrame((prevFrame) => {
+        if (prevFrame >= 4 && prevFrame < 7) {
+          return prevFrame + 1;
+        } else {
+          return 4; 
+        }
+      });
+    } else {
+      //cyclying through frame 1 to 3
+      setCurrentFrame((prevFrame) => {
+        if (prevFrame >= 1 && prevFrame < 4) {
+          return prevFrame + 1;
+        } else {
+          return 1;
+        }
+      })
+    }
+  };
+
 
   useEffect(() => {
     const client = new Client({
@@ -102,6 +133,12 @@ export function usePlayerMovement(
           movement.left ||
           movement.right
         ) {
+          setIsMoving(true);
+          accumulatedTimeRef.current += delta;
+          if (accumulatedTimeRef.current >= frameInterval) {
+            accumulatedTimeRef.current = 0;
+            updateTexture();
+          }
           //Initial position update of the player
           if (lobbyClient != undefined) {
             lobbyClient?.publish({
@@ -118,10 +155,17 @@ export function usePlayerMovement(
               ),
             });
           }
+        } else {
+          setIsMoving(false);
+          accumulatedTimeRef.current += delta;
+          if (accumulatedTimeRef.current >= frameInterval) {
+            accumulatedTimeRef.current = 0;
+            updateTexture();
+          }
         }
       }
     }
   });
 
-  return {};
+  return { currentFrame };
 }

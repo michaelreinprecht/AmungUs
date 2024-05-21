@@ -31,7 +31,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
 }) => {
   const camera = useThree((state) => state.camera);
 
-  const { meshRef } = usePlayerCharacter({
+  const { meshRef, currentFrame } = usePlayerCharacter({
     camera,
     isGamePaused,
     isGameOver,
@@ -53,7 +53,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
   };
 
   const textureMap: { [key: string]: any } = {
-    "character-1": loadTexture("/character-1-move-1.png"),
+    "character-1": loadTexture(`/character-1-move-1.png`),
     "character-2": loadTexture("/character-2-move-1.png"),
     "character-3": loadTexture("/character-3-move-1.png"),
     "character-4": loadTexture("/character-4-move-1.png"),
@@ -65,6 +65,17 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     "character-10": loadTexture("/character-10-move-1.png"),
     "ghost": loadTexture("/ghost.png"),
   };
+
+  const textureMapChar1: { [key: string]: any } = {
+    "character-1-1": loadTexture("/character-1-move-1.png"),
+    "character-1-2": loadTexture("/character-2-move-2.png"),
+    "character-1-3": loadTexture("/character-2-move-3.png"),
+    "character-1-4": loadTexture("/character-2-move-4.png"),
+  };
+
+  const updateTexture = (currentFrame : number) => { 
+    return loadTexture(`/${activePlayerCharacter}-move-${currentFrame}.png`);
+  }
 
   return (
     <>
@@ -83,7 +94,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
             <mesh ref={activePlayerName === pos.playerName ? meshRef : null}>
               <planeGeometry args={[2 * scale, 2 * scale]} />
               <meshStandardMaterial
-                map={pos.alive ? textureMap[pos.playerCharacter] : textureMap["ghost"]}
+                map={pos.alive ? updateTexture(currentFrame) : textureMap["ghost"]}
                 transparent={true}
               />
             </mesh>
