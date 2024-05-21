@@ -3,7 +3,7 @@ import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/player
 import { killCooldown, killRange } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 import { GameOverInfo, PlayerInfo, Task } from "@/app/types";
-import { Client } from "@stomp/stompjs";
+import { Client, IMessage } from "@stomp/stompjs";
 
 export function useGame(activePlayerName: string, lobbyCode: string) {
   const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
@@ -11,11 +11,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
-  const [currentTask, setCurrentTask] = useState<Task>({
-    id: 0,
-    name: "",
-    completed: false,
-  });
+  const [currentTask, setCurrentTask] = useState<Task>({ id: 0, name: "", completed: false });
   const [votingKill, setVotingKill] = useState<string>("");
   const [winners, setWinners] = useState<GameOverInfo>({
     winner: "",
@@ -40,9 +36,8 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
             `/voting/${lobbyCode}/votingState`,
             (message) => {
               const votingActive = JSON.parse(message.body);
-
-              setIsGamePaused(votingActive); //Pause or unpause the game
-              setIsVotingActive(votingActive); //Display or stop displaying votingUI
+              setIsGamePaused(votingActive); // Pause or unpause the game
+              setIsVotingActive(votingActive); // Display or stop displaying votingUI
             }
           );
           votingClient.subscribe(
@@ -64,9 +59,9 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
       onConnect: () => {
         lobbyClient.subscribe(
           `/lobby/${lobbyCode}/gameOver`,
-          (message: any) => {
+          (message: IMessage) => {
             const parsedWinners = JSON.parse(message.body) as GameOverInfo;
-            if (message.body.winner !== "") {
+            if (parsedWinners.winner !== "") {
               setWinners(parsedWinners);
             }
           }
@@ -74,6 +69,53 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
       },
     });
     lobbyClient.activate();
+
+    const taskClient = new Client({
+      brokerURL: "ws://localhost:8084/taskService",
+      onConnect: () => {
+        console.log("Connected to taskService");
+
+        // Create initial tasks and send them to the backend
+        const initialTasks: Task[] = [];
+        for (let i = 0; i < 6; i++) {
+          let randomTask = getRandomTask(possibleTasks);
+          // Ensure the task is unique by creating a deep copy
+          randomTask = JSON.parse(JSON.stringify(randomTask));
+          // Assigning the id to match the index
+          randomTask.id = i;
+
+
+          // Send the task to the backend
+          const message = {
+            id: randomTask.id,
+            name: randomTask.name,
+            completed: randomTask.completed,
+            playerName: activePlayerName,
+            lobbyCode: lobbyCode,
+          };
+
+          taskClient.publish({
+            destination: `/taskApp/saveTasks/${lobbyCode}`,
+            body: JSON.stringify(message),
+          });
+
+          initialTasks.push(randomTask);
+        }
+        setCurrentPlayerTasks(initialTasks);
+
+      },
+      debug: (str) => {
+        console.log(new Date(), str);
+      }
+    });
+    taskClient.activate();
+
+    // Clean up WebSocket connections on component unmount
+    return () => {
+      votingClient.deactivate();
+      lobbyClient.deactivate();
+      taskClient.deactivate();
+    };
   }, []);
 
   function isKillEnabled() {
@@ -86,20 +128,15 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
         victim.playerPositionX,
         victim.playerPositionY
       );
-      const lastKillTimeString = killer.lastKillTime;
-      const lastKillTime = new Date(lastKillTimeString);
-      const timeSinceLastKill =
-        (new Date().getTime() - lastKillTime.getTime()) / 1000;
-      if (timeSinceLastKill >= killCooldown) {
-        return distance <= killRange;
-      } else {
-        return false;
-      }
+      const lastKillTime = new Date(killer.lastKillTime);
+      const timeSinceLastKill = (new Date().getTime() - lastKillTime.getTime()) / 1000;
+      return timeSinceLastKill >= killCooldown && distance <= killRange;
     }
+    return false;
   }
 
   function isKillUIVisible() {
-    return playerPositions.find(
+    return playerPositions.some(
       (player) =>
         player.playerName === activePlayerName && player.playerRole === "killer"
     );
@@ -109,19 +146,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     const randomIndex = Math.floor(Math.random() * tasks.length);
     return tasks[randomIndex];
   }
-
-  useEffect(() => {
-    const initialTasks = [];
-    for (let i = 0; i < 6; i++) {
-      let randomTask = getRandomTask(possibleTasks);
-      // Ensure the task is unique by creating a deep copy
-      randomTask = JSON.parse(JSON.stringify(randomTask));
-      // Assigning the id to match the index
-      randomTask.id = i; // Adding 1 to avoid id starting from 0
-      initialTasks.push(randomTask);
-    }
-    setCurrentPlayerTasks(initialTasks);
-  }, []);
 
   return {
     votingKill,

@@ -196,6 +196,7 @@ export default function Game({
       />
 
       <GameOverUI
+        activePlayerCharacter={activePlayerCharacter}
         winners={winners}
         setWinners={setWinners}
         setIsGameOver={setIsGameOver}

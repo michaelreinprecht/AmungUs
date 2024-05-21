@@ -13,6 +13,7 @@
         <module>votingService</module>
         <module>chatService</module>
         <module>heartbeatService</module>
+        <module>taskService</module>
     </modules>
 
     <properties>
