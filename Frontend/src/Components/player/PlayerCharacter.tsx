@@ -69,10 +69,9 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     ghost: loadTexture("/ghost.png"),
   };
 
-
-  const updateTexture = (currentFrame : number) => { 
-    return loadTexture(`/${activePlayerCharacter}-move-${currentFrame}.png`);
-  }
+  const getPlayerTexture = (playerCharacter: string, frame: number) => {
+    return loadTexture(`/${playerCharacter}-move-${frame}.png`);
+  };
 
   return (
     <>
@@ -91,7 +90,7 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
             <mesh ref={activePlayerName === pos.playerName ? meshRef : null}>
               <planeGeometry args={[1.5 * scale, 1.5 * scale]} />
               <meshStandardMaterial
-                map={pos.alive ? updateTexture(currentFrame) : textureMap["ghost"]}
+                map={pos.alive ? getPlayerTexture(pos.playerCharacter, currentFrame) : textureMap["ghost"]}
                 transparent={true}
               />
             </mesh>
