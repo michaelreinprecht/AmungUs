@@ -35,7 +35,7 @@ export function usePlayerCharacter({
 }: usePlayerCharacterProps) {
   const meshRef = useRef<THREE.Mesh>(null);
 
-  usePlayerMovement(
+  const { currentFrame } = usePlayerMovement(
     isGamePaused,
     isGameOver,
     isGameStarted,
@@ -47,7 +47,7 @@ export function usePlayerCharacter({
     meshRef,
     setPlayerPositions
   );
-
+  
   usePlayerHeartbeat(lobbyCode, activePlayerName);
 
   useEffect(() => {
@@ -73,5 +73,5 @@ export function usePlayerCharacter({
     }
   }, [playerPositions]);
 
-  return { playerPositions, meshRef };
+  return { playerPositions, meshRef , currentFrame};
 }
