@@ -123,16 +123,49 @@ export default function Game({
         />
 
         {/* Render task objects */}
-        {currentPlayerTasks.map((task, index) => (
           <TaskObject
-            key={index}
-            position={[0, 25 + index * 5, 0]}
+            position={[128,58,0]}
             scale={scale}
-            task={task}
+            task={currentPlayerTasks[0]}
             setCurrentTask={setCurrentTask}
             currentTask={currentTask}
           />
-        ))}
+          <TaskObject
+            position={[201,-51,0]}
+            scale={scale}
+            task={currentPlayerTasks[1]}
+            setCurrentTask={setCurrentTask}
+            currentTask={currentTask}
+          />
+          <TaskObject
+            position={[189,-112,0]}
+            scale={scale}
+            task={currentPlayerTasks[2]}
+            setCurrentTask={setCurrentTask}
+            currentTask={currentTask}
+          />
+          <TaskObject
+            position={[-17,-119,0]}
+            scale={scale}
+            task={currentPlayerTasks[3]}
+            setCurrentTask={setCurrentTask}
+            currentTask={currentTask}
+          />
+          <TaskObject
+            position={[-124,-37,0]}
+            scale={scale}
+            task={currentPlayerTasks[4]}
+            setCurrentTask={setCurrentTask}
+            currentTask={currentTask}
+          />
+          <TaskObject
+            position={[-193,111,0]}
+            scale={scale}
+            task={currentPlayerTasks[5]}
+            setCurrentTask={setCurrentTask}
+            currentTask={currentTask}
+          />
+
       </Canvas>
 
       {/* Kill UI */}

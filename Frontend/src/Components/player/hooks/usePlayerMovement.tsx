@@ -126,7 +126,7 @@ export function usePlayerMovement(
   }, []);
 
   useFrame((_, delta) => {
-    if (!isGamePaused && !isGameOver && isGameStarted) {
+    if (!isGamePaused && !isGameOver) {
       if (meshRef.current) {
         if (
           movement.forward ||
@@ -134,6 +134,7 @@ export function usePlayerMovement(
           movement.left ||
           movement.right
         ) {
+          
           setIsMoving(true);
           accumulatedTimeRef.current += delta;
           if (accumulatedTimeRef.current >= frameInterval) {
