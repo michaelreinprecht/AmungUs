@@ -3,11 +3,62 @@ import useCreateLobbyScene from "@/Components/menu/hooks/useCreateLobbyScene";
 import { characterOptions } from "@/app/globals";
 import * as Avatar from "@radix-ui/react-avatar";
 import { Theme, Container } from "@radix-ui/themes";
+import Select from 'react-select';
 
 const pixelArtStyle = {
   imageRendering: "pixelated",
   width: "96px",
   height: "128px",
+};
+
+const customStyles = {
+  control: (provided: any) => ({
+    ...provided,
+    backgroundColor: '#4A5568',
+    borderColor: '#4A5568', // corresponds to border-gray-700
+    color: '#4A5568',
+  }),
+  option: (provided: any, state: { isSelected: any; isFocused: any; isDisabled: any; }) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? '#000000' : state.isFocused ? '#1a1a1a' : '#000000',
+    color: state.isSelected ? '#ffffff' : state.isFocused ? '#ffffff' : '#ffffff',
+    opacity: state.isDisabled ? 0.5 : 1,
+    cursor: state.isDisabled ? 'not-allowed' : 'default',
+  }),
+  singleValue: (provided: any) => ({
+    ...provided,
+    color: '#ffffff',
+  }),
+  menu: (provided: any) => ({
+    ...provided,
+    backgroundColor: '#000000',
+    borderColor: '#4A5568', // corresponds to border-gray-700
+  }),
+  menuList: (provided: any) => ({
+    ...provided,
+    backgroundColor: '#000000',
+  }),
+  dropdownIndicator: (provided: any) => ({
+    ...provided,
+    color: '#ffffff', // color of the dropdown arrow
+  }),
+  input: (provided: any) => ({
+    ...provided,
+    color: '#ffffff', // color of the entered text
+  }),
+  placeholder: (provided: any) => ({
+    ...provided,
+    color: '#ffffff', // color of the placeholder
+  }),
+  indicatorSeparator: (provided: any) => ({
+    ...provided,
+    backgroundColor: '#4A5568', // corresponds to border-gray-700
+  }),
+  noOptionsMessage: (provided: any) => ({
+    ...provided,
+    backgroundColor: '#000000',
+    color: '#ffffff',
+  }),
 };
 
 export default function CreateLobbyScene() {
@@ -39,6 +90,20 @@ export default function CreateLobbyScene() {
     }
   }, [playerCharacter]);
 
+  const characterOptionsWithAvatars = characterOptions.map(character => ({
+    value: character.id,
+    label: (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <img
+          src={character.avatarSrc}
+          alt={character.name}
+          style={{ width: '24px', height: '32px', marginRight: '10px', imageRendering: 'pixelated' }}
+        />
+        {character.name}
+      </div>
+    ),
+  }));
+
   return (
     <Theme appearance="dark">
       <Container className="bg-gray-800 flex items-center justify-center min-h-screen">
@@ -69,19 +134,21 @@ export default function CreateLobbyScene() {
               >
                 Player Character:
               </label>
-              <select
+              <Select
                 id="playerCharacter"
                 name="playerCharacter"
-                value={playerCharacter}
-                onChange={(e) => setPlayerCharacter(e.target.value)}
-                className="mt-1 p-2 block w-full bg-gray-800 border-gray-700 rounded-md text-white"
-              >
-                {characterOptions.map((character) => (
-                  <option key={character.id} value={character.id}>
-                    {character.name}
-                  </option>
-                ))}
-              </select>
+                value={characterOptionsWithAvatars.find(option => option.value === selectedCharacter.id)}
+                onChange={(option) => {
+                  const newCharacter = characterOptions.find(character => character.id === option?.value);
+                  if (newCharacter) {
+                    setSelectedCharacter(newCharacter);
+                    setPlayerCharacter(newCharacter.id);
+                  }
+                }}
+                options={characterOptionsWithAvatars}
+                styles={customStyles}
+                className="pb-1 pt-1 block w-full border-gray-700 rounded-md"
+              />
             </div>
             <div className="mb-4 flex justify-center">
               <Avatar.Root className="AvatarRoot">
