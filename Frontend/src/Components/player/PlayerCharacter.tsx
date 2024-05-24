@@ -47,13 +47,13 @@ const PlayerCharacter: React.FC<PlayerCharacterProps> = ({
     setPlayerPositions,
   });
 
-  const loadTexture = (path: string) => {
+  function loadTexture(path: string) {
     const texture = useLoader(TextureLoader, path);
     texture.magFilter = NearestFilter;
     texture.minFilter = NearestFilter;
     texture.generateMipmaps = false;
     return texture;
-  };
+  }
 
   const textureMap: { [key: string]: any } = {
     "character-1": loadTexture("/character-1-move-1.png"),
