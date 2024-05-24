@@ -3,8 +3,8 @@ import { useCreateCharacterScene } from "./hooks/useCreateCharacterScene";
 import { Theme, Container } from "@radix-ui/themes";
 import * as Avatar from "@radix-ui/react-avatar";
 import { CSSProperties } from "react";
-import { characterOptions } from "@/app/globals";
-import Select from 'react-select';
+import { characterOptions, serverAddress } from "@/app/globals";
+import Select from "react-select";
 
 interface PickNameSceneProps {
   setActivePlayerName: (newActivePlayerName: string) => void;
@@ -23,49 +23,60 @@ const pixelArtStyle: CSSProperties = {
 const customStyles = {
   control: (provided: any) => ({
     ...provided,
-    backgroundColor: '#4A5568',
-    borderColor: '#4A5568',
-    color: '#4A5568',
+    backgroundColor: "#4A5568",
+    borderColor: "#4A5568",
+    color: "#4A5568",
   }),
-  option: (provided: any, state: { isSelected: any; isFocused: any; isDisabled: any; }) => ({
+  option: (
+    provided: any,
+    state: { isSelected: any; isFocused: any; isDisabled: any }
+  ) => ({
     ...provided,
-    backgroundColor: state.isSelected ? '#000000' : state.isFocused ? '#1a1a1a' : '#000000',
-    color: state.isSelected ? '#ffffff' : state.isFocused ? '#ffffff' : '#ffffff',
+    backgroundColor: state.isSelected
+      ? "#000000"
+      : state.isFocused
+      ? "#1a1a1a"
+      : "#000000",
+    color: state.isSelected
+      ? "#ffffff"
+      : state.isFocused
+      ? "#ffffff"
+      : "#ffffff",
     opacity: state.isDisabled ? 0.5 : 1,
   }),
   singleValue: (provided: any) => ({
     ...provided,
-    color: '#ffffff',
+    color: "#ffffff",
   }),
   menu: (provided: any) => ({
     ...provided,
-    backgroundColor: '#000000',
-    borderColor: '#4A5568',
+    backgroundColor: "#000000",
+    borderColor: "#4A5568",
   }),
   menuList: (provided: any) => ({
     ...provided,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   }),
   dropdownIndicator: (provided: any) => ({
     ...provided,
-    color: '#ffffff',
+    color: "#ffffff",
   }),
   input: (provided: any) => ({
     ...provided,
-    color: '#ffffff',
+    color: "#ffffff",
   }),
   placeholder: (provided: any) => ({
     ...provided,
-    color: '#ffffff',
+    color: "#ffffff",
   }),
   indicatorSeparator: (provided: any) => ({
     ...provided,
-    backgroundColor: '#4A5568',
+    backgroundColor: "#4A5568",
   }),
   noOptionsMessage: (provided: any) => ({
     ...provided,
-    backgroundColor: '#000000',
-    color: '#ffffff',
+    backgroundColor: "#000000",
+    color: "#ffffff",
   }),
 };
 
@@ -83,14 +94,18 @@ export default function CreateCharacterScene({
     setActivePlayerCharacter,
     setIsGameStarted
   );
-  const [selectedCharacter, setSelectedCharacter] = useState(characterOptions[0]);
-  const [disabledCharacterIds, setDisabledCharacterIds] = useState<string[]>([]);
+  const [selectedCharacter, setSelectedCharacter] = useState(
+    characterOptions[0]
+  );
+  const [disabledCharacterIds, setDisabledCharacterIds] = useState<string[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/lobby/${lobbyCode}/playerCharacters`
+          `http://${serverAddress}:8080/api/lobby/${lobbyCode}/playerCharacters`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -117,14 +132,19 @@ export default function CreateCharacterScene({
     }
   }, [disabledCharacterIds, selectedCharacter.id]);
 
-  const characterOptionsWithAvatars = characterOptions.map(character => ({
+  const characterOptionsWithAvatars = characterOptions.map((character) => ({
     value: character.id,
     label: (
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
         <img
           src={character.avatarSrc}
           alt={character.name}
-          style={{ width: '24px', height: '32px', marginRight: '10px', imageRendering: 'pixelated' }}
+          style={{
+            width: "24px",
+            height: "32px",
+            marginRight: "10px",
+            imageRendering: "pixelated",
+          }}
         />
         {character.name}
       </div>
@@ -150,12 +170,19 @@ export default function CreateCharacterScene({
           </Avatar.Root>
         </div>
 
-        <form onSubmit={onSubmit} className="flex flex-col items-center gap-2 pb-4">
+        <form
+          onSubmit={onSubmit}
+          className="flex flex-col items-center gap-2 pb-4"
+        >
           <Select
             name="playerCharacter"
-            value={characterOptionsWithAvatars.find(option => option.value === selectedCharacter.id)}
+            value={characterOptionsWithAvatars.find(
+              (option) => option.value === selectedCharacter.id
+            )}
             onChange={(option) => {
-              const newCharacter = characterOptions.find(character => character.id === option?.value);
+              const newCharacter = characterOptions.find(
+                (character) => character.id === option?.value
+              );
               if (newCharacter) {
                 setSelectedCharacter(newCharacter);
               }
@@ -164,7 +191,7 @@ export default function CreateCharacterScene({
             isOptionDisabled={(option) => option.isDisabled}
             styles={customStyles}
             className="pt-1 pb-1 block w-full border-gray-700 rounded-md"
-            />
+          />
           <input
             name="playerName"
             type="text"

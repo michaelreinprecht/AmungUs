@@ -1,3 +1,4 @@
+import { serverAddress } from "@/app/globals";
 import { useEffect, useState } from "react";
 
 export interface Lobby {
@@ -17,7 +18,7 @@ export default function useSelectLobbyScene() {
   async function fetchLobbies() {
     try {
       const response = await fetch(
-        "http://localhost:8080/api/lobby/getPublicLobbies"
+        `http://${serverAddress}:8080/api/lobby/getPublicLobbies`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch lobbies");

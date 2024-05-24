@@ -3,6 +3,7 @@ import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { Text } from "@react-three/drei";
 import { Client } from "@stomp/stompjs";
+import { serverAddress } from "@/app/globals";
 
 interface EmergencyButtonProps {
   position: { x: number; y: number; z: number };
@@ -31,7 +32,7 @@ const EmergencyButton: React.FC<EmergencyButtonProps> = ({
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8081/votingService",
+      brokerURL: `ws://${serverAddress}:8081/votingService`,
       onConnect: () => {
         if (!votingClientConnected) {
           votingClientConnected = true;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { characterOptions } from "@/app/globals";
+import { characterOptions, serverAddress } from "@/app/globals";
 
 export default function useCreateLobbyScene() {
   const [playerName, setPlayerName] = useState("");
@@ -15,7 +15,7 @@ export default function useCreateLobbyScene() {
   async function createLobby(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); // Prevent the default form submission behavior
 
-    const url = "http://localhost:8080/api/lobby/createLobby";
+    const url = `http://${serverAddress}:8080/api/lobby/createLobby`;
     const requestBody = {
       maxPlayerCount: maxPlayerCount,
       maxKillerCount: maxKillerCount,

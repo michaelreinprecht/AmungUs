@@ -1,3 +1,4 @@
+import { serverAddress } from "@/app/globals";
 import { Client } from "@stomp/stompjs";
 
 let votingClient = new Client();
@@ -5,7 +6,7 @@ let lobbyClient = new Client();
 
 export function getNewLobbyServiceClient() {
   lobbyClient = new Client({
-    brokerURL: "ws://localhost:8080/lobbyService",
+    brokerURL: `ws://${serverAddress}:8080/lobbyService`,
   });
   return lobbyClient;
 }
@@ -20,7 +21,7 @@ export function deactivateLobbyServiceClient() {
 
 export function getNewVotingServiceClient() {
   votingClient = new Client({
-    brokerURL: "ws://localhost:8081/votingService",
+    brokerURL: `ws://${serverAddress}:8081/votingService`,
   });
   return votingClient;
 }

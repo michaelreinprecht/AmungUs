@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
+import { serverAddress } from "@/app/globals";
 export function usePlayerHeartbeat(
   lobbyCode: string,
   activePlayerName: string
@@ -12,7 +13,7 @@ export function usePlayerHeartbeat(
   useEffect(() => {
     let heartbeatInterval: any;
     const heartbeatClient = new Client({
-      brokerURL: "ws://localhost:8083/heartbeatService",
+      brokerURL: `ws://${serverAddress}:8083/heartbeatService`,
       onConnect: () => {
         if (!heartbeatClientConnected) {
           setHeartbeatClientConnected(true);

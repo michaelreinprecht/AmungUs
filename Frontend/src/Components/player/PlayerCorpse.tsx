@@ -4,6 +4,7 @@ import { PlayerInfo } from "@/app/types";
 import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import { Text } from "@react-three/drei";
+import { serverAddress } from "@/app/globals";
 
 interface PlayerCorpseProps {
   activePlayerName: string;
@@ -26,7 +27,7 @@ const PlayerCorpse: React.FC<PlayerCorpseProps> = ({
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8081/votingService",
+      brokerURL: `ws://${serverAddress}:8081/votingService`,
       onConnect: () => {
         setVotingClient(client);
       },

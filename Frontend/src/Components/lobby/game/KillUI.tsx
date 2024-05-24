@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
+import { serverAddress } from "@/app/globals";
 
 type KillUIProps = {
   isKillEnabled: boolean | undefined;
@@ -31,7 +32,7 @@ export default function KillUI({
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8080/lobbyService",
+      brokerURL: `ws://${serverAddress}:8080/lobbyService`,
     });
     client.activate();
     setLobbyClient(client);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import { VotingPlayerInfo, VotingRequest } from "@/app/types";
+import { serverAddress } from "@/app/globals";
 
 export function useVotingUI(
   initialTimer: number,
@@ -28,7 +29,7 @@ export function useVotingUI(
   // Subscribe to voting info updates
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8081/votingService",
+      brokerURL: `ws://${serverAddress}:8081/votingService`,
       onConnect: () => {
         if (!votingClientConnected) {
           votingClientConnected = true;

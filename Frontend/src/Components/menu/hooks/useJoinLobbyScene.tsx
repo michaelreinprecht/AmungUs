@@ -1,3 +1,4 @@
+import { serverAddress } from "@/app/globals";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -9,15 +10,15 @@ export function useJoinLobbyScene() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const lobbyCode = formData.get("lobbyCode") as string;
-        if (await checkIfLobbyExists(lobbyCode)) {
-            router.push(`/lobby/${lobbyCode}`);
-          }
+    if (await checkIfLobbyExists(lobbyCode)) {
+      router.push(`/lobby/${lobbyCode}`);
+    }
   }
 
   async function checkIfLobbyExists(lobbyCode: string) {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/lobby/${lobbyCode}`
+        `http://${serverAddress}:8080/api/lobby/${lobbyCode}`
       );
       if (!response.ok) {
         throw Error("Failed to fetch lobby data");

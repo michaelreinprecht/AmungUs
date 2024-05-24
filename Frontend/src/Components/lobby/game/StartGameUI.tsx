@@ -1,3 +1,4 @@
+import { serverAddress } from "@/app/globals";
 import { PlayerInfo } from "@/app/types";
 import { Client } from "@stomp/stompjs";
 import { useEffect, useState } from "react";
@@ -17,7 +18,7 @@ export default function StartGameUI({
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8080/lobbyService",
+      brokerURL: `ws://${serverAddress}:8080/lobbyService`,
     });
     client.activate();
     setLobbyClient(client);
@@ -34,14 +35,14 @@ export default function StartGameUI({
         body: JSON.stringify(currentPlayer),
       });
       const taskClient = new Client({
-        brokerURL: "ws://localhost:8084/taskService",
+        brokerURL: `ws://${serverAddress}:8084/taskService`,
         onConnect: () => {
           taskClient.publish({
             destination: `/taskApp/getTasks/${lobbyCode}`,
             body: lobbyCode,
           });
-        }
-      })
+        },
+      });
       taskClient.activate();
     }
   }

@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
+import { serverAddress } from "@/app/globals";
 
 export function useChatField(
   activePlayerName: string,
@@ -12,7 +13,7 @@ export function useChatField(
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8082/chatService",
+      brokerURL: `ws://${serverAddress}:8082/chatService`,
       onConnect: () => {
         if (!lobbyClientConnected) {
           lobbyClientConnected = true;

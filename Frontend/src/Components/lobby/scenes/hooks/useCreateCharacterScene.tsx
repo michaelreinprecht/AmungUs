@@ -1,4 +1,5 @@
 import { getLobbyByCode } from "@/Components/utilityFunctions/APIService";
+import { serverAddress } from "@/app/globals";
 import { PlayerInfo } from "@/app/types";
 import { Client } from "@stomp/stompjs";
 import { FormEvent, useEffect, useState } from "react";
@@ -18,7 +19,7 @@ export function useCreateCharacterScene(
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: "ws://localhost:8080/lobbyService",
+      brokerURL: `ws://${serverAddress}:8080/lobbyService`,
       onConnect: () => {
         client.subscribe(`/lobby/${lobbyCode}/gameStarted`, (message: any) => {
           const parsedGameStarted = JSON.parse(message.body) as boolean;
@@ -32,13 +33,12 @@ export function useCreateCharacterScene(
       },
     });
     client.activate();
-    
   }, []);
 
   async function fetchPlayerNames() {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/lobby/${lobbyCode}/playerNames`
+        `http://${serverAddress}:8080/api/lobby/${lobbyCode}/playerNames`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch player names");
@@ -56,7 +56,7 @@ export function useCreateCharacterScene(
   async function fetchPlayerCharacters() {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/lobby/${lobbyCode}/playerCharacters`
+        `http://${serverAddress}:8080/api/lobby/${lobbyCode}/playerCharacters`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch player characters");

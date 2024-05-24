@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
-import { killCooldown, killRange } from "@/app/globals";
+import { killCooldown, killRange, serverAddress } from "@/app/globals";
 import getDistanceBetween from "@/Components/utilityFunctions/getDistanceBetween";
 import { GameOverInfo, PlayerInfo, Task } from "@/app/types";
 import { Client, IMessage } from "@stomp/stompjs";
@@ -11,17 +11,47 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
-  const [currentTask, setCurrentTask] = useState<Task>({ id: 0, name: "", completed: false, playerName: "", lobbyCode: "" });
+  const [currentTask, setCurrentTask] = useState<Task>({
+    id: 0,
+    name: "",
+    completed: false,
+    playerName: "",
+    lobbyCode: "",
+  });
   const [votingKill, setVotingKill] = useState<string>("");
   const [winners, setWinners] = useState<GameOverInfo>({
     winner: "",
     teamMembers: [],
   });
   const possibleTasks = [
-    { id: 1, name: "ColorTask", completed: false, playerName: "", lobbyCode: "" },
-    { id: 2, name: "MemoryTask", completed: false, playerName: "", lobbyCode: "" },
-    { id: 3, name: "ReactionTask", completed: false, playerName: "", lobbyCode: "" },
-    { id: 4, name: "FindTask", completed: false, playerName: "", lobbyCode: "" },
+    {
+      id: 1,
+      name: "ColorTask",
+      completed: false,
+      playerName: "",
+      lobbyCode: "",
+    },
+    {
+      id: 2,
+      name: "MemoryTask",
+      completed: false,
+      playerName: "",
+      lobbyCode: "",
+    },
+    {
+      id: 3,
+      name: "ReactionTask",
+      completed: false,
+      playerName: "",
+      lobbyCode: "",
+    },
+    {
+      id: 4,
+      name: "FindTask",
+      completed: false,
+      playerName: "",
+      lobbyCode: "",
+    },
   ];
   const [currentPlayerTasks, setCurrentPlayerTasks] = useState<Task[]>([]);
   const [allPlayerTasks, setAllPlayerTasks] = useState<Task[]>([]);
@@ -29,7 +59,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
 
   useEffect(() => {
     const votingClient = new Client({
-      brokerURL: "ws://localhost:8081/votingService",
+      brokerURL: `ws://${serverAddress}:8081/votingService`,
       onConnect: () => {
         if (!votingClientIsConnected) {
           votingClientIsConnected = true;
@@ -56,7 +86,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     votingClient.activate();
 
     const lobbyClient = new Client({
-      brokerURL: "ws://localhost:8080/lobbyService",
+      brokerURL: `ws://${serverAddress}:8080/lobbyService`,
       onConnect: () => {
         lobbyClient.subscribe(
           `/lobby/${lobbyCode}/gameOver`,
@@ -72,11 +102,11 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     lobbyClient.activate();
 
     const taskClient = new Client({
-      brokerURL: "ws://localhost:8084/taskService",
+      brokerURL: `ws://${serverAddress}:8084/taskService`,
       onConnect: () => {
         console.log("Connected to taskService");
-         // Subscribe to getTasks endpoint
-         taskClient.subscribe(`/task/getTasks/${lobbyCode}`, (message) => {
+        // Subscribe to getTasks endpoint
+        taskClient.subscribe(`/task/getTasks/${lobbyCode}`, (message) => {
           const tasks = JSON.parse(message.body) as Task[];
           console.log("Tasks received: ", tasks);
           setAllPlayerTasks(tasks);
@@ -122,7 +152,8 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
         victim.playerPositionY
       );
       const lastKillTime = new Date(killer.lastKillTime);
-      const timeSinceLastKill = (new Date().getTime() - lastKillTime.getTime()) / 1000;
+      const timeSinceLastKill =
+        (new Date().getTime() - lastKillTime.getTime()) / 1000;
       return timeSinceLastKill >= killCooldown && distance <= killRange;
     }
     return false;
@@ -143,13 +174,13 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   function updateTask(updatedTask: Task) {
     console.log("allPlayerTasks: ", allPlayerTasks);
     const taskClient = new Client({
-      brokerURL: "ws://localhost:8084/taskService",
+      brokerURL: `ws://${serverAddress}:8084/taskService`,
       onConnect: () => {
         taskClient.publish({
           destination: `/taskApp/completeTask/${lobbyCode}`,
           body: JSON.stringify(updatedTask),
         });
-      }
+      },
     });
     taskClient.activate();
   }

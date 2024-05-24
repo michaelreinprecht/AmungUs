@@ -54,3 +54,5 @@ export const characterOptions = [
     avatarSrc: "/character-10-move-1.png",
   },
 ];
+
+export const serverAddress = "10.0.40.167";

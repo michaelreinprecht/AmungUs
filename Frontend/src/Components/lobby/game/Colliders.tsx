@@ -1,3 +1,4 @@
+import { serverAddress } from "@/app/globals";
 import { RectangleCollider } from "@/app/types";
 import { useLoader } from "@react-three/fiber";
 import { useEffect, useState } from "react";
@@ -250,7 +251,7 @@ export default function Colliders() {
     async function fetchColliders() {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/lobby/colliders"
+          `http://${serverAddress}:8080/api/lobby/colliders`
         );
         colliders;
         if (!response.ok) {
