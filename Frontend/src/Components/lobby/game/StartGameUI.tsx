@@ -50,17 +50,20 @@ export default function StartGameUI({
     <>
       {!isGameStarted && (
         <>
-          <div className="absolute top-8 left-1/2 transform -translate-x-1/2 p-2 bg-gray-400 text-white text-2xl rounded-xl cursor-pointer">
-            Waiting for host to start the game ...
-          </div>
+          {currentPlayer && !currentPlayer.isHost && (
+            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 p-2 bg-gray-400 text-white text-2xl rounded-xl cursor-pointer">
+              Waiting for host to start the game ...
+            </div>          
+          )}
+
 
           {currentPlayer && currentPlayer.isHost && (
             <button
-              onClick={() => sendStartGame()}
-              className="start-game-button absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-2 bg-green-500 text-white text-6xl rounded-xl cursor-pointer"
-            >
-              Start Game
-            </button>
+            onClick={() => sendStartGame()}
+            className="start-game-button absolute top-1/4 left-2/4 w-1/4 transform -translate-x-1/2 -translate-y-1/2 p-2 cursor-pointer"
+          >
+            <img src="/StartUiBtn.png" alt="Start Game"/>
+          </button>
           )}
         </>
       )}

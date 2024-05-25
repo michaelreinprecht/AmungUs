@@ -7,12 +7,15 @@ type TaskListProps = {
 };
 
 const TaskList: React.FC<TaskListProps> = ({ currentPlayerTasks, allPlayerTasks }) => {
+  const totalTasks = allPlayerTasks.length;
+  const completedTasks = allPlayerTasks.filter(task => task.completed).length;
+  const progress = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(2) : "0.00";
+
   return (
     <div className="task-list top-2 left-2">
       <h3>All Tasks</h3>
       <p>
-        {((allPlayerTasks.filter(task => task.completed).length / allPlayerTasks.length) * 100).toFixed(2)}%
-        ({allPlayerTasks.filter(task => task.completed).length}/{allPlayerTasks.length}) Total Tasks completed
+        {progress}% ({completedTasks}/{totalTasks}) Total Tasks completed
       </p>
       <br/>
       <h3>Your Tasks</h3>
@@ -28,4 +31,3 @@ const TaskList: React.FC<TaskListProps> = ({ currentPlayerTasks, allPlayerTasks 
 };
 
 export default TaskList;
-

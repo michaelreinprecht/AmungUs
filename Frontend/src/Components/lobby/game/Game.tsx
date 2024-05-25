@@ -21,6 +21,7 @@ import TaskList from "@/Components/task/TaskList";
 import LobbyCodeUI from "./LobbyCodeUI";
 import StartGameUI from "./StartGameUI";
 import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
+import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
 
 type GameProps = {
   activePlayerName: string;
@@ -63,6 +64,9 @@ export default function Game({
     activePlayerName
   );
   const scale = 5;
+
+  // Use the custom hook for background music
+  useBackgroundMusic('/background-music.wav');
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">
