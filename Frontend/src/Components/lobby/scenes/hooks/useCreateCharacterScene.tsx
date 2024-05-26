@@ -30,6 +30,7 @@ export function useCreateCharacterScene(
           }
         });
         setLobbyClient(client);
+        getIsGameStarted();
       },
     });
     client.activate();
