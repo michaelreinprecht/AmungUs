@@ -5,10 +5,12 @@ import lobbyService.Utils;
 import lobbyService.collission.models.Collideable;
 import lobbyService.collission.models.RectangleCollider;
 import lobbyService.lobby.LobbyService;
-import lobbyService.lobby.models.Lobby;
+import org.example.Lobby;
 import lobbyService.player.models.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.PlayerInfo;
+import org.example.VotingKillRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -184,45 +186,6 @@ public class PlayerInfoController {
         // Return empty ok response
         return ResponseEntity.ok("OK");
     }
-
-    /* TODO pretty sure we can remove this, just gonna leave it here a little longer in case it causes problems
-    @MessageMapping("/{lobbyCode}/teleportPlayersToSpawn")
-    public void teleportPlayersToSpawn(@DestinationVariable String lobbyCode, TeleportToSpawnRequest request) throws Exception {
-        String senderName = request.getSenderName();
-
-        // Get the lobby from the lobby service
-        Lobby lobby = lobbyService.getLobby(lobbyCode);
-        if (lobby != null) {
-            PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
-            if (senderPlayerInfo.isAlive() || senderName.isEmpty()) {
-                lobby.teleportPlayersToSpawn();
-                List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
-                messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
-            }
-        }
-    }
-
-
-    @MessageMapping("/{lobbyCode}/corpseFoundReceiver")
-    public void corpseFound(@DestinationVariable String lobbyCode, CorpseFoundRequest request) throws Exception {
-        String senderName = request.getSenderName();
-        String corpsePlayerName = request.getCorpsePlayerName();
-
-        logger.info("Found corpse for lobby code: {}", lobbyCode);
-        logger.info("Corps of player: {}", corpsePlayerName);
-        // Get the lobby from the lobby service
-        Lobby lobby = lobbyService.getLobby(lobbyCode);
-        if (lobby != null) {
-            PlayerInfo senderPlayerInfo = lobby.getPlayerInfoForName(senderName);
-            if (senderPlayerInfo.isAlive()) {
-                lobby.removeCorpses();
-            }
-            List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
-            // Send the updated player info to all players
-            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
-        }
-    }
-*/
 
     @GetMapping("/api/lobby/{lobbyCode}/playerNames")
     @ResponseBody

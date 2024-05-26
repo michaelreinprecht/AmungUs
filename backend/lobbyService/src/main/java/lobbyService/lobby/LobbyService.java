@@ -1,6 +1,6 @@
 package lobbyService.lobby;
 
-import lobbyService.lobby.models.Lobby;
+import org.example.Lobby;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package lobbyService.player.models;
+package org.example;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -3,6 +3,7 @@ package lobbyService.player.models;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.example.PlayerInfo;
 
 import java.util.List;
 

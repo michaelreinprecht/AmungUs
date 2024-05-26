@@ -1,7 +1,7 @@
 package votingService.controllers;
 
-import lobbyService.lobby.models.Lobby;
-import lobbyService.player.models.PlayerInfo;
+import org.example.Lobby;
+import org.example.PlayerInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
-import lobbyService.player.models.VotingKillRequest;
+import org.example.VotingKillRequest;
 import votingService.models.VotingLobby;
 import votingService.models.VotingPlayerInfo;
 import votingService.models.VotingRequest;

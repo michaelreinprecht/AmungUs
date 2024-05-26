@@ -1,14 +1,13 @@
 package votingService.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lobbyService.player.models.PlayerInfo;
+import org.example.PlayerInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
