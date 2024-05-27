@@ -221,6 +221,15 @@ public class PlayerInfoController {
         }
     }
 
+    @GetMapping("/api/lobby/{lobbyCode}/gameStarted")
+    @ResponseBody
+    public boolean getGameStarted(@PathVariable String lobbyCode) {
+        // Handle HTTP GET request for fetching player names
+        logger.info("Shits been called");
+        Lobby lobby = lobbyService.getLobby(lobbyCode);
+        return lobby.isGameStarted();
+    }
+
     private boolean isKillAllowed(PlayerInfo killer, PlayerInfo victim) {
         if (Objects.equals(killer.getPlayerRole(), "killer")) { //Check if player is really killer!
             if (!Objects.equals(victim.getPlayerRole(), "killer")) { //Make sure killers cannot kill other killers!

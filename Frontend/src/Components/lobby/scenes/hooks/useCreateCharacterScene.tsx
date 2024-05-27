@@ -1,6 +1,5 @@
 import { getLobbyByCode } from "@/Components/utilityFunctions/APIService";
 import { serverAddress } from "@/app/globals";
-import { PlayerInfo } from "@/app/types";
 import { Client } from "@stomp/stompjs";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -14,8 +13,8 @@ export function useCreateCharacterScene(
   const [errorMessage, setErrorMessage] = useState("");
   let playerNames = [""];
   let playerCharacters = [""];
+  let lobbyStarted = false;
   let isLobbyFull = false;
-  const [lobbyClient, setLobbyClient] = useState<Client>();
 
   useEffect(() => {
     const client = new Client({
@@ -29,8 +28,6 @@ export function useCreateCharacterScene(
             setIsGameStarted(false);
           }
         });
-        setLobbyClient(client);
-        getIsGameStarted();
       },
     });
     client.activate();
@@ -72,6 +69,24 @@ export function useCreateCharacterScene(
     }
   }
 
+  async function fetchGameStarted() {
+    try {
+      const response = await fetch(
+        `http://${serverAddress}:8080/api/lobby/${lobbyCode}/gameStarted`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch gameStarted state");
+      }
+      const data = (await response.json()) as boolean;
+      lobbyStarted = data;
+    } catch (error) {
+      alert(
+        "Unable to fetch gameStarted state, please make sure you are connected to the internet or try again later."
+      );
+      throw error;
+    }
+  }
+
   async function checkForFullLobby() {
     try {
       const lobbyData = await getLobbyByCode(lobbyCode);
@@ -88,9 +103,10 @@ export function useCreateCharacterScene(
   ) {
     await fetchPlayerNames();
     await fetchPlayerCharacters();
+    await fetchGameStarted();
 
     await checkForFullLobby();
-    if (isGameStarted) {
+    if (isGameStarted || lobbyStarted) {
       setErrorMessage("Game has already started");
     } else if (isLobbyFull) {
       //Set error if lobby is full
@@ -108,25 +124,11 @@ export function useCreateCharacterScene(
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    getIsGameStarted();
     const form = event.currentTarget;
     const data = new FormData(form);
     const playerName = data.get("playerName") as string;
     const selectedCharacter = data.get("playerCharacter") as string;
     await checkIfInputAvailable(playerName, selectedCharacter);
-  }
-
-  function getIsGameStarted() {
-    if (lobbyClient) {
-      let emptyPlayerInfo = {
-        playerName: "",
-        playerCharacter: "",
-      };
-      lobbyClient.publish({
-        destination: `/app/${lobbyCode}/gameStartedReceiver`,
-        body: JSON.stringify(emptyPlayerInfo),
-      });
-    }
   }
 
   return {
