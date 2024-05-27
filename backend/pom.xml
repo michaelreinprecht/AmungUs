@@ -14,6 +14,7 @@
         <module>chatService</module>
         <module>heartbeatService</module>
         <module>taskService</module>
+        <module>globalClasses</module>
     </modules>
 
     <properties>

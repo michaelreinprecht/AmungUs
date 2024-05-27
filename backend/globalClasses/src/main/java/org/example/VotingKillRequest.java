@@ -1,4 +1,4 @@
-package lobbyService.player.models;
+package org.example;
 
 import lombok.Getter;
 import lombok.Setter;

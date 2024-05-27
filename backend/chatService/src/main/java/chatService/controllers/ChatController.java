@@ -1,7 +1,7 @@
 package chatService.controllers;
 
-import lobbyService.lobby.models.Lobby;
-import lobbyService.player.models.PlayerInfo;
+import org.example.Lobby;
+import org.example.PlayerInfo;
 import chatService.models.ChatMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

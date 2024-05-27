@@ -1,6 +1,5 @@
-package lobbyService.lobby.models;
+package org.example;
 
-import lobbyService.player.models.PlayerInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;

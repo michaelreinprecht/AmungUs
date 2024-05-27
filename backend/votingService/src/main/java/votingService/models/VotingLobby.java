@@ -1,7 +1,7 @@
 package votingService.models;
 
-import lobbyService.lobby.models.Lobby;
-import lobbyService.player.models.PlayerInfo;
+import org.example.Lobby;
+import org.example.PlayerInfo;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.LogManager;

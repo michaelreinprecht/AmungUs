@@ -1,6 +1,6 @@
 package votingService.services;
 
-import lobbyService.lobby.models.Lobby;
+import org.example.Lobby;
 import org.springframework.stereotype.Service;
 import votingService.models.VotingLobby;
 
