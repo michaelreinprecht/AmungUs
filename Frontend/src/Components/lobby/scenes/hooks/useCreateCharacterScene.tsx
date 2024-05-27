@@ -8,7 +8,10 @@ export function useCreateCharacterScene(
   isGameStarted: boolean,
   setActivePlayerName: (newActivePlayerName: string) => void,
   setActivePlayerCharacter: (newActivePlayerName: string) => void,
-  setIsGameStarted: (isGameStarted: boolean) => void
+  hostPlayerName: string,
+  hostPlayerCharacter: string,
+  setIsGameStarted: (isGameStarted: boolean) => void,
+  setIsJoiningPossible: (isJoiningPossible: boolean) => void
 ) {
   const [errorMessage, setErrorMessage] = useState("");
   let playerNames = [""];
@@ -32,6 +35,10 @@ export function useCreateCharacterScene(
     });
     client.activate();
   }, []);
+
+  useEffect(() => {
+    attemptJoin(null);
+  }, [hostPlayerName, hostPlayerCharacter]);
 
   async function fetchPlayerNames() {
     try {
@@ -116,9 +123,10 @@ export function useCreateCharacterScene(
       setErrorMessage("Name already taken");
     } else if (playerCharacters.includes(playerCharacter)) {
       setErrorMessage("Character already taken");
-    } else {
+    } else if (playerName !== "" && playerCharacter !== "") {
       setActivePlayerCharacter(playerCharacter);
       setActivePlayerName(playerName);
+      setIsJoiningPossible(true);
     }
   }
 
@@ -126,8 +134,20 @@ export function useCreateCharacterScene(
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const playerName = data.get("playerName") as string;
-    const selectedCharacter = data.get("playerCharacter") as string;
+    attemptJoin(data);
+  }
+
+  async function attemptJoin(data: FormData | null) {
+    let playerName = "";
+    let selectedCharacter = "";
+    if (hostPlayerName !== "" && hostPlayerCharacter !== "") {
+      playerName = hostPlayerName;
+      selectedCharacter = hostPlayerCharacter;
+    }
+    if (data) {
+      playerName = data.get("playerName") as string;
+      selectedCharacter = data.get("playerCharacter") as string;
+    }
     await checkIfInputAvailable(playerName, selectedCharacter);
   }
 

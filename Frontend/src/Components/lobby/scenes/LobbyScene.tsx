@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import CreateCharacterScene from "./CreateCharacterScene";
 import Game from "../game/Game";
-import { Client } from "@stomp/stompjs";
 
 type LobbyProps = {
   lobbyCode: string;
@@ -14,6 +13,13 @@ function LobbyScene({
   initialPlayerName,
   initialPlayerCharacter,
 }: LobbyProps) {
+  const [isJoiningPossible, setIsJoiningPossible] = useState<boolean>(false);
+  const [hostPlayerName, setHostPlayerName] = useState<string>(
+    initialPlayerName || ""
+  );
+  const [hostPlayerCharacter, setHostPlayerCharacter] = useState<string>(
+    initialPlayerName || ""
+  );
   const [activePlayerName, setActivePlayerName] = useState(
     initialPlayerName || ""
   );
@@ -24,35 +30,43 @@ function LobbyScene({
 
   useEffect(() => {
     // Check and set initial values if they are not already set
-    if (!activePlayerName && typeof window !== "undefined") {
+    if (
+      !activePlayerName &&
+      !activePlayerCharacter &&
+      typeof window !== "undefined"
+    ) {
       const urlParams = new URLSearchParams(window.location.search);
       const playerName = urlParams.get("initialPlayerName");
-      if (playerName) setActivePlayerName(playerName);
-    }
-
-    if (!activePlayerCharacter && typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
       const playerCharacter = urlParams.get("initialPlayerCharacter");
-      if (playerCharacter) setActivePlayerCharacter(playerCharacter);
+
+      if (playerName && playerCharacter) {
+        setActivePlayerName(playerName);
+        setHostPlayerName(playerName);
+        setActivePlayerCharacter(playerCharacter);
+        setHostPlayerCharacter(playerCharacter);
+      }
     }
   }, []);
 
   return (
     <>
-      {activePlayerName === "" && (
+      {!isJoiningPossible && (
         <>
           <h1>Lobby Code: {lobbyCode}</h1>
           <CreateCharacterScene
             setActivePlayerName={setActivePlayerName}
             setActivePlayerCharacter={setActivePlayerCharacter}
+            hostPlayerName={hostPlayerName}
+            hostPlayerCharacter={hostPlayerCharacter}
             lobbyCode={lobbyCode}
             isGameStarted={isGameStarted}
             setIsGameStarted={setIsGameStarted}
+            setIsJoiningPossible={setIsJoiningPossible}
           />
         </>
       )}
 
-      {activePlayerName !== "" && (
+      {isJoiningPossible && (
         <>
           <Game
             activePlayerName={activePlayerName}
