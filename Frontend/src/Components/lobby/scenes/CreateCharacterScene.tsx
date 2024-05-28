@@ -6,12 +6,15 @@ import { CSSProperties } from "react";
 import { characterOptions, serverAddress } from "@/app/globals";
 import Select from "react-select";
 
-interface PickNameSceneProps {
+interface CreateCharacterSceneProps {
   setActivePlayerName: (newActivePlayerName: string) => void;
   setActivePlayerCharacter: (newActivePlayerCharacter: string) => void;
+  hostPlayerName: string;
+  hostPlayerCharacter: string;
   lobbyCode: string;
   isGameStarted: boolean;
   setIsGameStarted: (isGameStarted: boolean) => void;
+  setIsJoiningPossible: (isJoiningPossible: boolean) => void;
 }
 
 const pixelArtStyle: CSSProperties = {
@@ -83,16 +86,22 @@ const customStyles = {
 export default function CreateCharacterScene({
   setActivePlayerName,
   setActivePlayerCharacter,
+  hostPlayerName,
+  hostPlayerCharacter,
   lobbyCode,
   isGameStarted,
   setIsGameStarted,
-}: PickNameSceneProps) {
+  setIsJoiningPossible,
+}: CreateCharacterSceneProps) {
   const { errorMessage, onSubmit } = useCreateCharacterScene(
     lobbyCode,
     isGameStarted,
     setActivePlayerName,
     setActivePlayerCharacter,
-    setIsGameStarted
+    hostPlayerName,
+    hostPlayerCharacter,
+    setIsGameStarted,
+    setIsJoiningPossible
   );
   const [selectedCharacter, setSelectedCharacter] = useState(
     characterOptions[0]
