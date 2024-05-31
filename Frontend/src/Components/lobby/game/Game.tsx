@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import Background from "./Background";
 import PlayerCharacter from "../../player/PlayerCharacter";
@@ -23,6 +23,7 @@ import StartGameUI from "./StartGameUI";
 import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
 import MapUI from "./MapUI";
 import { Task, TaskObjectData } from "@/app/types";
+import { TrackballControls } from "three/examples/jsm/Addons.js";
 
 type GameProps = {
   activePlayerName: string;
@@ -65,63 +66,51 @@ export default function Game({
     activePlayerName
   );
   const scale = 5;
+  const [taskObjects, setTaskObjects] = useState<TaskObjectData[]>([]);
+  const [taskPositions, setTaskPositions] = useState<
+    [number, number, number][]
+  >([]);
 
-  const taskObjects: TaskObjectData[] = [
-    {
-      task: currentPlayerTasks[0],
-      position: [150, 48, 0],
-      taskObjectImage: currentPlayerTasks[0]
-        ? currentPlayerTasks[0].completed
-          ? "/TaskObjectCompleted.png"
-          : "/TaskObject.png"
-        : "/TaskObject.png",
-    },
-    {
-      task: currentPlayerTasks[1],
-      position: [178, -62, 0],
-      taskObjectImage: currentPlayerTasks[2]
-        ? currentPlayerTasks[2].completed
-          ? "/TaskObjectCompleted.png"
-          : "/TaskObject.png"
-        : "/TaskObject.png",
-    },
-    {
-      task: currentPlayerTasks[2],
-      position: [177, -88, 0],
-      taskObjectImage: currentPlayerTasks[2]
-        ? currentPlayerTasks[2].completed
-          ? "/TaskObjectCompleted.png"
-          : "/TaskObject.png"
-        : "/TaskObject.png",
-    },
-    {
-      task: currentPlayerTasks[3],
-      position: [-12, -130, 0],
-      taskObjectImage: currentPlayerTasks[3]
-        ? currentPlayerTasks[3].completed
-          ? "/TaskObjectCompleted.png"
-          : "/TaskObject.png"
-        : "/TaskObject.png",
-    },
-    {
-      task: currentPlayerTasks[4],
-      position: [-122, -46, 0],
-      taskObjectImage: currentPlayerTasks[4]
-        ? currentPlayerTasks[4].completed
-          ? "/TaskObjectCompleted.png"
-          : "/TaskObject.png"
-        : "/TaskObject.png",
-    },
-    {
-      task: currentPlayerTasks[5],
-      position: [-188, 113, 0],
-      taskObjectImage: currentPlayerTasks[5]
-        ? currentPlayerTasks[5].completed
-          ? "/TaskObjectCompleted.png"
-          : "/TaskObject.png"
-        : "/TaskObject.png",
-    },
-  ];
+  function shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  useEffect(() => {
+    const fixedTaskPositions: [number, number, number][] = [
+      [150, 48, 0],
+      [178, -62, 0],
+      [177, -88, 0],
+      [-12, -130, 0],
+      [-122, -46, 0],
+      [-188, 113, 0],
+      [-0, 0, 0],
+      [-40, 40, 0],
+    ];
+    shuffleArray(fixedTaskPositions);
+    setTaskPositions(fixedTaskPositions);
+  }, []);
+
+  useEffect(() => {
+    if (taskPositions == undefined) return;
+    const newTaskObjects: TaskObjectData[] = [];
+
+    taskPositions.forEach((position, index) => {
+      if (currentPlayerTasks.length == 0) return;
+      newTaskObjects.push({
+        task: currentPlayerTasks[index],
+        position: position,
+        taskObjectImage: currentPlayerTasks[index]
+          ? currentPlayerTasks[index].completed
+            ? "/TaskObjectCompleted.png"
+            : "/TaskObject.png"
+          : "/TaskObjectCompleted.png",
+      });
+    });
+    setTaskObjects(newTaskObjects);
+  }, [currentPlayerTasks, setCurrentPlayerTasks]);
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">

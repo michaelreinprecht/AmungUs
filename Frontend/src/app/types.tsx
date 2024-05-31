@@ -50,7 +50,7 @@ export type Task = {
 };
 
 export type TaskObjectData = {
-  task: Task;
+  task: Task | null;
   position: [number, number, number];
   taskObjectImage: string;
 };

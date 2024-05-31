@@ -114,11 +114,7 @@ export default function MapUI({
               return (
                 <img
                   key={index}
-                  src={
-                    taskObject.task.completed
-                      ? "/TaskObjectCompleted.png"
-                      : "/TaskObject.png"
-                  }
+                  src={taskObject.taskObjectImage}
                   alt="Task"
                   className="absolute"
                   style={{

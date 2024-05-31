@@ -6,7 +6,7 @@ import { Task } from "@/app/types";
 type TaskObjectProps = {
   position: [number, number, number];
   scale: number;
-  task: Task;
+  task: Task | null;
   setCurrentTask: React.Dispatch<React.SetStateAction<Task>>;
   taskObjectImage: string;
 };
@@ -22,7 +22,9 @@ function TaskObject({
   const texture = useLoader(TextureLoader, taskObjectImage);
 
   const onClick = (event: ThreeEvent<MouseEvent>) => {
-    handleTaskClick(event, task);
+    if (task != null) {
+      handleTaskClick(event, task);
+    }
   };
 
   return (
