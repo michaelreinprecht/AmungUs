@@ -1,3 +1,4 @@
+import { mapHeight, mapWidth } from "@/app/globals";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
@@ -8,7 +9,7 @@ const Background = ({ textureUrl }: { textureUrl: string }) => {
 
   return (
     <mesh position={[0, 0, -1]}>
-      <planeGeometry args={[472, 272, 1, 1]} />
+      <planeGeometry args={[mapWidth, mapHeight, 1, 1]} />
       <meshBasicMaterial map={texture} side={THREE.FrontSide} />
     </mesh>
   );

@@ -7,7 +7,7 @@ import PlayerCorpse from "@/Components/player/PlayerCorpse";
 import VotingUI from "./VotingUI";
 import ChatWindow from "../chat/ChatWindow";
 import { useGame } from "./hooks/useGame";
-import { usePlayerMovement } from '@/Components/player/hooks/usePlayerMovement';  
+import { usePlayerMovement } from "@/Components/player/hooks/usePlayerMovement";
 import EmergencyButton from "./EmergencyButton";
 import TaskObject from "@/Components/task/TaskObject";
 import ColorTask from "@/Components/task/ColorTask";
@@ -21,6 +21,8 @@ import TaskList from "@/Components/task/TaskList";
 import LobbyCodeUI from "./LobbyCodeUI";
 import StartGameUI from "./StartGameUI";
 import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
+import MapUI from "./MapUI";
+import { Task, TaskObjectData } from "@/app/types";
 
 type GameProps = {
   activePlayerName: string;
@@ -63,6 +65,63 @@ export default function Game({
     activePlayerName
   );
   const scale = 5;
+
+  const taskObjects: TaskObjectData[] = [
+    {
+      task: currentPlayerTasks[0],
+      position: [150, 48, 0],
+      taskObjectImage: currentPlayerTasks[0]
+        ? currentPlayerTasks[0].completed
+          ? "/TaskObjectCompleted.png"
+          : "/TaskObject.png"
+        : "/TaskObject.png",
+    },
+    {
+      task: currentPlayerTasks[1],
+      position: [178, -62, 0],
+      taskObjectImage: currentPlayerTasks[2]
+        ? currentPlayerTasks[2].completed
+          ? "/TaskObjectCompleted.png"
+          : "/TaskObject.png"
+        : "/TaskObject.png",
+    },
+    {
+      task: currentPlayerTasks[2],
+      position: [177, -88, 0],
+      taskObjectImage: currentPlayerTasks[2]
+        ? currentPlayerTasks[2].completed
+          ? "/TaskObjectCompleted.png"
+          : "/TaskObject.png"
+        : "/TaskObject.png",
+    },
+    {
+      task: currentPlayerTasks[3],
+      position: [-12, -130, 0],
+      taskObjectImage: currentPlayerTasks[3]
+        ? currentPlayerTasks[3].completed
+          ? "/TaskObjectCompleted.png"
+          : "/TaskObject.png"
+        : "/TaskObject.png",
+    },
+    {
+      task: currentPlayerTasks[4],
+      position: [-122, -46, 0],
+      taskObjectImage: currentPlayerTasks[4]
+        ? currentPlayerTasks[4].completed
+          ? "/TaskObjectCompleted.png"
+          : "/TaskObject.png"
+        : "/TaskObject.png",
+    },
+    {
+      task: currentPlayerTasks[5],
+      position: [-188, 113, 0],
+      taskObjectImage: currentPlayerTasks[5]
+        ? currentPlayerTasks[5].completed
+          ? "/TaskObjectCompleted.png"
+          : "/TaskObject.png"
+        : "/TaskObject.png",
+    },
+  ];
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">
@@ -123,49 +182,16 @@ export default function Game({
         />
 
         {/* Render task objects */}
+        {taskObjects.map(({ task, position, taskObjectImage }, index) => (
           <TaskObject
-            position={[128,58,0]}
+            key={index}
+            position={position}
             scale={scale}
-            task={currentPlayerTasks[0]}
+            task={task}
             setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
+            taskObjectImage={taskObjectImage}
           />
-          <TaskObject
-            position={[201,-51,0]}
-            scale={scale}
-            task={currentPlayerTasks[1]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-          <TaskObject
-            position={[189,-112,0]}
-            scale={scale}
-            task={currentPlayerTasks[2]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-          <TaskObject
-            position={[-17,-119,0]}
-            scale={scale}
-            task={currentPlayerTasks[3]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-          <TaskObject
-            position={[-124,-37,0]}
-            scale={scale}
-            task={currentPlayerTasks[4]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-          <TaskObject
-            position={[-193,111,0]}
-            scale={scale}
-            task={currentPlayerTasks[5]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-
+        ))}
       </Canvas>
 
       {/* Kill UI */}
@@ -235,6 +261,12 @@ export default function Game({
         isGameStarted={isGameStarted}
       />
 
+      <MapUI
+        currentPlayerInfo={currentPlayerInfo}
+        currentPlayerCharacter={activePlayerCharacter}
+        taskObjects={taskObjects}
+      />
+
       <GameOverUI
         activePlayerCharacter={activePlayerCharacter}
         winners={winners}
@@ -244,7 +276,10 @@ export default function Game({
 
       {/* Task List UI */}
       <div className="task-list-ui absolute top-2 left-2 p-4 bg-gray-800 text-white">
-        <TaskList currentPlayerTasks={currentPlayerTasks} allPlayerTasks={allPlayerTasks} />
+        <TaskList
+          currentPlayerTasks={currentPlayerTasks}
+          allPlayerTasks={allPlayerTasks}
+        />
       </div>
 
       {/* Display current lobby code */}
