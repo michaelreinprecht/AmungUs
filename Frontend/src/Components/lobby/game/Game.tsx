@@ -66,7 +66,7 @@ export default function Game({
   const scale = 5;
 
   // Use the custom hook for background music
-  useBackgroundMusic('/background-music.wav');
+  useBackgroundMusic('/background-music.mp3');
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">
