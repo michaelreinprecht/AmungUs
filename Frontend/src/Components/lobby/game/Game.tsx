@@ -22,7 +22,7 @@ import LobbyCodeUI from "./LobbyCodeUI";
 import StartGameUI from "./StartGameUI";
 import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
 import MapUI from "./MapUI";
-import { Task, TaskObjectData } from "@/app/types";
+import { Task, TaskObjectData, TaskObjectDisplayData } from "@/app/types";
 import { TrackballControls } from "three/examples/jsm/Addons.js";
 
 type GameProps = {
@@ -67,9 +67,9 @@ export default function Game({
   );
   const scale = 5;
   const [taskObjects, setTaskObjects] = useState<TaskObjectData[]>([]);
-  const [taskPositions, setTaskPositions] = useState<
-    [number, number, number][]
-  >([]);
+  const [taskPositions, setTaskPositions] = useState<TaskObjectDisplayData[]>(
+    []
+  );
 
   function shuffleArray(array: any[]) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -79,15 +79,47 @@ export default function Game({
   }
 
   useEffect(() => {
-    const fixedTaskPositions: [number, number, number][] = [
-      [150, 48, 0],
-      [178, -62, 0],
-      [177, -88, 0],
-      [-12, -130, 0],
-      [-122, -46, 0],
-      [-188, 113, 0],
-      [-0, 0, 0],
-      [-40, 40, 0],
+    const fixedTaskPositions: TaskObjectDisplayData[] = [
+      {
+        position: [150, 48, 0],
+        taskObjectImage: "/TaskObject.png",
+        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+      },
+      {
+        position: [178, -62, 0],
+        taskObjectImage: "/TaskObject.png",
+        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+      },
+      {
+        position: [177, -88, 0],
+        taskObjectImage: "/TaskObject.png",
+        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+      },
+      {
+        position: [-12, -130, 0],
+        taskObjectImage: "/TaskObject.png",
+        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+      },
+      {
+        position: [-122, -46, 0],
+        taskObjectImage: "/TaskObject.png",
+        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+      },
+      {
+        position: [-188, 113, 0],
+        taskObjectImage: "/TaskObject.png",
+        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+      },
+      {
+        position: [1, 20, 0],
+        taskObjectImage: "/TaskObject.png",
+        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+      },
+      {
+        position: [-31, 127, 0],
+        taskObjectImage: "/TaskObject.png",
+        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+      },
     ];
     shuffleArray(fixedTaskPositions);
     setTaskPositions(fixedTaskPositions);
@@ -97,16 +129,16 @@ export default function Game({
     if (taskPositions == undefined) return;
     const newTaskObjects: TaskObjectData[] = [];
 
-    taskPositions.forEach((position, index) => {
+    taskPositions.forEach((displayData, index) => {
       if (currentPlayerTasks.length == 0) return;
       newTaskObjects.push({
         task: currentPlayerTasks[index],
-        position: position,
+        position: displayData.position,
         taskObjectImage: currentPlayerTasks[index]
           ? currentPlayerTasks[index].completed
-            ? "/TaskObjectCompleted.png"
-            : "/TaskObject.png"
-          : "/TaskObjectCompleted.png",
+            ? displayData.taskObjectCompletedImage
+            : displayData.taskObjectImage
+          : displayData.taskObjectCompletedImage,
       });
     });
     setTaskObjects(newTaskObjects);

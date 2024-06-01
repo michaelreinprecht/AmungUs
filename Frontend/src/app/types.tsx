@@ -55,6 +55,12 @@ export type TaskObjectData = {
   taskObjectImage: string;
 };
 
+export type TaskObjectDisplayData = {
+  position: [number, number, number];
+  taskObjectImage: string;
+  taskObjectCompletedImage: string;
+};
+
 export type GameOverInfo = {
   winner: string;
   teamMembers: PlayerInfo[];

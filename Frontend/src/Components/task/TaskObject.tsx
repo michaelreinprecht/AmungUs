@@ -2,6 +2,8 @@ import { ThreeEvent, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { useTaskObject } from "./useTaskObject";
 import { Task } from "@/app/types";
+import { color } from "three/examples/jsm/nodes/Nodes.js";
+import * as THREE from "three";
 
 type TaskObjectProps = {
   position: [number, number, number];
@@ -31,6 +33,16 @@ function TaskObject({
     <mesh position={position} onClick={onClick} castShadow receiveShadow>
       <boxGeometry args={[1 * scale, 1 * scale, 1 * scale]} />
       <meshStandardMaterial map={texture} transparent={true} />
+      {task && !task.completed && (
+        <lineSegments>
+          <edgesGeometry
+            args={[
+              new THREE.BoxGeometry(1.1 * scale, 1.1 * scale, 1.1 * scale),
+            ]}
+          />
+          <lineBasicMaterial color={"green"} linewidth={3} />
+        </lineSegments>
+      )}
     </mesh>
   );
 }

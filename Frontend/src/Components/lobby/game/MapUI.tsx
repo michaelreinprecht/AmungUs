@@ -57,8 +57,8 @@ export default function MapUI({
   const resizedHeight = imageHeight * scaleFactor;
 
   // Calculate icon size based on screen size
-  const playerIconSizeFactor = Math.min(windowWidth, windowHeight) / 700; // Just a rough estimate, adjust this factor as needed
-  const taskIconSizeFactor = Math.min(windowWidth, windowHeight) / 1000; // Just a rough estimate, adjust this factor as needed
+  const playerIconSizeFactor = Math.min(windowWidth, windowHeight) / 600; // Just a rough estimate, adjust this factor as needed
+  const taskIconSizeFactor = Math.min(windowWidth, windowHeight) / 500; // Just a rough estimate, adjust this factor as needed
 
   if (currentPlayerInfo) {
     // Scale the player's position based on the resized map dimensions
@@ -106,6 +106,7 @@ export default function MapUI({
                   top: playerIconY,
                   transform: "translate(-50%, -50%)",
                   width: `${playerIconSizeFactor}em`,
+                  filter: "drop-shadow(0 0 10px lightblue)",
                 }}
               />
             )}
@@ -122,6 +123,7 @@ export default function MapUI({
                     top: y,
                     transform: "translate(-50%, -50%)",
                     width: `${taskIconSizeFactor}em`,
+                    filter: "drop-shadow(0 0 10px white)",
                   }}
                 />
               );
