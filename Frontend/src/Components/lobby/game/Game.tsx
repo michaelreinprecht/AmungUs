@@ -82,43 +82,43 @@ export default function Game({
     const fixedTaskPositions: TaskObjectDisplayData[] = [
       {
         position: [150, 48, 0],
-        taskObjectImage: "/TaskObject.png",
+        taskObjectImage: "/BowTask.png",
         taskObjectCompletedImage: "/TaskObjectCompleted.png",
       },
       {
         position: [178, -62, 0],
-        taskObjectImage: "/TaskObject.png",
-        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+        taskObjectImage: "/ChaliceTask.png",
+        taskObjectCompletedImage: "/ChaliceTaskCompleted.png",
       },
       {
         position: [177, -88, 0],
-        taskObjectImage: "/TaskObject.png",
-        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+        taskObjectImage: "/KeyTask.png",
+        taskObjectCompletedImage: "/KeyTaskCompleted.png",
       },
       {
         position: [-12, -130, 0],
-        taskObjectImage: "/TaskObject.png",
-        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+        taskObjectImage: "/ShieldTask.png",
+        taskObjectCompletedImage: "/ShieldTaskCompleted.png",
       },
       {
         position: [-122, -46, 0],
-        taskObjectImage: "/TaskObject.png",
-        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+        taskObjectImage: "/BowTask.png",
+        taskObjectCompletedImage: "/BowTaskCompleted.png",
       },
       {
         position: [-188, 113, 0],
-        taskObjectImage: "/TaskObject.png",
-        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+        taskObjectImage: "/ChaliceTask.png",
+        taskObjectCompletedImage: "/ChaliceTaskCompleted.png",
       },
       {
         position: [1, 20, 0],
-        taskObjectImage: "/TaskObject.png",
-        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+        taskObjectImage: "/KeyTask.png",
+        taskObjectCompletedImage: "/KeyTaskCompleted.png",
       },
       {
         position: [-31, 127, 0],
-        taskObjectImage: "/TaskObject.png",
-        taskObjectCompletedImage: "/TaskObjectCompleted.png",
+        taskObjectImage: "/ShieldTask.png",
+        taskObjectCompletedImage: "/ShieldTaskCompleted.png",
       },
     ];
     shuffleArray(fixedTaskPositions);
