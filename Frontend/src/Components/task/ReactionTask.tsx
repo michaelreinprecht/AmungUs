@@ -34,12 +34,18 @@ function ReactionTask({ setCurrentTask, setCurrentPlayerTasks, currentTask, upda
 
   const handleClick = () => {
     if (showIcon) {
+      playSound();
       const updatedCount = clickCount + 1;
       setClickCount(updatedCount);
       sessionStorage.setItem(`reactionTaskClickCount-${currentTask.id}`, updatedCount.toString());
       setShowIcon(false);
     }
   };
+
+  function playSound() {
+    const audio = new Audio('/gun-shot.mp3');
+    audio.play();
+  }
 
   useEffect(() => {
     let timer: NodeJS.Timeout;

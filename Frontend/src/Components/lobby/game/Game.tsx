@@ -21,7 +21,6 @@ import TaskList from "@/Components/task/TaskList";
 import LobbyCodeUI from "./LobbyCodeUI";
 import StartGameUI from "./StartGameUI";
 import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/playerPositionHandler";
-import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
 
 type GameProps = {
   activePlayerName: string;
@@ -37,6 +36,7 @@ export default function Game({
   isGameStarted,
 }: GameProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const {
     votingKill,
     isGamePaused,
@@ -65,11 +65,16 @@ export default function Game({
   );
   const scale = 5;
 
-  // Use the custom hook for background music
-  useBackgroundMusic('/background-music.mp3');
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.2; // Set volume to 20%
+      audioRef.current.play();
+    }
+  }, []);
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">
+      <audio ref={audioRef} src="/game-music.mp3" loop />
       <Canvas
         camera={{
           position: [0, 0, 32],
@@ -127,48 +132,48 @@ export default function Game({
         />
 
         {/* Render task objects */}
-          <TaskObject
-            position={[128,58,0]}
-            scale={scale}
-            task={currentPlayerTasks[0]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-          <TaskObject
-            position={[201,-51,0]}
-            scale={scale}
-            task={currentPlayerTasks[1]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-          <TaskObject
-            position={[189,-112,0]}
-            scale={scale}
-            task={currentPlayerTasks[2]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-          <TaskObject
-            position={[-17,-119,0]}
-            scale={scale}
-            task={currentPlayerTasks[3]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-          <TaskObject
-            position={[-124,-37,0]}
-            scale={scale}
-            task={currentPlayerTasks[4]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
-          <TaskObject
-            position={[-193,111,0]}
-            scale={scale}
-            task={currentPlayerTasks[5]}
-            setCurrentTask={setCurrentTask}
-            currentTask={currentTask}
-          />
+        <TaskObject
+          position={[128, 58, 0]}
+          scale={scale}
+          task={currentPlayerTasks[0]}
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
+        <TaskObject
+          position={[201, -51, 0]}
+          scale={scale}
+          task={currentPlayerTasks[1]}
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
+        <TaskObject
+          position={[189, -112, 0]}
+          scale={scale}
+          task={currentPlayerTasks[2]}
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
+        <TaskObject
+          position={[-17, -119, 0]}
+          scale={scale}
+          task={currentPlayerTasks[3]}
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
+        <TaskObject
+          position={[-124, -37, 0]}
+          scale={scale}
+          task={currentPlayerTasks[4]}
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
+        <TaskObject
+          position={[-193, 111, 0]}
+          scale={scale}
+          task={currentPlayerTasks[5]}
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+        />
 
       </Canvas>
 

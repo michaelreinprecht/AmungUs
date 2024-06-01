@@ -76,11 +76,17 @@ function MemoryTask({ setCurrentTask, setCurrentPlayerTasks, currentTask, update
           setFlippedCards([]);
         }, 1000);
       } else {
+        // If symbols match, play the sound
+        playSound();
         setFlippedCards([]);
       }
     }
   };
-  
+
+  function playSound() {
+    const audio = new Audio('/correct.mp3');
+    audio.play();
+  }
 
   // Save current progress to session storage
   useEffect(() => {

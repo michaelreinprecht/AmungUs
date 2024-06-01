@@ -18,6 +18,7 @@ export default function KillUI({
 
   function handleKill() {
     if (isKillEnabled) {
+      playSound();
       const requestBody = {
         killerName: activePlayerName,
         victimName: victimName,
@@ -27,6 +28,12 @@ export default function KillUI({
         body: JSON.stringify(requestBody),
       });
     }
+  }
+
+  function playSound() {
+    const audio = new Audio('/death.mp3');
+    audio.volume = 0.5; // Set volume to 20%
+    audio.play();
   }
 
   useEffect(() => {

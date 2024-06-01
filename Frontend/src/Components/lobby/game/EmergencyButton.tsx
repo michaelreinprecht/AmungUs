@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLoader, useThree } from "@react-three/fiber";
+import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { Text } from "@react-three/drei";
 import { Client } from "@stomp/stompjs";
@@ -62,15 +62,24 @@ const EmergencyButton: React.FC<EmergencyButtonProps> = ({
 
   function handleEmergencyClick() {
     if (!isGamePaused && !isEmergencyButtonOnCooldown()) {
-      const votingStateRequest = {
-        senderName: activePlayerName,
-        votingState: true,
-      };
-      votingClient?.publish({
-        destination: `/votingApp/${lobbyCode}/emergencyVotingReceiver`,
-        body: JSON.stringify(votingStateRequest),
-      });
+      playSound();
+      setTimeout(() => {
+        const votingStateRequest = {
+          senderName: activePlayerName,
+          votingState: true,
+        };
+        votingClient?.publish({
+          destination: `/votingApp/${lobbyCode}/emergencyVotingReceiver`,
+          body: JSON.stringify(votingStateRequest),
+        });
+      }, 4000); // 4-second delay
     }
+  }
+
+  function playSound() {
+    const audio = new Audio('/alert.mp3');
+    audio.volume = 0.5; 
+    audio.play();
   }
 
   return (

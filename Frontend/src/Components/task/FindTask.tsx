@@ -49,12 +49,18 @@ function FindTask({ setCurrentTask, setCurrentPlayerTasks, currentTask, updateTa
   function handleBombClick(iconId: number) {
     const clickedIcon = icons[iconId];
     if (clickedIcon === '💀') {
+      playSound();
       setIcons(prevIcons => {
         const newIcons = [...prevIcons];
         newIcons[iconId] = null!;
         return newIcons;
       });
     }
+  }
+
+  function playSound() {
+    const audio = new Audio('/laser-gun.mp3');
+    audio.play();
   }
 
   return (

@@ -40,20 +40,29 @@ interface ColorTaskProps {
 function ColorTask({ setCurrentTask, setCurrentPlayerTasks, currentTask, updateTask }: ColorTaskProps) {
   const taskKeyPrefix = `colorTask-${currentTask.id}`;
 
-  const getInitialState = (key: string) => {
-    const savedState = sessionStorage.getItem(key);
-    return savedState ? JSON.parse(savedState) : shuffleArray([...initialColors]);
-  };
-
-  const [startColors, setStartColors] = useState<Color[]>(() => getInitialState(`${taskKeyPrefix}-startColors`));
-  const [endColors, setEndColors] = useState<Color[]>(() => getInitialState(`${taskKeyPrefix}-endColors`));
-  const [connections, setConnections] = useState<Record<Color, boolean>>(() => {
-    const savedConnections = sessionStorage.getItem(`${taskKeyPrefix}-connections`);
-    return savedConnections ? JSON.parse(savedConnections) : initialColors.reduce((acc, color) => {
+  const initializeState = () => {
+    const newStartColors = shuffleArray([...initialColors]);
+    const newEndColors = shuffleArray([...initialColors]);
+    const newConnections = initialColors.reduce((acc, color) => {
       acc[color] = false;
       return acc;
     }, {} as Record<Color, boolean>);
-  });
+
+    sessionStorage.setItem(`${taskKeyPrefix}-startColors`, JSON.stringify(newStartColors));
+    sessionStorage.setItem(`${taskKeyPrefix}-endColors`, JSON.stringify(newEndColors));
+    sessionStorage.setItem(`${taskKeyPrefix}-connections`, JSON.stringify(newConnections));
+
+    return { newStartColors, newEndColors, newConnections };
+  };
+
+  const { newStartColors, newEndColors, newConnections } = initializeState();
+
+  const [startColors, setStartColors] = useState<Color[]>(newStartColors);
+  const [endColors, setEndColors] = useState<Color[]>(newEndColors);
+  const [connections, setConnections] = useState<Record<Color, boolean>>(newConnections);
+
+  const correctSound = new Audio('/correct.mp3');
+  const incorrectSound = new Audio('/wrong.mp3');
 
   useEffect(() => {
     sessionStorage.setItem(`${taskKeyPrefix}-startColors`, JSON.stringify(startColors));
@@ -63,10 +72,13 @@ function ColorTask({ setCurrentTask, setCurrentPlayerTasks, currentTask, updateT
 
   const handleDrop = (startColor: Color, endColor: Color) => {
     if (startColor === endColor) {
+      correctSound.play();
       setConnections(prev => {
         const newConnections = { ...prev, [startColor]: true };
         return newConnections;
       });
+    } else {
+      incorrectSound.play();
     }
   };
 
