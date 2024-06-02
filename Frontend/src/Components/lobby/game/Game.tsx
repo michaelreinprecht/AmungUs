@@ -215,6 +215,17 @@ export default function Game({
         ))}
       </Canvas>
 
+      {/* Task List UI */}
+      <div className="task-list-ui absolute top-2 left-2 p-4 bg-gray-800 text-white">
+        <TaskList
+          currentPlayerTasks={currentPlayerTasks}
+          allPlayerTasks={allPlayerTasks}
+        />
+      </div>
+
+      {/* Display current lobby code */}
+      <LobbyCodeUI lobbyCode={lobbyCode} />
+
       {/* Kill UI */}
       {isKillUIVisible() && !isVotingActive && (
         <KillUI
@@ -294,17 +305,6 @@ export default function Game({
         setWinners={setWinners}
         setIsGameOver={setIsGameOver}
       />
-
-      {/* Task List UI */}
-      <div className="task-list-ui absolute top-2 left-2 p-4 bg-gray-800 text-white">
-        <TaskList
-          currentPlayerTasks={currentPlayerTasks}
-          allPlayerTasks={allPlayerTasks}
-        />
-      </div>
-
-      {/* Display current lobby code */}
-      <LobbyCodeUI lobbyCode={lobbyCode} />
     </div>
   );
 }
