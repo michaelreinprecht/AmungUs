@@ -56,6 +56,7 @@ export default function Game({
     setWinners,
     updateTask,
     allPlayerTasks,
+    allTasksDone,
   } = useGame(activePlayerName, lobbyCode);
 
   const currentPlayerInfo = getPositionOfPlayer(
@@ -244,7 +245,7 @@ export default function Game({
 
       {/* Task List UI */}
       <div className="task-list-ui absolute top-2 left-2 p-4 bg-gray-800 text-white">
-        <TaskList currentPlayerTasks={currentPlayerTasks} allPlayerTasks={allPlayerTasks} />
+        <TaskList currentPlayerTasks={currentPlayerTasks} allPlayerTasks={allPlayerTasks} allTasksDone={allTasksDone} playerPositions={playerPositions}/>
       </div>
 
       {/* Display current lobby code */}

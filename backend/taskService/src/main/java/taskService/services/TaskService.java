@@ -13,7 +13,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 public class TaskService {
 
-
     private static final Logger logger = LogManager.getLogger(TaskService.class);
     private List<Task> allTasks = new CopyOnWriteArrayList<>();
 
@@ -49,5 +48,10 @@ public class TaskService {
                 break;
             }
         }
+    }
+
+    public void resetTasks(String lobbyCode){
+        allTasks.removeIf(task -> task.getLobbyCode().equals(lobbyCode));
+        logger.info("TaskService Tasks reset successfully for lobby: {}", lobbyCode);
     }
 }

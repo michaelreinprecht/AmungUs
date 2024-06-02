@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.client.RestTemplate;
 import taskService.models.Task;
 import taskService.services.TaskService;
 
@@ -16,6 +18,9 @@ import java.util.List;
 
 @Controller
 public class TaskController {
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     private static final Logger logger = LogManager.getLogger(TaskController.class);
 
@@ -47,5 +52,31 @@ public class TaskController {
         logger.info("TaskController CompletedTask received successfully: {}", task);
         taskService.completeTask(task);
         return taskService.getAllTasksbyLobbyCode(task.getLobbyCode());
+    }
+
+    @PostMapping("/resetTasks/{lobbyCode}")
+    @ResponseBody
+    public ResponseEntity<String> resetTasks(@PathVariable String lobbyCode) {
+        logger.info("Resetting Tasks for lobby: {}", lobbyCode);
+        taskService.resetTasks(lobbyCode);
+        messagingTemplate.convertAndSend("/task/makeNewTasks/" + lobbyCode, makeNewTasks(lobbyCode));
+        return ResponseEntity.ok("OK");
+    }
+
+    @SendTo("/task/makeNewTasks/{lobbyCode}")
+    public ResponseEntity<String> makeNewTasks(@PathVariable String lobbyCode) {
+        logger.info("Send making new tasks for lobby: {}", lobbyCode);
+        return ResponseEntity.ok("OK");
+    }
+
+    @MessageMapping("/allTasksDone/{lobbyCode}")
+    public void allTasksDone(@PathVariable String lobbyCode) {
+        logger.info("All tasks done for lobby: {}", lobbyCode);
+        boolean taskDone = true;
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8080/api/lobby/{lobbyCode}/AllTaskDone";
+        ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class, lobbyCode);
+        logger.info("All Tasks done: " + response);
+
     }
 }

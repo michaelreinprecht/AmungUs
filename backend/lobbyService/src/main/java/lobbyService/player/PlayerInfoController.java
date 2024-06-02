@@ -104,7 +104,7 @@ public class PlayerInfoController {
                 lobby.killPlayer(victim, killer);
                 List<PlayerInfo> updatedPlayerPositions = lobby.getPlayerInfos();
                 // Send the updated player info to all players
-                messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
+                messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode, false));
                 messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
                 return true;
             }
@@ -114,10 +114,10 @@ public class PlayerInfoController {
 
     //Returns a list of strings, the first string will indicate which team one, the other strings are the team members (e.g. all crewmates)
     @SendTo("/lobby/{lobbyCode}/gameOver")
-    public GameOverInfo checkForGameOver(@DestinationVariable String lobbyCode) throws Exception {
+    public GameOverInfo checkForGameOver(@DestinationVariable String lobbyCode, boolean taskWin) throws Exception {
         Lobby lobby = lobbyService.getLobby(lobbyCode);
 
-        String winner = lobby.checkForWinner();
+        String winner = lobby.checkForWinner(taskWin);
         List<PlayerInfo> teamMembers = lobby.getAllTeamMembers(winner);
         GameOverInfo gameOverInfo = new GameOverInfo(winner, teamMembers);
         if (!Objects.equals(winner, "")) {
@@ -179,7 +179,7 @@ public class PlayerInfoController {
             lobby.teleportPlayersToSpawn();
             // Remove the corpses
             lobby.removeCorpses();
-            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode));
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode, false));
             // Send the updated player info to all players
             messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/playerInfo", updatedPlayerPositions);
         }
@@ -228,6 +228,17 @@ public class PlayerInfoController {
         logger.info("Shits been called");
         Lobby lobby = lobbyService.getLobby(lobbyCode);
         return lobby.isGameStarted();
+    }
+
+    @PostMapping("/api/lobby/{lobbyCode}/AllTaskDone")
+    @ResponseBody
+    public void AllTaskDone(@PathVariable String lobbyCode) {
+        logger.info("Tasks are done for lobby: {}", lobbyCode);
+        try {
+            messagingTemplate.convertAndSend("/lobby/" + lobbyCode + "/gameOver", checkForGameOver(lobbyCode, true));
+        } catch (Exception e) {
+            logger.info("Error: {}", e.getMessage());
+        }
     }
 
     private boolean isKillAllowed(PlayerInfo killer, PlayerInfo victim) {

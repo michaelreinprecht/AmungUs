@@ -148,7 +148,7 @@ public class Lobby {
     //Checks if one of the multiple possible win conditions occured and returns the winner based on that condition
     //Returns empty string if there is no winners yet
     //Also resets lobby if game is over.
-    public String checkForWinner() {
+    public String checkForWinner(boolean taskWin) {
         int remainingPlayerCount = 0;
         for (PlayerInfo playerInfo : playerInfos) {
             if (!Objects.equals(playerInfo.getPlayerRole(), "killer") && playerInfo.isAlive()) {
@@ -162,17 +162,19 @@ public class Lobby {
                 remainingKillerCount++;
             }
         }
-
+        //Crewmates completed all the tasks, therefore the crewmates win
+        if(taskWin) {
+            return "crewmate";
+        }
         //The crewmates have successfully identified and voted out all the killers, therefore making them the winner!
-        if (remainingKillerCount == 0) {
+        else if (remainingKillerCount == 0) {
             return "crewmate";
         }
         //If there are as many players remaining alive, as there are killers times two, the killers win, because in the
         //next round they can just kill enough people to make the game unwinnable for the crewmates (I think).
-        if (remainingPlayerCount <= remainingKillerCount) {
+        else if (remainingPlayerCount <= remainingKillerCount) {
             return "killer";
         }
-        //TODO: Check if crewmates finished all tasks
         //TODO: Check if sabotaging caused game loss ...?
         return "";
     }
@@ -197,6 +199,7 @@ public class Lobby {
         }
         resetEmergencyTimer();
         shufflePlayerRoles();
+        resetTasks();
         teleportPlayersToSpawn();
     }
 
@@ -260,6 +263,13 @@ public class Lobby {
                 player.setPlayerRole("crewmate");
             }
         }
+    }
+
+    private void resetTasks(){
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8084/resetTasks/{lobbyCode}" ;
+        ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class, lobbyCode);
+        logger.info("Tasks reset: " + response);
     }
 
     private void assignNewHost() {

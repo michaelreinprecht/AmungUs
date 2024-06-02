@@ -110,9 +110,43 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
           const tasks = JSON.parse(message.body) as Task[];
           console.log("Tasks received: ", tasks);
           setAllPlayerTasks(tasks);
+        });        
+        taskClient.subscribe(`/task/makeNewTasks/${lobbyCode}`, (message) => {
+          console.log("henlo good sir");
+          const initialTasks: Task[] = [];
+          for (let i = 0; i < 6; i++) {
+            let randomTask = getRandomTask(possibleTasks);
+            // Ensure the task is unique by creating a deep copy
+            randomTask = JSON.parse(JSON.stringify(randomTask));
+            // Assigning the id to match the index
+            randomTask.id = i;
+            randomTask.playerName = activePlayerName;
+            randomTask.lobbyCode = lobbyCode;
+            // Check if the player is a killer
+            const isActivePlayerKiller = playerPositions.some(
+            (player) =>
+              player.playerName === activePlayerName && player.playerRole === "killer"
+            );
+            // Send the task to the backend if the player is not a killer
+            if(!isActivePlayerKiller){
+              taskClient.publish({
+                destination: `/taskApp/saveTasks/${lobbyCode}`,
+                body: JSON.stringify(randomTask),
+              });
+            }
+            initialTasks.push(randomTask);
+          }
+          setCurrentPlayerTasks(initialTasks);
+
         });
         // Create initial tasks and send them to the backend
         const initialTasks: Task[] = [];
+        // Check if the player is a killer
+        console.log("playerPositions: ", playerPositions);
+        const isActivePlayerKiller = playerPositions.some(
+          (player) =>
+            player.playerName === activePlayerName && player.playerRole === "killer"
+        );
         for (let i = 0; i < 6; i++) {
           let randomTask = getRandomTask(possibleTasks);
           // Ensure the task is unique by creating a deep copy
@@ -121,11 +155,14 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
           randomTask.id = i;
           randomTask.playerName = activePlayerName;
           randomTask.lobbyCode = lobbyCode;
-          // Send the task to the backend
-          taskClient.publish({
-            destination: `/taskApp/saveTasks/${lobbyCode}`,
-            body: JSON.stringify(randomTask),
-          });
+       
+         // Send the task to the backend if the player is not a killer
+          if(!isActivePlayerKiller){
+            taskClient.publish({
+              destination: `/taskApp/saveTasks/${lobbyCode}`,
+              body: JSON.stringify(randomTask),
+            });
+          }
           initialTasks.push(randomTask);
         }
         setCurrentPlayerTasks(initialTasks);
@@ -172,7 +209,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   }
 
   function updateTask(updatedTask: Task) {
-    console.log("allPlayerTasks: ", allPlayerTasks);
+    console.log("updateTask called with all player tasks: ", allPlayerTasks);
     const taskClient = new Client({
       brokerURL: `ws://${serverAddress}:8084/taskService`,
       onConnect: () => {
@@ -182,6 +219,20 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
         });
       },
     });
+    taskClient.activate();
+  }
+
+  function allTasksDone() {
+    console.log("allTasksDone called");
+    const taskClient = new Client({
+      brokerURL: `ws://${serverAddress}:8084/taskService`,
+      onConnect: () => {
+        taskClient.publish({
+          destination: `/taskApp/allTasksDone/${lobbyCode}`,
+          body: lobbyCode,
+        });
+      },
+    })
     taskClient.activate();
   }
 
@@ -205,5 +256,6 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     setWinners,
     updateTask,
     allPlayerTasks,
+    allTasksDone,
   };
 }
