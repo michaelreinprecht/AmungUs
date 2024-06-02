@@ -15,6 +15,7 @@
         <module>heartbeatService</module>
         <module>taskService</module>
         <module>globalClasses</module>
+        <module>sabotageService</module>
     </modules>
 
     <properties>

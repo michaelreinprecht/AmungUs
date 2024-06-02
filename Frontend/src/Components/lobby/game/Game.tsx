@@ -24,6 +24,9 @@ import { getPositionOfPlayer } from "@/Components/player/utilityFunctions/player
 import MapUI from "./MapUI";
 import { Task, TaskObjectData, TaskObjectDisplayData } from "@/app/types";
 import { TrackballControls } from "three/examples/jsm/Addons.js";
+import SabotageUI from "./SabotageUI";
+import SabotageTask from "@/Components/task/SabotageTask";
+import SabotageTextUI from "./SabotageTextUI";
 
 type GameProps = {
   activePlayerName: string;
@@ -60,6 +63,8 @@ export default function Game({
     updateTask,
     allPlayerTasks,
     allTasksDone,
+    sabotageInitiated,
+    setSabotageInitiated,
   } = useGame(activePlayerName, lobbyCode);
 
   const currentPlayerInfo = getPositionOfPlayer(
@@ -214,6 +219,17 @@ export default function Game({
             taskObjectImage={taskObjectImage}
           />
         ))}
+
+        {/* Sabotage Task Object */}
+        {sabotageInitiated && (
+          <TaskObject 
+            position={[0, 40, 0]} 
+            scale={scale} 
+            task={{id: 7, name: "SabotageTask", completed: false, playerName: activePlayerName, lobbyCode: lobbyCode}} 
+            setCurrentTask={setCurrentTask} 
+            taskObjectImage="/TaskObject.png"/>
+        )}
+        
       </Canvas>
 
       {/* Kill UI */}
@@ -224,6 +240,14 @@ export default function Game({
           victimName={nearestPlayer}
           lobbyCode={lobbyCode}
         />
+      )}
+
+      {/* Sabotage UI */}
+      {isKillUIVisible() && !isVotingActive &&(
+        <SabotageUI 
+          isSabotageEnabled={true} 
+          activePlayerName={activePlayerName} 
+          lobbyCode={lobbyCode}/>
       )}
 
       {/* Voting UI */}
@@ -273,6 +297,13 @@ export default function Game({
           updateTask={updateTask}
         />
       )}
+      {currentTask.name === "SabotageTask" && (
+        <SabotageTask
+          setCurrentTask={setCurrentTask}
+          currentTask={currentTask}
+          lobbyCode={lobbyCode}
+        />
+      )}
 
       <VotingKillUI votingKill={votingKill} />
 
@@ -303,6 +334,9 @@ export default function Game({
 
       {/* Display current lobby code */}
       <LobbyCodeUI lobbyCode={lobbyCode} />
+
+      {/* Display Sabotage Text */}
+      <SabotageTextUI sabotageInitiated={sabotageInitiated} />
     </div>
   );
 }

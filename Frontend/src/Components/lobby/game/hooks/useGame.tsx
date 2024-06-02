@@ -11,6 +11,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [nearestPlayer, setNearestPlayer] = useState<string>("");
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
+  const [sabotageInitiated, setSabotageInitiated] = useState<boolean>(false);
   const [currentTask, setCurrentTask] = useState<Task>({
     id: 0,
     name: "",
@@ -170,11 +171,26 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     });
     taskClient.activate();
 
+    const sabotageClient = new Client({
+      brokerURL: `ws://${serverAddress}:8085/sabotageService`,
+      onConnect: () => {
+        sabotageClient.subscribe(
+          `/sabotage/sabotageInitiated/${lobbyCode}`, message => {
+            const sabotageInitiated = JSON.parse(message.body);
+            console.log("sabotageInitiated: ", sabotageInitiated);
+            setSabotageInitiated(sabotageInitiated);
+          }
+        )
+      },
+    });
+    sabotageClient.activate();
+
     // Clean up WebSocket connections on component unmount
     return () => {
       votingClient.deactivate();
       lobbyClient.deactivate();
       taskClient.deactivate();
+      sabotageClient.deactivate();
     };
   }, []);
 
@@ -257,5 +273,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     updateTask,
     allPlayerTasks,
     allTasksDone,
+    sabotageInitiated,
+    setSabotageInitiated
   };
 }
