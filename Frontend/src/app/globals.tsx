@@ -2,6 +2,8 @@ export const killRange = 20;
 export const killCooldown = 20;
 export const votingTimer = 20;
 export const emergencyButtonCooldown = 30;
+export const mapWidth = 472 as number;
+export const mapHeight = 272 as number;
 export const characterOptions = [
   {
     id: "character-1",

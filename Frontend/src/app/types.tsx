@@ -49,6 +49,18 @@ export type Task = {
   lobbyCode: string;
 };
 
+export type TaskObjectData = {
+  task: Task | null;
+  position: [number, number, number];
+  taskObjectImage: string;
+};
+
+export type TaskObjectDisplayData = {
+  position: [number, number, number];
+  taskObjectImage: string;
+  taskObjectCompletedImage: string;
+};
+
 export type GameOverInfo = {
   winner: string;
   teamMembers: PlayerInfo[];

@@ -51,7 +51,7 @@ public class PlayerInfoController {
             if (!isColliding(playerInfo)) {
                 lobby.updatePlayerInfo(playerInfo);
             }
-            // Send the updated player positions to all players
+            // Seawnd the updated player positions to all players
             return lobby.getPlayerInfos();
         } else {
             return null;
