@@ -27,6 +27,7 @@ import { TrackballControls } from "three/examples/jsm/Addons.js";
 import SabotageUI from "./SabotageUI";
 import SabotageTask from "@/Components/task/SabotageTask";
 import SabotageTextUI from "./SabotageTextUI";
+import VentObject from "@/Components/vent/VentObject";
 
 type GameProps = {
   activePlayerName: string;
@@ -229,6 +230,31 @@ export default function Game({
             setCurrentTask={setCurrentTask} 
             taskObjectImage="/TaskObject.png"/>
         )}
+
+        <VentObject
+          position={[198, 62, 0]} // Example position
+          scale={scale}
+          currentPlayerInfo={currentPlayerInfo} // Pass player object
+          id={1}
+        />
+        <VentObject
+          position={[142,-110, 0]} // Example position
+          scale={scale}
+          currentPlayerInfo={currentPlayerInfo} // Pass player object
+          id={2}
+        />
+        <VentObject
+          position={[-189,-118, 0]} // Example position
+          scale={scale}
+          currentPlayerInfo={currentPlayerInfo} // Pass player object
+          id={3}
+        />
+        <VentObject
+          position={[-189,64, 0]} // Example position
+          scale={scale}
+          currentPlayerInfo={currentPlayerInfo} // Pass player object
+          id={4}
+        />
         
       </Canvas>
 
