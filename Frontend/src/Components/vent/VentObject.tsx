@@ -44,14 +44,6 @@ function VentObject({
     <mesh position={position} onClick={onClick} castShadow receiveShadow>
       <boxGeometry args={[1 * scale, 1 * scale, 1 * scale]} />
       <meshStandardMaterial map={texture} transparent={true} />
-      <lineSegments>
-        <edgesGeometry
-          args={[
-            new THREE.BoxGeometry(1.1 * scale, 1 * scale, 1.1 * scale),
-          ]}
-        />
-        <lineBasicMaterial color={"red"} linewidth={3} />
-      </lineSegments>
     </mesh>
   );
 }
