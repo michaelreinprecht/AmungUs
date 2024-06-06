@@ -57,5 +57,5 @@ export const characterOptions = [
   },
 ];
 
-//export const serverAddress = "10.0.40.167";
-export const serverAddress = "localhost";
+export const serverAddress = "10.0.40.167";
+//export const serverAddress = "localhost";
