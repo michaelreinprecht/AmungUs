@@ -92,7 +92,7 @@ export default function MapUI({
             }}
           >
             <img
-              src="/AmungusMap.png"
+              src="/AmungUsMap.png"
               alt="Map"
               className="absolute inset-0 mx-auto my-auto"
             />
