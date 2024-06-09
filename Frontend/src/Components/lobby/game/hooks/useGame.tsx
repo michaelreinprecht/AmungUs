@@ -12,6 +12,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [playerPositions, setPlayerPositions] = useState<PlayerInfo[]>([]);
   const [isVotingActive, setIsVotingActive] = useState<boolean>(false);
   const [sabotageInitiated, setSabotageInitiated] = useState<boolean>(false);
+  const [sabotageCooldown, setSabotageCooldown] = useState<number>(0);
   const [currentTask, setCurrentTask] = useState<Task>({
     id: 0,
     name: "",
@@ -179,6 +180,15 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
             const sabotageInitiated = JSON.parse(message.body);
             console.log("sabotageInitiated: ", sabotageInitiated);
             setSabotageInitiated(sabotageInitiated);
+            if(sabotageInitiated){
+              setSabotageCooldown(90);
+            }
+          }
+        )
+        sabotageClient.subscribe(
+          `/sabotage/sabotageCooldown/${lobbyCode}`, message => {
+            setSabotageInitiated(false);
+            setSabotageCooldown(0);
           }
         )
       },
@@ -274,6 +284,8 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
     allPlayerTasks,
     allTasksDone,
     sabotageInitiated,
-    setSabotageInitiated
+    setSabotageInitiated,
+    sabotageCooldown,
+    setSabotageCooldown,
   };
 }

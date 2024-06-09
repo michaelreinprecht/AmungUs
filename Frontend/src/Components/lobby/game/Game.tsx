@@ -66,6 +66,8 @@ export default function Game({
     allTasksDone,
     sabotageInitiated,
     setSabotageInitiated,
+    sabotageCooldown,
+    setSabotageCooldown,
   } = useGame(activePlayerName, lobbyCode);
 
   const currentPlayerInfo = getPositionOfPlayer(
@@ -149,7 +151,29 @@ export default function Game({
       });
     });
     setTaskObjects(newTaskObjects);
-  }, [currentPlayerTasks, setCurrentPlayerTasks]);
+
+    if(sabotageInitiated){
+      setTaskObjects(prevTaskObjects => [
+        ...prevTaskObjects,
+        {
+          task: {
+            id: 7,
+            name: "SabotageTask",
+            completed: false,
+            playerName: activePlayerName,
+            lobbyCode: lobbyCode,
+          },
+          position: [-136, -120, 0],
+          taskObjectImage: "/SabotageTaskObject.png",
+        },
+      ]),
+      console.log("sabotageTaskObject added to minimap");
+    }
+    else if(!sabotageInitiated){
+      setTaskObjects(newTaskObjects);
+    }
+    
+  }, [currentPlayerTasks, setCurrentPlayerTasks, sabotageInitiated]);
 
   return (
     <div ref={canvasRef} className="w-screen h-screen relative">
@@ -221,16 +245,6 @@ export default function Game({
           />
         ))}
 
-        {/* Sabotage Task Object */}
-        {sabotageInitiated && (
-          <TaskObject 
-            position={[0, 40, 0]} 
-            scale={scale} 
-            task={{id: 7, name: "SabotageTask", completed: false, playerName: activePlayerName, lobbyCode: lobbyCode}} 
-            setCurrentTask={setCurrentTask} 
-            taskObjectImage="/TaskObject.png"/>
-        )}
-
         <VentObject
           position={[198, 62, 0]} // Example position
           scale={scale}
@@ -270,10 +284,17 @@ export default function Game({
 
       {/* Sabotage UI */}
       {isKillUIVisible() && !isVotingActive &&(
-        <SabotageUI 
-          isSabotageEnabled={true} 
+        <SabotageUI
+          sabotageCooldown={sabotageCooldown}
+          setSabotageCooldown={setSabotageCooldown}  
           activePlayerName={activePlayerName} 
           lobbyCode={lobbyCode}/>
+      )}
+
+      {isKillUIVisible() && sabotageCooldown > 0 && (
+        <div style={{position: "absolute", bottom: 35, left: 150, fontSize: '1.5rem', fontWeight: 'bold', color: 'black', cursor: 'not-allowed'}}>
+          {sabotageCooldown} s
+        </div>
       )}
 
       {/* Voting UI */}
@@ -362,7 +383,7 @@ export default function Game({
       <LobbyCodeUI lobbyCode={lobbyCode} />
 
       {/* Display Sabotage Text */}
-      <SabotageTextUI sabotageInitiated={sabotageInitiated} />
+      <SabotageTextUI sabotageInitiated={sabotageInitiated} lobbyCode={lobbyCode}/>
     </div>
   );
 }
