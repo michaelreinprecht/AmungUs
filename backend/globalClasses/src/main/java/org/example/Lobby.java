@@ -148,7 +148,7 @@ public class Lobby {
     //Checks if one of the multiple possible win conditions occured and returns the winner based on that condition
     //Returns empty string if there is no winners yet
     //Also resets lobby if game is over.
-    public String checkForWinner(boolean taskWin) {
+    public String checkForWinner(boolean taskWin, boolean sabotageWin) {
         int remainingPlayerCount = 0;
         for (PlayerInfo playerInfo : playerInfos) {
             if (!Objects.equals(playerInfo.getPlayerRole(), "killer") && playerInfo.isAlive()) {
@@ -165,6 +165,10 @@ public class Lobby {
         //Crewmates completed all the tasks, therefore the crewmates win
         if(taskWin) {
             return "crewmate";
+        }
+        //Sabotage was successful, therefore the killers win
+        else if (sabotageWin) {
+            return "killer";
         }
         //The crewmates have successfully identified and voted out all the killers, therefore making them the winner!
         else if (remainingKillerCount == 0) {
@@ -200,6 +204,7 @@ public class Lobby {
         resetEmergencyTimer();
         shufflePlayerRoles();
         resetTasks();
+        resetSabotage();
         teleportPlayersToSpawn();
     }
 
@@ -270,6 +275,13 @@ public class Lobby {
         String url = "http://localhost:8084/resetTasks/{lobbyCode}" ;
         ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class, lobbyCode);
         logger.info("Tasks reset: " + response);
+    }
+
+    private void resetSabotage(){
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8085/resetSabotage/{lobbyCode}" ;
+        ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class, lobbyCode);
+        logger.info("Sabotage reset: " + response);
     }
 
     private void assignNewHost() {

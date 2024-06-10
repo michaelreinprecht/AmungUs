@@ -72,7 +72,6 @@ public class TaskController {
     @MessageMapping("/allTasksDone/{lobbyCode}")
     public void allTasksDone(@PathVariable String lobbyCode) {
         logger.info("All tasks done for lobby: {}", lobbyCode);
-        boolean taskDone = true;
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/api/lobby/{lobbyCode}/AllTaskDone";
         ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class, lobbyCode);
