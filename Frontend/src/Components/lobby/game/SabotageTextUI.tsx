@@ -2,7 +2,13 @@ import { serverAddress } from "@/app/globals";
 import { Client } from "@stomp/stompjs";
 import { useState, useEffect } from "react";
 
-export default function SabotageTextUI({ sabotageInitiated, lobbyCode }: { sabotageInitiated: boolean , lobbyCode: string } ) {
+export default function SabotageTextUI({
+  sabotageInitiated,
+  lobbyCode,
+}: {
+  sabotageInitiated: boolean;
+  lobbyCode: string;
+}) {
   const sabotageTime = 60;
   const [timer, setTimer] = useState(sabotageTime);
   const [hasTimerEnded, setHasTimerEnded] = useState(false);
@@ -46,15 +52,17 @@ export default function SabotageTextUI({ sabotageInitiated, lobbyCode }: { sabot
 
   return (
     sabotageInitiated && (
-      <div className="sabotage absolute top-0 left-1/2 -translate-x-1/2 text-red-600 text-center mt-4 p-4 bg-gray-700 rounded" style={{fontSize: '2rem', boxShadow: '2px 2px 6px rgba(0,0,0,0.5)'}}>
-        Sabotage initiated! A crewmate has to solve the sabotage task before the time runs out. Look at the map to find it!
+      <div
+        className="sabotage absolute top-0 left-1/2 -translate-x-1/2 text-red-600 text-center mt-4 p-4 bg-gray-700 rounded opacity-80"
+        style={{ fontSize: "2rem", boxShadow: "2px 2px 6px rgba(0,0,0,0.5)" }}
+      >
+        Sabotage initiated! A crewmate has to solve the sabotage task before the
+        time runs out. Look at the map to find it!
         <br />
         <span className="text-red-600">
-          Time remaining: {timer} seconds {hasTimerEnded && '(Timer has ended)'}
+          Time remaining: {timer} seconds {hasTimerEnded && "(Timer has ended)"}
         </span>
       </div>
     )
   );
 }
-
-
