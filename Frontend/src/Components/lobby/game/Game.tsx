@@ -197,6 +197,22 @@ export default function Game({
         {/* Background component with overlay image */}
         <Background textureUrl="/AmungUsMap.png" />
 
+        {/* Render player character */}
+        <PlayerCharacter
+          isGamePaused={isGamePaused}
+          isGameOver={isGameOver}
+          isGameStarted={isGameStarted}
+          activePlayerName={activePlayerName}
+          activePlayerCharacter={activePlayerCharacter}
+          scale={scale}
+          lobbyCode={lobbyCode}
+          onNearestPlayerChange={(playerName: string) =>
+            setNearestPlayer(playerName)
+          }
+          playerPositions={playerPositions}
+          setPlayerPositions={setPlayerPositions}
+        />
+
         <VentObject
           position={[198, 62, 0]} // Example position
           scale={scale}
@@ -220,22 +236,6 @@ export default function Game({
           scale={scale}
           currentPlayerInfo={currentPlayerInfo} // Pass player object
           id={4}
-        />
-
-        {/* Render player character */}
-        <PlayerCharacter
-          isGamePaused={isGamePaused}
-          isGameOver={isGameOver}
-          isGameStarted={isGameStarted}
-          activePlayerName={activePlayerName}
-          activePlayerCharacter={activePlayerCharacter}
-          scale={scale}
-          lobbyCode={lobbyCode}
-          onNearestPlayerChange={(playerName: string) =>
-            setNearestPlayer(playerName)
-          }
-          playerPositions={playerPositions}
-          setPlayerPositions={setPlayerPositions}
         />
 
         <EmergencyButton
@@ -267,31 +267,6 @@ export default function Game({
             taskObjectImage={taskObjectImage}
           />
         ))}
-
-        <VentObject
-          position={[198, 62, 0]} // Example position
-          scale={scale}
-          currentPlayerInfo={currentPlayerInfo} // Pass player object
-          id={1}
-        />
-        <VentObject
-          position={[142, -110, 0]} // Example position
-          scale={scale}
-          currentPlayerInfo={currentPlayerInfo} // Pass player object
-          id={2}
-        />
-        <VentObject
-          position={[-189, -118, 0]} // Example position
-          scale={scale}
-          currentPlayerInfo={currentPlayerInfo} // Pass player object
-          id={3}
-        />
-        <VentObject
-          position={[-189, 64, 0]} // Example position
-          scale={scale}
-          currentPlayerInfo={currentPlayerInfo} // Pass player object
-          id={4}
-        />
       </Canvas>
 
       {/* Kill UI */}
@@ -329,6 +304,19 @@ export default function Game({
           {sabotageCooldown} s
         </div>
       )}
+
+      {/* Task List UI */}
+      <div className="task-list-ui absolute top-2 left-2 p-4 bg-gray-800 text-white">
+        <TaskList
+          currentPlayerTasks={currentPlayerTasks}
+          allPlayerTasks={allPlayerTasks}
+          allTasksDone={allTasksDone}
+          playerPositions={playerPositions}
+        />
+      </div>
+
+      {/* Display current lobby code */}
+      <LobbyCodeUI lobbyCode={lobbyCode} />
 
       {/* Voting UI */}
       {isVotingActive && (
@@ -406,19 +394,6 @@ export default function Game({
         setWinners={setWinners}
         setIsGameOver={setIsGameOver}
       />
-
-      {/* Task List UI */}
-      <div className="task-list-ui absolute top-2 left-2 p-4 bg-gray-800 text-white">
-        <TaskList
-          currentPlayerTasks={currentPlayerTasks}
-          allPlayerTasks={allPlayerTasks}
-          allTasksDone={allTasksDone}
-          playerPositions={playerPositions}
-        />
-      </div>
-
-      {/* Display current lobby code */}
-      <LobbyCodeUI lobbyCode={lobbyCode} />
 
       {/* Display Sabotage Text */}
       <SabotageTextUI

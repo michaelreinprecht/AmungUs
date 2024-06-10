@@ -26,7 +26,7 @@ function VentObject({
       }
       if (id === 2) {
         currentPlayerInfo.playerPositionX = -189;
-        currentPlayerInfo.playerPositionY =  64;
+        currentPlayerInfo.playerPositionY = 64;
       }
       if (id === 3) {
         currentPlayerInfo.playerPositionX = 198;
@@ -42,7 +42,7 @@ function VentObject({
 
   return (
     <mesh position={position} onClick={onClick} castShadow receiveShadow>
-      <boxGeometry args={[1 * scale, 1 * scale, 1 * scale]} />
+      <planeGeometry args={[1 * scale, 1 * scale]} />
       <meshStandardMaterial map={texture} transparent={true} />
     </mesh>
   );
