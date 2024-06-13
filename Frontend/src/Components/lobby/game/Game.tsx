@@ -332,6 +332,12 @@ export default function Game({
         <ChatWindow activePlayerName={activePlayerName} lobbyCode={lobbyCode} />
       )}
 
+      {/* Display Sabotage Text */}
+      <SabotageTextUI
+        sabotageInitiated={sabotageInitiated}
+        lobbyCode={lobbyCode}
+      />
+
       {/* Tasks */}
       {currentTask.name === "ColorTask" && (
         <ColorTask
@@ -393,12 +399,6 @@ export default function Game({
         winners={winners}
         setWinners={setWinners}
         setIsGameOver={setIsGameOver}
-      />
-
-      {/* Display Sabotage Text */}
-      <SabotageTextUI
-        sabotageInitiated={sabotageInitiated}
-        lobbyCode={lobbyCode}
       />
     </div>
   );
