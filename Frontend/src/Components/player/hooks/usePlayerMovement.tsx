@@ -51,7 +51,7 @@ export function usePlayerMovement(
   const [currentFrame, setCurrentFrame] = useState(1);
   const [isMoving, setIsMoving] = useState(false);
   const accumulatedTimeRef = useRef(0);
-  const frameInterval = 0.3;
+  const frameInterval = 0.5;
 
   const updateTexture = () => {
     if (isMoving == true) {

@@ -12,16 +12,16 @@ interface SabotageTaskProps {
 function SabotageTask({ setCurrentTask, lobbyCode,currentTask }: SabotageTaskProps) {
   const [numbers, setNumbers] = useState<number[]>(() => generateRandomNumbers());
   const [inputValue, setInputValue] = useState<string>('');
-  const [order, setOrder] = useState<'ascending' | 'descending'>(() => getRandomOrder());
+  const [order, setOrder] = useState<'ASCENDING' | 'DESCENDING'>(() => getRandomOrder());
   const [error, setError] = useState<string>('');
 
   function generateRandomNumbers(): number[] {
-    const randomNumbers = Array.from({ length: 7 }, () => Math.floor(Math.random() * 100));
+    const randomNumbers = Array.from({ length: 5 }, () => Math.floor(Math.random() * 100));
     return randomNumbers;
   }
 
-  function getRandomOrder(): 'ascending' | 'descending' {
-    return Math.random() > 0.5 ? 'ascending' : 'descending';
+  function getRandomOrder(): 'ASCENDING' | 'DESCENDING' {
+    return Math.random() > 0.5 ? 'ASCENDING' : 'DESCENDING';
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +30,7 @@ function SabotageTask({ setCurrentTask, lobbyCode,currentTask }: SabotageTaskPro
 
   const handleSubmit = () => {
     const inputNumbers = inputValue.split(',').map(Number);
-    const sortedNumbers = order === 'ascending' ? [...numbers].sort((a, b) => a - b) : [...numbers].sort((a, b) => b - a);
+    const sortedNumbers = order === 'ASCENDING' ? [...numbers].sort((a, b) => a - b) : [...numbers].sort((a, b) => b - a);
 
     if (inputNumbers.length !== numbers.length) {
       setError(`Please enter exactly ${numbers.length} numbers.`);
