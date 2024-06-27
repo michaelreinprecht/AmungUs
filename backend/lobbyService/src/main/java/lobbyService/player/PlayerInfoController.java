@@ -257,14 +257,14 @@ public class PlayerInfoController {
             if (!Objects.equals(victim.getPlayerRole(), "killer")) { //Make sure killers cannot kill other killers!
                 if (victim.isAlive()) { //Make sure victim is still alive
                     if (killer.isAlive()) { //Make sure killer is still alive
-                        if (victimInRange(killer, victim)) { //Make sure the killer is in range for the kill
+                        //if (victimInRange(killer, victim)) { //Make sure the killer is in range for the kill
                             //Make sure kill is not on cooldown for this killer
                             if (killer.getLastKillTime() == null) {
                                 return true;
                             } else {
                                 return Duration.between(killer.getLastKillTime(), Instant.now()).getSeconds() >= 15;
                             }
-                        }
+                        //}
                     }
                 }
             }
