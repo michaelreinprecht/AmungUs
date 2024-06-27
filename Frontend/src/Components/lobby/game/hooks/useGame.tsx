@@ -58,6 +58,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
   const [currentPlayerTasks, setCurrentPlayerTasks] = useState<Task[]>([]);
   const [allPlayerTasks, setAllPlayerTasks] = useState<Task[]>([]);
   let votingClientIsConnected = false;
+  let sabotagerunning = false;
 
   useEffect(() => {
     const votingClient = new Client({
@@ -68,10 +69,15 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
           votingClient.subscribe(
             `/voting/${lobbyCode}/votingState`,
             (message) => {
-              const votingActive = JSON.parse(message.body);
-              setIsGamePaused(votingActive); // Pause or unpause the game
-              setIsVotingActive(votingActive); // Display or stop displaying votingUI
+              console.log("sabotägle", sabotageInitiated)
+              if(!sabotagerunning) {
+                const votingActive = JSON.parse(message.body);
+                setIsGamePaused(votingActive); // Pause or unpause the game
+                setIsVotingActive(votingActive); // Display or stop displaying votingUI
+              }
+             
             }
+            
           );
           votingClient.subscribe(
             `/voting/${lobbyCode}/votingKill`,
@@ -180,6 +186,7 @@ export function useGame(activePlayerName: string, lobbyCode: string) {
             const sabotageInitiated = JSON.parse(message.body);
             console.log("sabotageInitiated: ", sabotageInitiated);
             setSabotageInitiated(sabotageInitiated);
+            sabotagerunning = sabotageInitiated;
             if(sabotageInitiated){
               setSabotageCooldown(90);
             }
